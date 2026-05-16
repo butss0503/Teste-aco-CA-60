@@ -44,7 +44,6 @@
                     <option value="reprovado">Reprovado</option>
                 </select>
 
-                <!-- Esta div inteira fica escondida até ser "Reprovado" -->
                 <div id="grupo-reprovacao" style="display: none;">
                     <label for="motivo-falha">Motivo da Reprovação:</label>
                     <select id="motivo-falha" name="motivo-falha">
@@ -55,7 +54,6 @@
                         <option value="outros">Outros</option>
                     </select>
 
-                    <!-- Esta div fica escondida até o motivo ser "Outros" -->
                     <div id="grupo-outros" style="display: none;">
                         <label for="outro-motivo">Descreva o erro:</label>
                         <input type="text" id="outro-motivo" name="outro-motivo" placeholder="Descreva o que aconteceu">
@@ -81,15 +79,13 @@
             </div>
 
             <div id="lista-resultados">
-                <p>Nenhum teste registrado ainda hoje.</p>
+                <p>Carregando testes da nuvem...</p>
             </div>
         </section>
-            </div>
-        
     </main>
 
     <script>
-       const statusSelect = document.getElementById('status');
+        const statusSelect = document.getElementById('status');
         const grupoReprovacao = document.getElementById('grupo-reprovacao');
         const motivoFalhaSelect = document.getElementById('motivo-falha');
         const grupoOutros = document.getElementById('grupo-outros');
@@ -99,12 +95,12 @@
         const filtroDataInput = document.getElementById('filtro-data');
         const btnLimparFiltro = document.getElementById('btn-limpar-filtro');
 
-        // Cole aqui o seu link do Google Apps Script (mantenha as aspas)
+        // Seu link oficial conectado à nuvem
         const LINK_PLANILHA = "https://script.google.com/macros/s/AKfycbwmKocpEDyZZsbpxiemeNORc790IB2wNBQM80dOI3WhDJu9LM9ywNRdx-iq2mRAip1juA/exec";
 
         let historicoTestes = [];
 
-        // 1. Mostrar/esconder campos de erro
+        // 1. Mostrar/esconder campos de erro dinamicamente
         statusSelect.addEventListener('change', function() {
             if (this.value === 'reprovado') {
                 grupoReprovacao.style.display = 'block';
@@ -130,10 +126,9 @@
             }
         });
 
-        // 2. FUNÇÃO QUE BUSCA OS DADOS NA PLANILHA DO GOOGLE
+        // 2. Buscar dados salvos na Planilha do Google
         function carregarDadosDaPlanilha() {
             listaResultados.innerHTML = '<p>Carregando testes da nuvem...</p>';
-
             fetch(LINK_PLANILHA)
                 .then(resposta => resposta.json())
                 .then(dados => {
@@ -146,10 +141,9 @@
                 });
         }
 
-        // 3. FUNÇÃO QUE DESENHA OS TESTES NA TELA
+        // 3. Renderizar (desenhar) os testes agrupados por dia na tela
         function atualizarTela() {
             listaResultados.innerHTML = ''; 
-
             let testesParaMostrar = historicoTestes;
 
             if (filtroDataInput.value) {
@@ -158,17 +152,13 @@
             }
 
             if (testesParaMostrar.length === 0) {
-                if (filtroDataInput.value) {
-                    listaResultados.innerHTML = '<p>Nenhum teste encontrado para a data pesquisada.</p>';
-                } else {
-                    listaResultados.innerHTML = '<p>Nenhum teste registrado na nuvem ainda.</p>';
-                }
+                listaResultados.innerHTML = '<p>Nenhum teste encontrado.</p>';
                 return;
             }
 
             const testesPorDia = {};
             
-            // Lemos do mais recente para o mais antigo
+            // Organiza do mais novo para o mais antigo
             [...testesParaMostrar].reverse().forEach(teste => {
                 if (!testesPorDia[teste.dataFormatada]) {
                     testesPorDia[teste.dataFormatada] = [];
@@ -190,9 +180,12 @@
                     let textoMotivoFinal = (teste.textoMotivo && teste.textoMotivo !== "Nenhum") ? `<br><strong>Motivo:</strong> ${teste.textoMotivo}` : "";
 
                     item.innerHTML = `
-                        <div style="margin-bottom: 5px;">
-                            <strong>Bitola:</strong> ${teste.bitola}mm | <strong>Status:</strong> <span style="text-transform: uppercase;">${teste.status}</span>
-                            ${textoMotivoFinal}
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
+                            <div>
+                                <strong>Bitola:</strong> ${teste.bitola}mm | <strong>Status:</strong> <span style="text-transform: uppercase;">${teste.status}</span>
+                                ${textoMotivoFinal}
+                            </div>
+                            <button onclick="deletarTeste(${teste.linha})" style="background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;">Excluir</button>
                         </div>
                         <div style="font-size: 12px; color: #64748b;">
                             <strong>Operador:</strong> ${teste.operador} | <strong>Arquivo:</strong> ${teste.nomeArquivo}
@@ -203,7 +196,29 @@
             }
         }
 
-        // Executa a busca assim que abre o site
+        // 4. Função para acionar a exclusão de uma linha na planilha
+        function deletarTeste(linha) {
+            if(!confirm("Tem certeza que deseja excluir este teste?")) return;
+
+            listaResultados.innerHTML = '<p>Excluindo teste da nuvem...</p>';
+
+            fetch(LINK_PLANILHA, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ acao: "deletar", linha: linha })
+            })
+            .then(() => {
+                alert("Teste excluído com sucesso!");
+                carregarDadosDaPlanilha();
+            })
+            .catch(erro => {
+                alert("Erro ao excluir o teste.");
+                carregarDadosDaPlanilha();
+            });
+        }
+
+        // Inicializa a listagem ao abrir a página
         carregarDadosDaPlanilha();
 
         filtroDataInput.addEventListener('change', atualizarTela);
@@ -212,7 +227,7 @@
             atualizarTela();
         });
 
-        // 4. ENVIO DE NOVO TESTE
+        // 5. Salvar um novo teste na planilha
         formTeste.addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -243,6 +258,7 @@
             const dataFormatada = data.split('-').reverse().join('/');
 
             const novoTeste = {
+                acao: "inserir",
                 dataFormatada: dataFormatada,
                 operador: operador,
                 bitola: bitola,
@@ -254,9 +270,7 @@
             fetch(LINK_PLANILHA, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(novoTeste)
             })
             .then(() => {
@@ -270,14 +284,12 @@
                 statusSelect.dispatchEvent(new Event('change'));
                 filtroDataInput.value = '';
 
-                // Recarrega os dados para trazer o teste novo que acabou de entrar na planilha
                 carregarDadosDaPlanilha();
             })
             .catch(erro => {
                 alert("Erro ao salvar o teste.");
                 botaoSubmit.disabled = false;
                 botaoSubmit.innerText = "Registrar Teste";
-                console.error(erro);
             });
         });
     </script>
