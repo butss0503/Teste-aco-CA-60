@@ -14,7 +14,7 @@
         <h1>Controle Diário de Testes - Aço CA 60</h1>
         <p>Registro individual de ensaios de tração (Bitolas 3.4 a 6.0 mm)</p>
     </header>
-    
+
     <main>
         <section>
             <h2>Lançamento de Teste</h2>
@@ -196,9 +196,16 @@
             atualizarTela();
         });
 
-        // 3. Salvar o teste
+        // Substitua o link abaixo pelo "URL do app da Web" que você copiou do Google
+        const LINK_PLANILHA = "https://script.google.com/macros/s/AKfycbwmKocpEDyZZsbpxiemeNORc790IB2wNBQM80dOI3WhDJu9LM9ywNRdx-iq2mRAip1juA/exec";
+
         formTeste.addEventListener('submit', function(event) {
             event.preventDefault();
+
+            // Desativa o botão temporariamente para o operador não clicar duas vezes
+            const botaoSubmit = formTeste.querySelector('button[type="submit"]');
+            botaoSubmit.disabled = true;
+            botaoSubmit.innerText = "Enviando para a nuvem...";
 
             const data = document.getElementById('data').value;
             const operador = document.getElementById('operador').value;
@@ -211,40 +218,54 @@
                 nomeArquivo = anexoInput.files[0].name;
             }
 
-            let textoMotivo = "";
+            let motivoLimpo = "Nenhum";
             if (status === 'reprovado') {
-                const motivoTexto = motivoFalhaSelect.options[motivoFalhaSelect.selectedIndex].text;
                 if (motivoFalhaSelect.value === 'outros') {
-                    textoMotivo = ` <br><strong>Motivo:</strong> ${outroMotivoInput.value}`;
+                    motivoLimpo = outroMotivoInput.value;
                 } else {
-                    textoMotivo = ` <br><strong>Motivo:</strong> ${motivoTexto}`;
+                    motivoLimpo = motivoFalhaSelect.options[motivoFalhaSelect.selectedIndex].text;
                 }
             }
 
             const dataFormatada = data.split('-').reverse().join('/');
 
+            // Cria o pacote de dados limpo para a planilha
             const novoTeste = {
                 dataFormatada: dataFormatada,
                 operador: operador,
                 bitola: bitola,
                 status: status,
-                textoMotivo: textoMotivo,
+                textoMotivo: motivoLimpo,
                 nomeArquivo: nomeArquivo
             };
 
-            historicoTestes.push(novoTeste);
-            localStorage.setItem('historicoCA60', JSON.stringify(historicoTestes));
-
-            // Se você salvar um teste enquanto está com o filtro ligado num dia diferente, 
-            // limpamos o filtro para você ver o teste que acabou de lançar.
-            filtroDataInput.value = '';
-            
-            atualizarTela();
-
-            document.getElementById('bitola').value = '';
-            statusSelect.value = '';
-            anexoInput.value = '';
-            statusSelect.dispatchEvent(new Event('change'));
+            // MÁGICA: Envia os dados para a planilha em tempo real
+            fetch(LINK_PLANILHA, {
+                method: 'POST',
+                mode: 'no-cors', // Evita erros de segurança simples do navegador
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(novoTeste)
+            })
+            .then(() => {
+                alert("Teste registrado com sucesso na planilha!");
+                
+                // Reinicia os botões e campos
+                botaoSubmit.disabled = false;
+                botaoSubmit.innerText = "Registrar Teste";
+                
+                document.getElementById('bitola').value = '';
+                statusSelect.value = '';
+                anexoInput.value = '';
+                statusSelect.dispatchEvent(new Event('change'));
+            })
+            .catch(erro => {
+                alert("Erro ao salvar o teste. Verifique a conexão.");
+                botaoSubmit.disabled = false;
+                botaoSubmit.innerText = "Registrar Teste";
+                console.error(erro);
+            });
         });
     </script>
 </body>
