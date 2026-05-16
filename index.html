@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diário de Testes - Aço CA 60</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <img src="Grandeaco.png" alt="Logótipo Grande Aço" id="logo-empresa">
+        
+        <h1>Controle Diário de Testes - Aço CA 60</h1>
+        <p>Registro individual de ensaios de tração (Bitolas 3.4 a 6.0 mm)</p>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Lançamento de Teste</h2>
+            <form id="form-teste">
+                
+                <label for="data">Data do Teste:</label>
+                <input type="date" id="data" name="data" required>
+
+                <label for="operador">Nome do Operador:</label>
+                <input type="text" id="operador" name="operador" placeholder="Ex: Flávio" required>
+
+                <label for="bitola">Bitola (mm):</label>
+                <select id="bitola" name="bitola" required>
+                    <option value="">Selecione...</option>
+                    <option value="3.4">3.4 mm</option>
+                    <option value="3.8">3.8 mm</option>
+                    <option value="4.2">4.2 mm</option>
+                    <option value="4.5">4.5 mm</option>
+                    <option value="5.0">5.0 mm</option>
+                    <option value="6.0">6.0 mm</option>
+                </select>
+
+                <label for="status">Status do Teste:</label>
+                <select id="status" name="status" required>
+                    <option value="">Selecione...</option>
+                    <option value="aprovado">Aprovado</option>
+                    <option value="reprovado">Reprovado</option>
+                </select>
+
+                <!-- Esta div inteira fica escondida até ser "Reprovado" -->
+                <div id="grupo-reprovacao" style="display: none;">
+                    <label for="motivo-falha">Motivo da Reprovação:</label>
+                    <select id="motivo-falha" name="motivo-falha">
+                        <option value="">Selecione o motivo...</option>
+                        <option value="escorregamento">Escorregamento na garra</option>
+                        <option value="ruptura_solda">Ruptura na solda</option>
+                        <option value="baixa_resistencia">Baixa resistência à tração</option>
+                        <option value="outros">Outros</option>
+                    </select>
+
+                    <!-- Esta div fica escondida até o motivo ser "Outros" -->
+                    <div id="grupo-outros" style="display: none;">
+                        <label for="outro-motivo">Descreva o erro:</label>
+                        <input type="text" id="outro-motivo" name="outro-motivo" placeholder="Descreva o que aconteceu">
+                    </div>
+                </div>
+
+                <label for="anexo">Anexar Arquivo (Foto ou Relatório PDF):</label>
+                <input type="file" id="anexo" name="anexo" accept="image/*, .pdf">
+
+                <button type="submit">Registrar Teste</button>
+            </form>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>Resumo Diário</h2>
+            
+            <div id="area-filtro">
+                <label for="filtro-data">Pesquisar Dia:</label>
+                <input type="date" id="filtro-data">
+                <button type="button" id="btn-limpar-filtro">Mostrar Todos</button>
+            </div>
+
+            <div id="lista-resultados">
+                <p>Nenhum teste registrado ainda hoje.</p>
+            </div>
+        </section>
+            </div>
+        
+    </main>
+
+    <script>
+       const statusSelect = document.getElementById('status');
+        const grupoReprovacao = document.getElementById('grupo-reprovacao');
+        const motivoFalhaSelect = document.getElementById('motivo-falha');
+        const grupoOutros = document.getElementById('grupo-outros');
+        const outroMotivoInput = document.getElementById('outro-motivo');
+        const formTeste = document.getElementById('form-teste');
+        const listaResultados = document.getElementById('lista-resultados');
+
+        // Elementos do novo filtro
+        const filtroDataInput = document.getElementById('filtro-data');
+        const btnLimparFiltro = document.getElementById('btn-limpar-filtro');
+
+        // 1. Mostrar/esconder campos de erro
+        statusSelect.addEventListener('change', function() {
+            if (this.value === 'reprovado') {
+                grupoReprovacao.style.display = 'block';
+                motivoFalhaSelect.required = true;
+            } else {
+                grupoReprovacao.style.display = 'none';
+                motivoFalhaSelect.required = false;
+                motivoFalhaSelect.value = '';
+                grupoOutros.style.display = 'none';
+                outroMotivoInput.required = false;
+                outroMotivoInput.value = '';
+            }
+        });
+
+        motivoFalhaSelect.addEventListener('change', function() {
+            if (this.value === 'outros') {
+                grupoOutros.style.display = 'block';
+                outroMotivoInput.required = true;
+            } else {
+                grupoOutros.style.display = 'none';
+                outroMotivoInput.required = false;
+                outroMotivoInput.value = '';
+            }
+        });
+
+        // 2. SISTEMA DE HISTÓRICO COM LOCALSTORAGE E FILTRO
+        let historicoTestes = JSON.parse(localStorage.getItem('historicoCA60')) || [];
+
+        function atualizarTela() {
+            listaResultados.innerHTML = ''; 
+
+            // NOVO: Lógica que decide se mostra tudo ou só os testes pesquisados
+            let testesParaMostrar = historicoTestes;
+
+            if (filtroDataInput.value) {
+                // Pega a data do calendário (AAAA-MM-DD) e inverte para o padrão BR (DD/MM/AAAA)
+                const dataPesquisada = filtroDataInput.value.split('-').reverse().join('/');
+                testesParaMostrar = historicoTestes.filter(teste => teste.dataFormatada === dataPesquisada);
+            }
+
+            if (testesParaMostrar.length === 0) {
+                if (filtroDataInput.value) {
+                    listaResultados.innerHTML = '<p>Nenhum teste encontrado para a data pesquisada.</p>';
+                } else {
+                    listaResultados.innerHTML = '<p>Nenhum teste registrado no histórico.</p>';
+                }
+                return;
+            }
+
+            const testesPorDia = {};
+            
+            [...testesParaMostrar].reverse().forEach(teste => {
+                if (!testesPorDia[teste.dataFormatada]) {
+                    testesPorDia[teste.dataFormatada] = [];
+                }
+                testesPorDia[teste.dataFormatada].push(teste);
+            });
+
+            for (const data in testesPorDia) {
+                const tituloDia = document.createElement('div');
+                tituloDia.classList.add('separador-dia');
+                tituloDia.innerHTML = `📅 Testes do dia: ${data}`;
+                listaResultados.appendChild(tituloDia);
+
+                testesPorDia[data].forEach(teste => {
+                    const item = document.createElement('div');
+                    item.classList.add('item-resultado');
+                    item.classList.add(teste.status === 'aprovado' ? 'resultado-aprovado' : 'resultado-reprovado');
+
+                    item.innerHTML = `
+                        <div style="margin-bottom: 5px;">
+                            <strong>Bitola:</strong> ${teste.bitola}mm | <strong>Status:</strong> <span style="text-transform: uppercase;">${teste.status}</span>
+                            ${teste.textoMotivo}
+                        </div>
+                        <div style="font-size: 12px; color: #64748b;">
+                            <strong>Operador:</strong> ${teste.operador} | <strong>Arquivo:</strong> ${teste.nomeArquivo}
+                        </div>
+                    `;
+                    listaResultados.appendChild(item);
+                });
+            }
+        }
+
+        atualizarTela();
+
+        // NOVO: Faz a pesquisa funcionar no momento em que você escolhe a data no calendário
+        filtroDataInput.addEventListener('change', atualizarTela);
+
+        // NOVO: Faz o botão "Mostrar Todos" limpar o filtro
+        btnLimparFiltro.addEventListener('click', function() {
+            filtroDataInput.value = '';
+            atualizarTela();
+        });
+
+        // 3. Salvar o teste
+        formTeste.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const data = document.getElementById('data').value;
+            const operador = document.getElementById('operador').value;
+            const bitola = document.getElementById('bitola').value;
+            const status = statusSelect.value;
+            const anexoInput = document.getElementById('anexo');
+            
+            let nomeArquivo = "Nenhum anexo";
+            if(anexoInput.files.length > 0) {
+                nomeArquivo = anexoInput.files[0].name;
+            }
+
+            let textoMotivo = "";
+            if (status === 'reprovado') {
+                const motivoTexto = motivoFalhaSelect.options[motivoFalhaSelect.selectedIndex].text;
+                if (motivoFalhaSelect.value === 'outros') {
+                    textoMotivo = ` <br><strong>Motivo:</strong> ${outroMotivoInput.value}`;
+                } else {
+                    textoMotivo = ` <br><strong>Motivo:</strong> ${motivoTexto}`;
+                }
+            }
+
+            const dataFormatada = data.split('-').reverse().join('/');
+
+            const novoTeste = {
+                dataFormatada: dataFormatada,
+                operador: operador,
+                bitola: bitola,
+                status: status,
+                textoMotivo: textoMotivo,
+                nomeArquivo: nomeArquivo
+            };
+
+            historicoTestes.push(novoTeste);
+            localStorage.setItem('historicoCA60', JSON.stringify(historicoTestes));
+
+            // Se você salvar um teste enquanto está com o filtro ligado num dia diferente, 
+            // limpamos o filtro para você ver o teste que acabou de lançar.
+            filtroDataInput.value = '';
+            
+            atualizarTela();
+
+            document.getElementById('bitola').value = '';
+            statusSelect.value = '';
+            anexoInput.value = '';
+            statusSelect.dispatchEvent(new Event('change'));
+        });
+    </script>
+</body>
+</html>

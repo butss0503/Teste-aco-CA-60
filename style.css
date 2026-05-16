@@ -1,0 +1,247 @@
+/* Configuração Geral */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f0f4f8; /* Cor de fundo suave, cansa menos a vista */
+    color: #333;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Cabeçalho */
+/* Cabeçalho */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* NOVO: Controla o tamanho da logo */
+#logo-empresa {
+    max-width: 150px; /* Você pode aumentar ou diminuir esse número se achar necessário */
+    height: auto;
+    margin-bottom: 15px;
+}
+
+header h1 {
+    color: #1e3a8a; /* Azul escuro industrial */
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+/* Contentor Principal (Main) */
+main {
+    background: #ffffff;
+    width: 100%;
+    max-width: 550px;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Secções */
+section h2 {
+    color: #0f172a;
+    font-size: 18px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
+}
+
+/* Formulário e Elementos de Entrada */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+input[type="date"],
+input[type="text"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 18px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #fff;
+    color: #333;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+/* Efeito ao clicar nos campos */
+input:focus, select:focus {
+    border-color: #3b82f6; /* Destaque em azul ao selecionar */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Estilo para as áreas escondidas (Reprovação) */
+#grupo-reprovacao, #grupo-outros {
+    background-color: #fef2f2; /* Fundo levemente avermelhado para alertas/falhas */
+    padding: 15px 15px 5px 15px;
+    border-left: 4px solid #ef4444; /* Barra vermelha lateral */
+    border-radius: 4px;
+    margin-bottom: 18px;
+}
+
+#grupo-reprovacao label {
+    color: #991b1b;
+}
+
+/* Botão de Submeter */
+button[type="submit"] {
+    background-color: #1e3a8a;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+    background-color: #1d4ed8; /* Azul mais claro ao passar o rato */
+}
+
+/* Linha Divisória */
+hr {
+    border: 0;
+    height: 1px;
+    background: #e2e8f0;
+    margin: 30px 0;
+}
+
+/* Secção de Resultados Diários */
+#lista-resultados {
+    background-color: #f8fafc;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px dashed #cbd5e1;
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+}
+/* Estilo para o campo de anexar arquivo */
+input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 18px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #f8fafc;
+    color: #475569;
+    cursor: pointer;
+}
+
+/* Estilo para o botãozinho padrão de "Escolher arquivo" que vem dentro do input */
+input[type="file"]::file-selector-button {
+    background-color: #e2e8f0;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    color: #333;
+    cursor: pointer;
+    margin-right: 10px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #cbd5e1;
+}
+/* --- ESTILOS DOS RESULTADOS GERADOS PELO JAVASCRIPT --- */
+.item-resultado {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    color: #333;
+}
+
+/* Bordinha verde para quem passou */
+.resultado-aprovado {
+    border-left: 5px solid #10b981; 
+}
+
+/* Bordinha vermelha para quem falhou */
+.resultado-reprovado {
+    border-left: 5px solid #ef4444; 
+    background-color: #fef2f2; /* Fundo levinho vermelho pra chamar mais atenção */
+}
+/* Estilo para separar os dias no histórico */
+.separador-dia {
+    background-color: #e2e8f0;
+    color: #1e293b;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: left;
+    font-size: 14px;
+    border-left: 4px solid #94a3b8;
+}
+
+/* Tira a margem do topo do primeiro dia para não ficar um buraco vazio */
+#lista-resultados .separador-dia:first-child {
+    margin-top: 0;
+}
+/* --- ESTILOS DA BARRA DE PESQUISA (FILTRO) --- */
+#area-filtro {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    background-color: #f1f5f9;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+}
+
+#area-filtro label {
+    margin-bottom: 0;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+#area-filtro input[type="date"] {
+    margin-bottom: 0;
+    flex-grow: 1; /* Faz o input de data esticar para preencher o espaço */
+    padding: 8px;
+}
+
+#btn-limpar-filtro {
+    background-color: #64748b;
+    color: white;
+    border: none;
+    padding: 9px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+#btn-limpar-filtro:hover {
+    background-color: #475569;
+}
