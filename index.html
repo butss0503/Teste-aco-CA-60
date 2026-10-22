@@ -1,90 +1,211 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diário de Testes - Aço CA 60</title>
+    <title>SGCQ | Controle Diário CA-60 - Grande Aço</title>
+    <!-- Fontes Industriais e Técnicas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <img src="Grandeaco.png" alt="Logótipo Grande Aço" id="logo-empresa">
-        
-        <h1>Controle Diário de Testes - Aço CA 60</h1>
-        <p>Registro individual de ensaios de tração (Bitolas 3.4 a 6.0 mm)</p>
+    <!-- Barra Superior Industrial -->
+    <header class="topbar">
+        <div class="topbar-container">
+            <div class="brand-area">
+                <!-- Logótipo Grande Aço em SVG Vetorial Fiel à Imagem (ou troque pela tag <img>) -->
+                <div class="logo-wrapper" title="Grande Aço - Indústria de Aço">
+                    <svg viewBox="0 0 200 200" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#309ce1" stroke-width="6"/>
+                        <!-- Monograma GA -->
+                        <text x="36" y="80" font-family="'Rajdhani', sans-serif" font-weight="700" font-size="48" fill="#309ce1" letter-spacing="-4">GA</text>
+                        <!-- GRANDE -->
+                        <text x="36" y="110" font-family="'Inter', sans-serif" font-weight="900" font-size="29" fill="#0f1c24" letter-spacing="0.5">GRANDE</text>
+                        <!-- AÇO -->
+                        <text x="38" y="142" font-family="'Inter', sans-serif" font-weight="900" font-size="31" fill="#0f1c24">AÇO</text>
+                        <!-- INDÚSTRIA DE AÇO -->
+                        <text x="112" y="130" font-family="'JetBrains Mono', monospace" font-weight="600" font-size="9.5" fill="#0f1c24" letter-spacing="1">INDÚSTRIA</text>
+                        <text x="112" y="142" font-family="'JetBrains Mono', monospace" font-weight="600" font-size="9.5" fill="#0f1c24" letter-spacing="1">DE AÇO</text>
+                    </svg>
+                </div>
+
+                <div class="title-group">
+                    <div class="badge-sys">LAB. CONTROLE DE QUALIDADE // ABNT NBR 7480</div>
+                    <h1>DIÁRIO DE ENSAIOS DE TRAÇÃO — CA 60</h1>
+                    <p>Monitoramento e rastreabilidade de lotes (Bitolas 3.4 a 6.0 mm)</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button type="button" id="btn-exportar" class="btn-outline" title="Exportar dados atuais para CSV">
+                    📥 Exportar CSV
+                </button>
+                <button type="button" id="theme-toggle" class="btn-theme" aria-label="Alternar tema">
+                    <span id="theme-icon">☀️</span>
+                    <span id="theme-text">Modo Claro</span>
+                </button>
+            </div>
+        </div>
     </header>
 
-    <main>
-        <section>
-            <h2>Lançamento de Teste</h2>
+    <!-- Painel de Indicadores (KPIs de Qualidade) -->
+    <section class="kpi-section">
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <span class="kpi-label">TOTAL DE ENSAIOS</span>
+                <strong class="kpi-value" id="kpi-total">0</strong>
+                <span class="kpi-sub" id="kpi-periodo">Histórico Geral</span>
+            </div>
+            <div class="kpi-card kpi-success">
+                <span class="kpi-label">LOTES APROVADOS</span>
+                <strong class="kpi-value" id="kpi-aprovados">0</strong>
+                <span class="kpi-sub">Conformidade Técnica</span>
+            </div>
+            <div class="kpi-card kpi-danger">
+                <span class="kpi-label">REPROVAÇÕES / FALHAS</span>
+                <strong class="kpi-value" id="kpi-reprovados">0</strong>
+                <span class="kpi-sub">Não Conformidades</span>
+            </div>
+            <div class="kpi-card kpi-highlight">
+                <span class="kpi-label">ÍNDICE DE APROVAÇÃO</span>
+                <strong class="kpi-value" id="kpi-taxa">0%</strong>
+                <div class="progress-bar"><div id="kpi-barra" class="progress-fill"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Área Principal em Grid -->
+    <main class="dashboard-grid">
+        
+        <!-- Coluna Esquerda: Lançamento de Teste -->
+        <section class="panel panel-form">
+            <div class="panel-header">
+                <h2>⚙️ Lançamento de Ensaio</h2>
+                <span class="status-dot online" title="Conectado à Nuvem"></span>
+            </div>
+
             <form id="form-teste">
-                
-                <label for="data">Data do Teste:</label>
-                <input type="date" id="data" name="data" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="data">Data do Ensaio:</label>
+                        <input type="date" id="data" name="data" required>
+                    </div>
 
-                <label for="operador">Nome do Operador:</label>
-                <input type="text" id="operador" name="operador" placeholder="Ex: Flávio" required>
-
-                <label for="bitola">Bitola (mm):</label>
-                <select id="bitola" name="bitola" required>
-                    <option value="">Selecione...</option>
-                    <option value="3.4">3.4 mm</option>
-                    <option value="3.8">3.8 mm</option>
-                    <option value="4.2">4.2 mm</option>
-                    <option value="4.5">4.5 mm</option>
-                    <option value="5.0">5.0 mm</option>
-                    <option value="6.0">6.0 mm</option>
-                </select>
-
-                <label for="status">Status do Teste:</label>
-                <select id="status" name="status" required>
-                    <option value="">Selecione...</option>
-                    <option value="aprovado">Aprovado</option>
-                    <option value="reprovado">Reprovado</option>
-                </select>
-
-                <div id="grupo-reprovacao" style="display: none;">
-                    <label for="motivo-falha">Motivo da Reprovação:</label>
-                    <select id="motivo-falha" name="motivo-falha">
-                        <option value="">Selecione o motivo...</option>
-                        <option value="escorregamento">Escorregamento na garra</option>
-                        <option value="ruptura_solda">Ruptura na solda</option>
-                        <option value="baixa_resistencia">Baixa resistência à tração</option>
-                        <option value="outros">Outros</option>
-                    </select>
-
-                    <div id="grupo-outros" style="display: none;">
-                        <label for="outro-motivo">Descreva o erro:</label>
-                        <input type="text" id="outro-motivo" name="outro-motivo" placeholder="Descreva o que aconteceu">
+                    <div class="form-group">
+                        <label for="operador">Operador Responsável:</label>
+                        <input type="text" id="operador" name="operador" placeholder="Ex: Flávio" required>
                     </div>
                 </div>
 
-                <label for="anexo">Anexar Arquivo (Foto ou Relatório PDF):</label>
-                <input type="file" id="anexo" name="anexo" accept="image/*, .pdf">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bitola">Bitola Nominal (mm):</label>
+                        <select id="bitola" name="bitola" required>
+                            <option value="">Selecione...</option>
+                            <option value="3.4">Ø 3.4 mm</option>
+                            <option value="3.8">Ø 3.8 mm</option>
+                            <option value="4.2">Ø 4.2 mm</option>
+                            <option value="4.5">Ø 4.5 mm</option>
+                            <option value="5.0">Ø 5.0 mm</option>
+                            <option value="6.0">Ø 6.0 mm</option>
+                        </select>
+                    </div>
 
-                <button type="submit">Registrar Teste</button>
+                    <div class="form-group">
+                        <label for="status">Laudo do Ensaio:</label>
+                        <select id="status" name="status" required>
+                            <option value="">Selecione...</option>
+                            <option value="aprovado">✅ APROVADO</option>
+                            <option value="reprovado">❌ REPROVADO</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Alerta Dinâmico de Não Conformidade -->
+                <div id="grupo-reprovacao" class="alert-box" style="display: none;">
+                    <div class="alert-title">⚠️ REGISTRO DE NÃO CONFORMIDADE</div>
+                    <label for="motivo-falha">Causa da Reprovação:</label>
+                    <select id="motivo-falha" name="motivo-falha">
+                        <option value="">Selecione o motivo técnico...</option>
+                        <option value="escorregamento">Escorregamento na garra</option>
+                        <option value="ruptura_solda">Ruptura na solda</option>
+                        <option value="baixa_resistencia">Baixa resistência à tração</option>
+                        <option value="outros">Outros (Especificar)</option>
+                    </select>
+
+                    <div id="grupo-outros" style="display: none; margin-top: 12px;">
+                        <label for="outro-motivo">Descrição da Anomalia:</label>
+                        <input type="text" id="outro-motivo" name="outro-motivo" placeholder="Detalhe o comportamento do corpo de prova...">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="anexo">Laudo MaxTest / Evidência (Foto ou PDF):</label>
+                    <input type="file" id="anexo" name="anexo" accept="image/*, .pdf">
+                </div>
+
+                <button type="submit" class="btn-submit" id="btn-submit">
+                    <span>REGISTRAR ENSAIO NA NUVEM</span>
+                </button>
             </form>
         </section>
 
-        <hr>
-
-        <section>
-            <h2>Resumo Diário</h2>
-            
-            <div id="area-filtro">
-                <label for="filtro-data">Pesquisar Dia:</label>
-                <input type="date" id="filtro-data">
-                <button type="button" id="btn-limpar-filtro">Mostrar Todos</button>
+        <!-- Coluna Direita: Histórico e Filtros -->
+        <section class="panel panel-history">
+            <div class="panel-header">
+                <h2>📋 Relatório & Rastreabilidade</h2>
+                <button type="button" id="btn-recarregar" class="btn-icon" title="Sincronizar com a Planilha">
+                    🔄 Atualizar
+                </button>
             </div>
 
-            <div id="lista-resultados">
-                <p>Carregando testes da nuvem...</p>
+            <!-- Barra de Filtros Avançada -->
+            <div class="filter-bar">
+                <div class="filter-item">
+                    <label for="filtro-data">Data:</label>
+                    <input type="date" id="filtro-data">
+                </div>
+                <div class="filter-item">
+                    <label for="filtro-bitola">Bitola:</label>
+                    <select id="filtro-bitola">
+                        <option value="">Todas</option>
+                        <option value="3.4">3.4 mm</option>
+                        <option value="3.8">3.8 mm</option>
+                        <option value="4.2">4.2 mm</option>
+                        <option value="4.5">4.5 mm</option>
+                        <option value="5.0">5.0 mm</option>
+                        <option value="6.0">6.0 mm</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="filtro-status">Status:</label>
+                    <select id="filtro-status">
+                        <option value="">Todos</option>
+                        <option value="aprovado">Aprovados</option>
+                        <option value="reprovado">Reprovados</option>
+                    </select>
+                </div>
+                <button type="button" id="btn-limpar-filtro" class="btn-clear">Limpar</button>
+            </div>
+
+            <!-- Lista de Resultados -->
+            <div id="lista-resultados" class="results-container">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Sincronizando banco de dados da nuvem...</p>
+                </div>
             </div>
         </section>
     </main>
 
+    <!-- Notificação Toast -->
+    <div id="toast-container"></div>
+
     <script>
+        // Elementos do DOM
         const statusSelect = document.getElementById('status');
         const grupoReprovacao = document.getElementById('grupo-reprovacao');
         const motivoFalhaSelect = document.getElementById('motivo-falha');
@@ -92,15 +213,78 @@
         const outroMotivoInput = document.getElementById('outro-motivo');
         const formTeste = document.getElementById('form-teste');
         const listaResultados = document.getElementById('lista-resultados');
+        
+        // Filtros
         const filtroDataInput = document.getElementById('filtro-data');
+        const filtroBitolaSelect = document.getElementById('filtro-bitola');
+        const filtroStatusSelect = document.getElementById('filtro-status');
         const btnLimparFiltro = document.getElementById('btn-limpar-filtro');
+        const btnRecarregar = document.getElementById('btn-recarregar');
+        const btnExportar = document.getElementById('btn-exportar');
 
-        // Seu link oficial conectado à nuvem
+        // Endpoint Google Apps Script (Intacto)
         const LINK_PLANILHA = "https://script.google.com/macros/s/AKfycbwmKocpEDyZZsbpxiemeNORc790IB2wNBQM80dOI3WhDJu9LM9ywNRdx-iq2mRAip1juA/exec";
 
         let historicoTestes = [];
+        let testesFiltradosAtuais = [];
 
-        // 1. Mostrar/esconder campos de erro dinamicamente
+        // --- INICIALIZAÇÃO INTELIGENTE ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Preenche a data de hoje por padrão
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('data').value = hoje;
+
+            // 2. Recupera o último operador salvo para poupar digitação
+            const ultimoOperador = localStorage.getItem('ga_ultimo_operador');
+            if (ultimoOperador) {
+                document.getElementById('operador').value = ultimoOperador;
+            }
+
+            // 3. Aplica tema salvo
+            const temaSalvo = localStorage.getItem('ga_tema') || 'dark';
+            aplicarTema(temaSalvo);
+
+            // 4. Carrega a planilha
+            carregarDadosDaPlanilha();
+        });
+
+        // --- SISTEMA DE TEMA (CLARO / ESCURO) ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        themeToggleBtn.addEventListener('click', () => {
+            const temaAtual = document.documentElement.getAttribute('data-theme');
+            const novoTema = temaAtual === 'dark' ? 'light' : 'dark';
+            aplicarTema(novoTema);
+            localStorage.setItem('ga_tema', novoTema);
+        });
+
+        function aplicarTema(tema) {
+            document.documentElement.setAttribute('data-theme', tema);
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            if (tema === 'dark') {
+                icon.textContent = '☀️';
+                text.textContent = 'Modo Claro';
+            } else {
+                icon.textContent = '🌙';
+                text.textContent = 'Modo Escuro';
+            }
+        }
+
+        // --- SISTEMA DE NOTIFICAÇÃO (TOAST INDUSTRIAL) ---
+        function mostrarNotificacao(mensagem, tipo = 'sucesso') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${tipo}`;
+            toast.innerHTML = `<span>${tipo === 'sucesso' ? '✔' : '⚠️'}</span> ${mensagem}`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('fade-out');
+                setTimeout(() => toast.remove(), 400);
+            }, 3500);
+        }
+
+        // --- CAMPOS DINÂMICOS DE REPROVAÇÃO ---
         statusSelect.addEventListener('change', function() {
             if (this.value === 'reprovado') {
                 grupoReprovacao.style.display = 'block';
@@ -126,39 +310,66 @@
             }
         });
 
-        // 2. Buscar dados salvos na Planilha do Google
+        // --- BUSCAR DADOS DA NUVEM ---
         function carregarDadosDaPlanilha() {
-            listaResultados.innerHTML = '<p>Carregando testes da nuvem...</p>';
+            listaResultados.innerHTML = `
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Sincronizando banco de dados da nuvem...</p>
+                </div>`;
+            
             fetch(LINK_PLANILHA)
                 .then(resposta => resposta.json())
                 .then(dados => {
-                    historicoTestes = dados;
+                    historicoTestes = Array.isArray(dados) ? dados : [];
                     atualizarTela();
                 })
                 .catch(erro => {
-                    listaResultados.innerHTML = '<p>Erro ao carregar dados. Verifique a conexão.</p>';
+                    listaResultados.innerHTML = `
+                        <div class="empty-state error">
+                            <p>⚠️ Falha de comunicação com o servidor. Verifique a conexão de rede.</p>
+                        </div>`;
                     console.error(erro);
                 });
         }
 
-        // 3. Renderizar (desenhar) os testes agrupados por dia na tela
+        btnRecarregar.addEventListener('click', carregarDadosDaPlanilha);
+
+        // --- ATUALIZAR TELA E CALCULAR KPIs ---
         function atualizarTela() {
             listaResultados.innerHTML = ''; 
-            let testesParaMostrar = historicoTestes;
+            let testesParaMostrar = [...historicoTestes];
 
+            // Filtro por Data
             if (filtroDataInput.value) {
                 const dataPesquisada = filtroDataInput.value.split('-').reverse().join('/');
-                testesParaMostrar = historicoTestes.filter(teste => teste.dataFormatada === dataPesquisada);
+                testesParaMostrar = testesParaMostrar.filter(t => t.dataFormatada === dataPesquisada);
             }
 
+            // Filtro por Bitola
+            if (filtroBitolaSelect.value) {
+                testesParaMostrar = testesParaMostrar.filter(t => String(t.bitola) === filtroBitolaSelect.value);
+            }
+
+            // Filtro por Status
+            if (filtroStatusSelect.value) {
+                testesParaMostrar = testesParaMostrar.filter(t => t.status === filtroStatusSelect.value);
+            }
+
+            testesFiltradosAtuais = testesParaMostrar;
+            atualizarKPIs(testesParaMostrar);
+
             if (testesParaMostrar.length === 0) {
-                listaResultados.innerHTML = '<p>Nenhum teste encontrado.</p>';
+                listaResultados.innerHTML = `
+                    <div class="empty-state">
+                        <p>Nenhum registro de ensaio encontrado para os filtros selecionados.</p>
+                    </div>`;
                 return;
             }
 
             const testesPorDia = {};
             
-            // Organiza do mais novo para o mais antigo
+            // Organiza do mais recente para o mais antigo
             [...testesParaMostrar].reverse().forEach(teste => {
                 if (!testesPorDia[teste.dataFormatada]) {
                     testesPorDia[teste.dataFormatada] = [];
@@ -167,28 +378,40 @@
             });
 
             for (const data in testesPorDia) {
+                const qtdDia = testesPorDia[data].length;
                 const tituloDia = document.createElement('div');
                 tituloDia.classList.add('separador-dia');
-                tituloDia.innerHTML = `📅 Testes do dia: ${data}`;
+                tituloDia.innerHTML = `
+                    <span>📅 LOTE DIÁRIO: ${data}</span>
+                    <span class="badge-count">${qtdDia} ${qtdDia === 1 ? 'ensaio' : 'ensaios'}</span>
+                `;
                 listaResultados.appendChild(tituloDia);
 
                 testesPorDia[data].forEach(teste => {
+                    const isAprovado = teste.status === 'aprovado';
                     const item = document.createElement('div');
-                    item.classList.add('item-resultado');
-                    item.classList.add(teste.status === 'aprovado' ? 'resultado-aprovado' : 'resultado-reprovado');
+                    item.classList.add('item-resultado', isAprovado ? 'resultado-aprovado' : 'resultado-reprovado');
 
-                    let textoMotivoFinal = (teste.textoMotivo && teste.textoMotivo !== "Nenhum") ? `<br><strong>Motivo:</strong> ${teste.textoMotivo}` : "";
+                    let blocoMotivo = (teste.textoMotivo && teste.textoMotivo !== "Nenhum") 
+                        ? `<div class="motivo-falha-tag"><strong>Causa da Falha:</strong> ${teste.textoMotivo}</div>` 
+                        : "";
 
                     item.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
-                            <div>
-                                <strong>Bitola:</strong> ${teste.bitola}mm | <strong>Status:</strong> <span style="text-transform: uppercase;">${teste.status}</span>
-                                ${textoMotivoFinal}
+                        <div class="card-top">
+                            <div class="specs-group">
+                                <span class="bitola-tag">Ø ${teste.bitola} mm</span>
+                                <span class="status-badge ${isAprovado ? 'badge-ok' : 'badge-fail'}">
+                                    ${isAprovado ? '✔ APROVADO' : '✖ REPROVADO'}
+                                </span>
                             </div>
-                            <button onclick="deletarTeste(${teste.linha})" style="background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;">Excluir</button>
+                            <button onclick="deletarTeste(${teste.linha})" class="btn-delete" title="Excluir Registro">
+                                🗑️ Excluir
+                            </button>
                         </div>
-                        <div style="font-size: 12px; color: #64748b;">
-                            <strong>Operador:</strong> ${teste.operador} | <strong>Arquivo:</strong> ${teste.nomeArquivo}
+                        ${blocoMotivo}
+                        <div class="card-footer">
+                            <span>👷 <strong>Operador:</strong> ${teste.operador}</span>
+                            <span>📎 <strong>Anexo:</strong> ${teste.nomeArquivo || 'Nenhum'}</span>
                         </div>
                     `;
                     listaResultados.appendChild(item);
@@ -196,11 +419,44 @@
             }
         }
 
-        // 4. Função para acionar a exclusão de uma linha na planilha
-        function deletarTeste(linha) {
-            if(!confirm("Tem certeza que deseja excluir este teste?")) return;
+        // --- CÁLCULO DE INDICADORES (KPIs) ---
+        function atualizarKPIs(lista) {
+            const total = lista.length;
+            const aprovados = lista.filter(t => t.status === 'aprovado').length;
+            const reprovados = total - aprovados;
+            const taxa = total > 0 ? Math.round((aprovados / total) * 100) : 0;
 
-            listaResultados.innerHTML = '<p>Excluindo teste da nuvem...</p>';
+            document.getElementById('kpi-total').textContent = total;
+            document.getElementById('kpi-aprovados').textContent = aprovados;
+            document.getElementById('kpi-reprovados').textContent = reprovados;
+            document.getElementById('kpi-taxa').textContent = `${taxa}%`;
+            document.getElementById('kpi-barra').style.width = `${taxa}%`;
+
+            const labelPeriodo = document.getElementById('kpi-periodo');
+            if (filtroDataInput.value || filtroBitolaSelect.value || filtroStatusSelect.value) {
+                labelPeriodo.textContent = "Filtro Ativo";
+            } else {
+                labelPeriodo.textContent = "Histórico Geral";
+            }
+        }
+
+        // Eventos de Filtro
+        filtroDataInput.addEventListener('change', atualizarTela);
+        filtroBitolaSelect.addEventListener('change', atualizarTela);
+        filtroStatusSelect.addEventListener('change', atualizarTela);
+        
+        btnLimparFiltro.addEventListener('click', function() {
+            filtroDataInput.value = '';
+            filtroBitolaSelect.value = '';
+            filtroStatusSelect.value = '';
+            atualizarTela();
+        });
+
+        // --- EXCLUIR REGISTRO ---
+        function deletarTeste(linha) {
+            if(!confirm("Confirma a exclusão permanente deste ensaio na planilha?")) return;
+
+            mostrarNotificacao("Solicitando exclusão na nuvem...", "aviso");
 
             fetch(LINK_PLANILHA, {
                 method: 'POST',
@@ -209,38 +465,32 @@
                 body: JSON.stringify({ acao: "deletar", linha: linha })
             })
             .then(() => {
-                alert("Teste excluído com sucesso!");
+                mostrarNotificacao("Ensaio excluído com sucesso!", "sucesso");
                 carregarDadosDaPlanilha();
             })
-            .catch(erro => {
-                alert("Erro ao excluir o teste.");
+            .catch(() => {
+                mostrarNotificacao("Erro ao tentar excluir o registro.", "erro");
                 carregarDadosDaPlanilha();
             });
         }
 
-        // Inicializa a listagem ao abrir a página
-        carregarDadosDaPlanilha();
-
-        filtroDataInput.addEventListener('change', atualizarTela);
-        btnLimparFiltro.addEventListener('click', function() {
-            filtroDataInput.value = '';
-            atualizarTela();
-        });
-
-        // 5. Salvar um novo teste na planilha
+        // --- SALVAR NOVO ENSAIO ---
         formTeste.addEventListener('submit', function(event) {
             event.preventDefault();
 
-            const botaoSubmit = formTeste.querySelector('button[type="submit"]');
+            const botaoSubmit = document.getElementById('btn-submit');
             botaoSubmit.disabled = true;
-            botaoSubmit.innerText = "Enviando...";
+            botaoSubmit.innerHTML = "<span>⏳ GRAVANDO NA NUVEM...</span>";
 
             const data = document.getElementById('data').value;
-            const operador = document.getElementById('operador').value;
+            const operador = document.getElementById('operador').value.trim();
             const bitola = document.getElementById('bitola').value;
             const status = statusSelect.value;
             const anexoInput = document.getElementById('anexo');
             
+            // Salva operador no cache local
+            localStorage.setItem('ga_ultimo_operador', operador);
+
             let nomeArquivo = "Nenhum anexo";
             if(anexoInput.files.length > 0) {
                 nomeArquivo = anexoInput.files[0].name;
@@ -274,23 +524,54 @@
                 body: JSON.stringify(novoTeste)
             })
             .then(() => {
-                alert("Teste registrado com sucesso!");
+                mostrarNotificacao("Ensaio registrado com sucesso!", "sucesso");
                 botaoSubmit.disabled = false;
-                botaoSubmit.innerText = "Registrar Teste";
+                botaoSubmit.innerHTML = "<span>REGISTRAR ENSAIO NA NUVEM</span>";
                 
                 document.getElementById('bitola').value = '';
                 statusSelect.value = '';
                 anexoInput.value = '';
                 statusSelect.dispatchEvent(new Event('change'));
-                filtroDataInput.value = '';
-
+                
                 carregarDadosDaPlanilha();
             })
-            .catch(erro => {
-                alert("Erro ao salvar o teste.");
+            .catch(() => {
+                mostrarNotificacao("Erro de conexão ao salvar o ensaio.", "erro");
                 botaoSubmit.disabled = false;
-                botaoSubmit.innerText = "Registrar Teste";
+                botaoSubmit.innerHTML = "<span>REGISTRAR ENSAIO NA NUVEM</span>";
             });
+        });
+
+        // --- EXPORTAR PARA CSV (EXCEL) ---
+        btnExportar.addEventListener('click', () => {
+            if (testesFiltradosAtuais.length === 0) {
+                mostrarNotificacao("Não há dados na tela para exportar.", "aviso");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+            csvContent += "Data;Operador;Bitola (mm);Status;Motivo da Reprovacao;Arquivo Anexo\n";
+
+            testesFiltradosAtuais.forEach(t => {
+                const linha = [
+                    t.dataFormatada,
+                    t.operador,
+                    t.bitola,
+                    t.status.toUpperCase(),
+                    t.textoMotivo || "Nenhum",
+                    t.nomeArquivo || "Nenhum"
+                ].join(";");
+                csvContent += linha + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Relatorio_CA60_GrandeAco_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            mostrarNotificacao("Relatório CSV transferido!", "sucesso");
         });
     </script>
 </body>
