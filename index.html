@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGCQ Desktop | Grande Aço - Controle CA-60</title>
+    <title>SGCQ Desktop ABNT | Grande Aço - Controle CA-60</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Biblioteca PDF.js para ler o texto interno do PDF automaticamente -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     
     <style>
-        /* ==========================================================================
-           VARIÁVEIS DE TEMA INDUSTRIAL (MODO ESCURO & MODO CLARO)
-           ========================================================================== */
         :root[data-theme="dark"] {
             --bg-app: #0a1017;
             --bg-header: #0f1822;
@@ -23,14 +22,12 @@
             --text-sec: #94a3b8;
             --text-muted: #64748b;
             --border: #233446;
-            --border-focus: #309ce1;
             --brand-blue: #309ce1;
             --brand-blue-dark: #1f7ab5;
             --ok-color: #10b981;
             --ok-bg: rgba(16, 185, 129, 0.12);
             --fail-color: #ef4444;
             --fail-bg: rgba(239, 68, 68, 0.12);
-            --warn-color: #f59e0b;
             --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
         }
 
@@ -45,23 +42,16 @@
             --text-sec: #475569;
             --text-muted: #64748b;
             --border: #cbd5e1;
-            --border-focus: #309ce1;
             --brand-blue: #309ce1;
             --brand-blue-dark: #1e82c4;
             --ok-color: #059669;
             --ok-bg: rgba(16, 185, 129, 0.12);
             --fail-color: #dc2626;
             --fail-bg: rgba(239, 68, 68, 0.1);
-            --warn-color: #d97706;
             --shadow: 0 4px 15px rgba(15, 28, 36, 0.08);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body {
             background-color: var(--bg-app);
@@ -73,142 +63,55 @@
             flex-direction: column;
         }
 
-        /* ==========================================================================
-           TOPBAR WIDESCREEN (CABEÇALHO DESKTOP)
-           ========================================================================== */
+        /* TOPBAR */
         .topbar {
-            height: 72px;
+            height: 70px;
             background-color: var(--bg-header);
             border-bottom: 3px solid var(--brand-blue);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 28px;
+            padding: 0 24px;
             flex-shrink: 0;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-            z-index: 10;
+            color: #fff;
         }
 
-        .brand-section {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
+        .brand-section { display: flex; align-items: center; gap: 14px; }
         .logo-box {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: #fff;
-            padding: 2px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 48px; height: 48px; border-radius: 50%; background: #fff; padding: 2px;
+            display: flex; align-items: center; justify-content: center;
             box-shadow: 0 0 12px rgba(48, 156, 225, 0.4);
-            flex-shrink: 0;
         }
+        .logo-box svg { width: 100%; height: 100%; }
+        .sys-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--brand-blue); letter-spacing: 1.2px; font-weight: 700; }
+        .brand-titles h1 { font-family: 'Rajdhani', sans-serif; font-size: 21px; font-weight: 700; color: #fff; }
 
-        .logo-box svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .brand-titles {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sys-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            color: var(--brand-blue);
-            letter-spacing: 1.5px;
-            font-weight: 700;
-        }
-
-        .brand-titles h1 {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            color: #ffffff;
-            line-height: 1.1;
-        }
-
-        .topbar-kpis {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
+        .topbar-kpis { display: flex; gap: 12px; }
         .mini-kpi {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-left: 3px solid var(--brand-blue);
-            padding: 6px 16px;
-            border-radius: 4px;
-            min-width: 135px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-left: 3px solid var(--brand-blue); padding: 5px 14px; border-radius: 4px; min-width: 125px;
         }
-
         .mini-kpi.kpi-ok { border-left-color: #10b981; }
         .mini-kpi.kpi-fail { border-left-color: #ef4444; }
         .mini-kpi.kpi-rate { border-left-color: #f59e0b; }
+        .mini-kpi-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #94a3b8; display: block; }
+        .mini-kpi-val { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; }
 
-        .mini-kpi-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            color: #94a3b8;
-            display: block;
-        }
-
-        .mini-kpi-val {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: #ffffff;
-            line-height: 1.1;
-        }
-
-        .topbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        .topbar-actions { display: flex; gap: 8px; }
         .btn-top {
-            background: rgba(255, 255, 255, 0.08);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            padding: 8px 14px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
+            background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.18);
+            padding: 8px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;
         }
+        .btn-top:hover { background: var(--brand-blue); border-color: var(--brand-blue); }
 
-        .btn-top:hover {
-            background: var(--brand-blue);
-            border-color: var(--brand-blue);
-        }
-
-        /* ==========================================================================
-           WORKSPACE DESKTOP (2 COLUNAS LADO A LADO)
-           ========================================================================== */
+        /* WORKSPACE */
         .workspace {
             flex: 1;
             display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 20px;
-            padding: 20px 28px;
+            grid-template-columns: 430px 1fr;
+            gap: 18px;
+            padding: 16px 24px;
             overflow: hidden;
-            max-width: 1920px;
-            width: 100%;
-            margin: 0 auto;
         }
 
         .panel {
@@ -224,438 +127,168 @@
         .panel-header {
             background-color: var(--bg-card);
             border-bottom: 1px solid var(--border);
-            padding: 14px 20px;
+            padding: 12px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0;
         }
 
         .panel-title {
             font-family: 'Rajdhani', sans-serif;
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 700;
-            letter-spacing: 0.8px;
             text-transform: uppercase;
             display: flex;
             align-items: center;
             gap: 8px;
         }
+        .panel-title::before { content: ''; width: 4px; height: 15px; background: var(--brand-blue); border-radius: 2px; }
 
-        .panel-title::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 16px;
-            background-color: var(--brand-blue);
-            border-radius: 2px;
-        }
+        /* FORMULÁRIO ABNT */
+        .form-body { padding: 16px 18px; overflow-y: auto; flex: 1; }
 
-        .header-btn-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .status-badge-online {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: var(--ok-color);
-            background: var(--ok-bg);
-            padding: 3px 8px;
-            border-radius: 4px;
-            border: 1px solid var(--ok-color);
-        }
-
-        /* ==========================================================================
-           COLUNA ESQUERDA: FORMULÁRIO DE LANÇAMENTO
-           ========================================================================== */
-        .form-body {
-            padding: 20px;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .form-grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .field-group {
-            margin-bottom: 16px;
-        }
-
-        .field-group label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-sec);
-            margin-bottom: 6px;
-        }
-
-        input[type="date"],
-        input[type="text"],
-        select {
-            width: 100%;
-            height: 40px;
-            padding: 0 12px;
-            background-color: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            color: var(--text-main);
-            font-size: 13px;
-            font-weight: 500;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--brand-blue);
-            box-shadow: 0 0 0 2px rgba(48, 156, 225, 0.2);
-        }
-
-        .bitola-selector {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-
-        .bitola-btn {
-            background-color: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-sec);
-            padding: 10px 0;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.15s;
-        }
-
-        .bitola-btn:hover {
-            border-color: var(--brand-blue);
-            color: var(--text-main);
-        }
-
-        .bitola-btn.active {
-            background-color: var(--brand-blue);
-            border-color: var(--brand-blue);
-            color: #ffffff;
-            box-shadow: 0 0 10px rgba(48, 156, 225, 0.35);
-        }
-
-        .status-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .status-btn {
-            background-color: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-sec);
+        /* Dropzone de Leitura Automática de PDF */
+        .pdf-smart-box {
+            background: rgba(48, 156, 225, 0.08);
+            border: 2px dashed var(--brand-blue);
+            border-radius: 6px;
             padding: 12px;
-            border-radius: 4px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            cursor: pointer;
+            margin-bottom: 14px;
             text-align: center;
-            transition: all 0.15s;
         }
-
-        .status-btn.active-ok {
-            background-color: var(--ok-bg);
-            border-color: var(--ok-color);
-            color: var(--ok-color);
-        }
-
-        .status-btn.active-fail {
-            background-color: var(--fail-bg);
-            border-color: var(--fail-color);
-            color: var(--fail-color);
-        }
-
-        .reprovacao-box {
-            background-color: var(--fail-bg);
-            border: 1px solid var(--fail-color);
-            border-left: 4px solid var(--fail-color);
-            padding: 14px;
-            border-radius: 4px;
-            margin-bottom: 16px;
-        }
-
-        .reprovacao-box label {
-            color: var(--fail-color);
-        }
-
-        input[type="file"] {
-            width: 100%;
-            padding: 8px;
-            background-color: var(--bg-input);
-            border: 1px dashed var(--border);
-            border-radius: 4px;
-            color: var(--text-sec);
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        input[type="file"]::file-selector-button {
-            background-color: var(--bg-card);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 6px 10px;
-            border-radius: 3px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-
-        .btn-submit {
-            width: 100%;
-            height: 46px;
-            background-color: var(--brand-blue);
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 17px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 8px;
-        }
-
-        .btn-submit:hover {
-            background-color: var(--brand-blue-dark);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* ==========================================================================
-           COLUNA DIREITA: TABELA DE DADOS E RASTREABILIDADE
-           ========================================================================== */
-        .toolbar-filtros {
-            padding: 14px 20px;
-            background-color: var(--bg-panel);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .filter-group label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-sec);
-            white-space: nowrap;
-        }
-
-        .filter-group input,
-        .filter-group select {
-            height: 34px;
-            width: auto;
-            min-width: 130px;
-            font-size: 12px;
-        }
-
-        .btn-filter-clear {
-            height: 34px;
-            padding: 0 14px;
-            background: var(--bg-card);
-            color: var(--text-sec);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-filter-clear:hover {
-            color: var(--text-main);
-            border-color: var(--brand-blue);
-        }
-
-        .btn-danger-all {
-            height: 34px;
-            padding: 0 14px;
-            background: var(--fail-bg);
-            color: var(--fail-color);
-            border: 1px solid var(--fail-color);
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-danger-all:hover {
-            background: #ef4444;
-            color: #ffffff;
-        }
-
-        .btn-danger-all:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .table-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0;
-        }
-
-        table.data-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        table.data-table thead th {
-            position: sticky;
-            top: 0;
-            background-color: var(--bg-card);
-            color: var(--text-sec);
+        .pdf-smart-title {
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 12px 20px;
-            border-bottom: 2px solid var(--border);
-            z-index: 2;
-        }
-
-        table.data-table tbody tr {
-            border-bottom: 1px solid var(--border);
-            transition: background-color 0.15s;
-        }
-
-        table.data-table tbody tr:hover {
-            background-color: var(--bg-hover);
-        }
-
-        table.data-table tbody tr.row-reprovado {
-            background-color: var(--fail-bg);
-        }
-
-        table.data-table td {
-            padding: 12px 20px;
-            font-size: 13px;
-            vertical-align: middle;
-        }
-
-        tr.day-group-row td {
-            background-color: var(--bg-input);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
             font-weight: 700;
             color: var(--brand-blue);
-            padding: 8px 20px;
-            border-left: 4px solid var(--brand-blue);
+            margin-bottom: 6px;
+            display: block;
         }
 
-        .pill-bitola {
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            font-size: 13px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 4px 10px;
-            border-radius: 4px;
-            display: inline-block;
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+        .field-group { margin-bottom: 12px; }
+        .field-group label {
+            display: block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+            color: var(--text-sec); margin-bottom: 4px; letter-spacing: 0.4px;
         }
 
-        .pill-status {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 4px;
-            display: inline-block;
-            text-transform: uppercase;
+        input[type="date"], input[type="text"], input[type="number"], select {
+            width: 100%; height: 36px; padding: 0 10px; background: var(--bg-input);
+            border: 1px solid var(--border); border-radius: 4px; color: var(--text-main);
+            font-size: 13px; font-weight: 600; outline: none;
         }
+        input:focus, select:focus { border-color: var(--brand-blue); }
 
-        .pill-ok {
-            background-color: var(--ok-bg);
-            color: var(--ok-color);
-            border: 1px solid var(--ok-color);
+        .bitola-selector { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+        .bitola-btn {
+            background: var(--bg-input); border: 1px solid var(--border); color: var(--text-sec);
+            padding: 8px 0; border-radius: 4px; font-family: 'JetBrains Mono', monospace;
+            font-size: 12px; font-weight: 700; cursor: pointer;
         }
+        .bitola-btn.active { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
 
-        .pill-fail {
-            background-color: var(--fail-bg);
-            color: var(--fail-color);
-            border: 1px solid var(--fail-color);
+        .status-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .status-btn {
+            background: var(--bg-input); border: 1px solid var(--border); color: var(--text-sec);
+            padding: 9px; border-radius: 4px; font-family: 'Rajdhani', sans-serif;
+            font-size: 14px; font-weight: 700; cursor: pointer;
         }
+        .status-btn.active-ok { background: var(--ok-bg); border-color: var(--ok-color); color: var(--ok-color); }
+        .status-btn.active-fail { background: var(--fail-bg); border-color: var(--fail-color); color: var(--fail-color); }
 
-        .btn-del-row {
-            background: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+        .btn-submit {
+            width: 100%; height: 42px; background: var(--brand-blue); color: #fff; border: none;
+            border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700;
+            letter-spacing: 1px; cursor: pointer; margin-top: 4px;
         }
+        .btn-submit:hover { background: var(--brand-blue-dark); }
 
-        .btn-del-row:hover {
-            background: #ef4444;
-            color: #fff;
-            border-color: #ef4444;
-        }
-
-        .state-msg {
-            padding: 60px 20px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        #toast-box {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 9999;
+        /* ABAS DE BITOLA E FILTROS (ESTILO EXCEL GRANDE AÇO 2025) */
+        .sheet-tabs-bar {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            background: var(--bg-input);
+            border-bottom: 2px solid var(--brand-blue);
+            padding: 8px 18px 0 18px;
+            gap: 6px;
         }
 
-        .toast-item {
-            background: var(--bg-header);
-            color: #fff;
-            border-left: 4px solid var(--brand-blue);
-            padding: 12px 18px;
-            border-radius: 4px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-            font-size: 13px;
-            font-weight: 600;
+        .sheet-tab {
+            background: var(--bg-card);
+            color: var(--text-sec);
+            border: 1px solid var(--border);
+            border-bottom: none;
+            padding: 8px 16px;
+            border-radius: 6px 6px 0 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
         }
+        .sheet-tab.active {
+            background: var(--brand-blue);
+            color: #fff;
+            border-color: var(--brand-blue);
+        }
+
+        .toolbar-filtros {
+            padding: 10px 18px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+        }
+        .filter-group { display: flex; align-items: center; gap: 6px; }
+        .filter-group label { font-size: 11px; font-weight: 700; color: var(--text-sec); }
+        .filter-group input, .filter-group select { height: 32px; font-size: 12px; width: auto; }
+
+        .btn-action {
+            height: 32px; padding: 0 12px; background: var(--bg-card); color: var(--text-sec);
+            border: 1px solid var(--border); border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;
+        }
+        .btn-action:hover { color: var(--text-main); border-color: var(--brand-blue); }
+
+        /* TABELA PADRÃO ABNT */
+        .table-container { flex: 1; overflow: auto; }
+        table.data-table { width: 100%; border-collapse: collapse; text-align: center; }
+        table.data-table thead th {
+            position: sticky; top: 0; background: var(--bg-card); color: var(--text-sec);
+            font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
+            text-transform: uppercase; padding: 10px 8px; border-bottom: 2px solid var(--border); z-index: 2;
+        }
+        table.data-table tbody tr { border-bottom: 1px solid var(--border); }
+        table.data-table tbody tr:hover { background: var(--bg-hover); }
+        table.data-table td { padding: 9px 8px; font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+
+        .pill-ok { background: var(--ok-bg); color: var(--ok-color); border: 1px solid var(--ok-color); padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+        .pill-fail { background: var(--fail-bg); color: var(--fail-color); border: 1px solid var(--fail-color); padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+
+        .btn-view-pdf {
+            background: rgba(48,156,225,0.15); color: var(--brand-blue); border: 1px solid var(--brand-blue);
+            padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;
+        }
+        .btn-view-pdf:hover { background: var(--brand-blue); color: #fff; }
+
+        /* MODAL PDF */
+        .pdf-modal-overlay {
+            position: fixed; inset: 0; background: rgba(5,10,15,0.85); z-index: 9990;
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .pdf-modal-box {
+            background: var(--bg-panel); border: 2px solid var(--brand-blue); border-radius: 6px;
+            width: 90vw; max-width: 1200px; height: 88vh; display: flex; flex-direction: column;
+        }
+        .pdf-modal-header {
+            background: var(--bg-header); color: #fff; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .pdf-modal-body { flex: 1; background: #1e293b; }
+        .pdf-modal-body iframe { width: 100%; height: 100%; border: none; }
+
+        #toast-box { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+        .toast-item { background: var(--bg-header); color: #fff; border-left: 4px solid var(--brand-blue); padding: 12px 16px; border-radius: 4px; font-size: 12px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <!-- BARRA DE TOPO WIDESCREEN -->
     <header class="topbar">
         <div class="brand-section">
             <div class="logo-box">
@@ -669,263 +302,450 @@
                 </svg>
             </div>
             <div class="brand-titles">
-                <span class="sys-tag">GRANDE AÇO // LAB. DE QUALIDADE ABNT NBR 7480</span>
-                <h1>CONTROLE DE ENSAIOS DE TRAÇÃO — CA 60</h1>
+                <span class="sys-tag">PADRÃO ABNT NBR 7480 // GRANDE AÇO 2025/2026</span>
+                <h1>CONTROLE DE TRAÇÃO CA-60 & LEITOR DE LAUDO PDF</h1>
             </div>
         </div>
 
         <div class="topbar-kpis">
-            <div class="mini-kpi">
-                <span class="mini-kpi-label">TOTAL DE ENSAIOS</span>
-                <strong class="mini-kpi-val" id="kpi-total">0</strong>
-            </div>
-            <div class="mini-kpi kpi-ok">
-                <span class="mini-kpi-label">APROVADOS</span>
-                <strong class="mini-kpi-val" id="kpi-aprovados">0</strong>
-            </div>
-            <div class="mini-kpi kpi-fail">
-                <span class="mini-kpi-label">REPROVADOS</span>
-                <strong class="mini-kpi-val" id="kpi-reprovados">0</strong>
-            </div>
-            <div class="mini-kpi kpi-rate">
-                <span class="mini-kpi-label">TAXA DE CONFORMIDADE</span>
-                <strong class="mini-kpi-val" id="kpi-taxa">0%</strong>
-            </div>
+            <div class="mini-kpi"><span class="mini-kpi-label">AMOSTRAS</span><strong class="mini-kpi-val" id="kpi-total">0</strong></div>
+            <div class="mini-kpi kpi-ok"><span class="mini-kpi-label">APROVADOS (SIM)</span><strong class="mini-kpi-val" id="kpi-aprovados">0</strong></div>
+            <div class="mini-kpi kpi-fail"><span class="mini-kpi-label">REPROVADOS (NÃO)</span><strong class="mini-kpi-val" id="kpi-reprovados">0</strong></div>
+            <div class="mini-kpi kpi-rate"><span class="mini-kpi-label">CONFORMIDADE</span><strong class="mini-kpi-val" id="kpi-taxa">0%</strong></div>
         </div>
 
         <div class="topbar-actions">
-            <button type="button" class="btn-top" id="btn-exportar">📥 Exportar Excel (CSV)</button>
+            <button type="button" class="btn-top" id="btn-exportar">📥 Baixar Planilha ABNT (CSV)</button>
             <button type="button" class="btn-top" id="btn-theme">☀️ Modo Claro</button>
         </div>
     </header>
 
-    <!-- ÁREA DE TRABALHO DESKTOP -->
     <main class="workspace">
-        
-        <!-- PAINEL ESQUERDO: ESTAÇÃO DE LANÇAMENTO -->
+        <!-- PAINEL ESQUERDO: LEITOR DE PDF + FORMULÁRIO ABNT -->
         <section class="panel">
             <div class="panel-header">
-                <span class="panel-title">Novo Lançamento de Ensaio</span>
-                <span class="status-badge-online">● NUVEM ATIVA</span>
+                <span class="panel-title">Lançamento Padrão ABNT</span>
+                <span style="font-size:11px; color:var(--ok-color); font-family:'JetBrains Mono'">● AUTO-LEITURA PDF</span>
             </div>
 
             <div class="form-body">
                 <form id="form-teste">
-                    <div class="form-grid-2">
-                        <div class="field-group">
-                            <label for="data">Data do Teste:</label>
-                            <input type="date" id="data" required>
+                    
+                    <!-- 1. UPLOAD DO PDF COM EXTRAÇÃO AUTOMÁTICA -->
+                    <div class="pdf-smart-box">
+                        <span class="pdf-smart-title">⚡ 1. ANEXE O PDF PARA PREENCHER AUTOMATICAMENTE</span>
+                        <input type="file" id="anexo" accept=".pdf,image/*" style="width:100%; font-size:11px;">
+                        <div id="status-leitura-pdf" style="font-size:11px; color:var(--text-sec); margin-top:6px;">
+                            Selecione o relatório PDF da máquina para extrair LR, LE, Alongamento e Lote.
                         </div>
-                        <div class="field-group">
-                            <label for="operador">Operador:</label>
-                            <input type="text" id="operador" placeholder="Ex: Flávio" required>
-                        </div>
+                        <button type="button" id="btn-preview-form" class="btn-view-pdf" style="display:none; margin-top:6px;">👁️ Visualizar PDF Anexado</button>
                     </div>
 
+                    <!-- 2. SELETOR DE ABA / BITOLA NOMINAL -->
                     <div class="field-group">
-                        <label>Selecione a Bitola Nominal (mm):</label>
-                        <input type="hidden" id="bitola" required>
-                        <div class="bitola-selector" id="bitola-btns">
-                            <button type="button" class="bitola-btn" data-val="3.4">Ø 3.4 mm</button>
-                            <button type="button" class="bitola-btn" data-val="3.8">Ø 3.8 mm</button>
-                            <button type="button" class="bitola-btn" data-val="4.2">Ø 4.2 mm</button>
-                            <button type="button" class="bitola-btn" data-val="4.5">Ø 4.5 mm</button>
-                            <button type="button" class="bitola-btn" data-val="5.0">Ø 5.0 mm</button>
-                            <button type="button" class="bitola-btn" data-val="6.0">Ø 6.0 mm</button>
+                        <label>Bitola Nominal (Aba da Planilha):</label>
+                        <input type="hidden" id="bitola-nominal" value="4.2" required>
+                        <div class="bitola-selector">
+                            <button type="button" class="bitola-btn" data-val="3.4">3,4</button>
+                            <button type="button" class="bitola-btn" data-val="3.8">3,8</button>
+                            <button type="button" class="bitola-btn active" data-val="4.2">4,2</button>
+                            <button type="button" class="bitola-btn" data-val="4.6">4,6</button>
+                            <button type="button" class="bitola-btn" data-val="5.0">5,0</button>
+                            <button type="button" class="bitola-btn" data-val="6.0">6,0</button>
                         </div>
                     </div>
 
-                    <div class="field-group">
-                        <label>Resultado / Laudo do Ensaio:</label>
-                        <input type="hidden" id="status" required>
-                        <div class="status-selector">
-                            <button type="button" class="status-btn" id="btn-status-ok" data-status="aprovado">✔ APROVADO</button>
-                            <button type="button" class="status-btn" id="btn-status-fail" data-status="reprovado">✖ REPROVADO</button>
-                        </div>
-                    </div>
-
-                    <div id="grupo-reprovacao" class="reprovacao-box" style="display: none;">
-                        <div class="field-group" style="margin-bottom: 10px;">
-                            <label for="motivo-falha">Motivo Técnico da Reprovação:</label>
-                            <select id="motivo-falha">
-                                <option value="">Selecione a anomalia...</option>
-                                <option value="escorregamento">Escorregamento na garra</option>
-                                <option value="ruptura_solda">Ruptura na solda</option>
-                                <option value="baixa_resistencia">Baixa resistência à tração</option>
-                                <option value="outros">Outros (Especificar abaixo)</option>
+                    <!-- 3. DADOS DE RASTREABILIDADE (AMOSTRA, LOTE, DATA) -->
+                    <div class="form-grid-3">
+                        <div class="field-group">
+                            <label for="tipo-prova">Tipo de Ensaio:</label>
+                            <select id="tipo-prova">
+                                <option value="PROVA">PROVA</option>
+                                <option value="CONTRA PROVA">CONTRA PROVA</option>
+                                <option value="TESTEMUNHO">TESTEMUNHO</option>
                             </select>
                         </div>
-
-                        <div id="grupo-outros" style="display: none;">
-                            <label for="outro-motivo">Especificar Anomalia:</label>
-                            <input type="text" id="outro-motivo" placeholder="Ex: Baixo alongamento após ruptura">
+                        <div class="field-group">
+                            <label for="lote">Lote / OP:</label>
+                            <input type="text" id="lote" placeholder="Ex: OR83-OP97-T01" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="data">Data:</label>
+                            <input type="date" id="data" required>
                         </div>
                     </div>
 
+                    <!-- 4. MEDIDAS FÍSICAS E MECÂNICAS (ABNT NBR 7480) -->
+                    <div class="form-grid-3">
+                        <div class="field-group">
+                            <label for="bitola-real">Bitola Real (mm):</label>
+                            <input type="number" step="0.01" id="bitola-real" placeholder="Ex: 4.18" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="massa-linear">Massa Lin. (g/mm):</label>
+                            <input type="number" step="0.001" id="massa-linear" placeholder="Ex: 0.108" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="alongamento">Alongamento (%):</label>
+                            <input type="number" step="0.1" id="alongamento" placeholder="Ex: 7.0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-3">
+                        <div class="field-group">
+                            <label for="lr">LR - Resist. (MPa):</label>
+                            <input type="number" step="1" id="lr" placeholder="Ex: 786" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="le">LE - Escoam. (MPa):</label>
+                            <input type="number" step="1" id="le" placeholder="Ex: 710" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="relacao">Relação (LR/LE):</label>
+                            <input type="number" step="0.0001" id="relacao" placeholder="Auto" readonly style="color:var(--brand-blue);">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="field-group">
+                            <label for="dobramento">Dobramento / Obs:</label>
+                            <input type="text" id="dobramento" value="OK">
+                        </div>
+                        <div class="field-group">
+                            <label for="operador">Responsável:</label>
+                            <input type="text" id="operador" placeholder="Ex: FLÁVIO / MATEUS" required>
+                        </div>
+                    </div>
+
+                    <!-- 5. LAUDO FINAL -->
                     <div class="field-group">
-                        <label for="anexo">Anexar Relatório MaxTest / Foto (Opcional):</label>
-                        <input type="file" id="anexo" accept="image/*, .pdf">
+                        <label>Aprovado (Critério ABNT: LE ≥ 600 MPa | LR/LE ≥ 1.05 | Along ≥ 5%):</label>
+                        <input type="hidden" id="status" value="aprovado" required>
+                        <div class="status-selector">
+                            <button type="button" class="status-btn active-ok" id="btn-status-ok">✔ SIM (APROVADO)</button>
+                            <button type="button" class="status-btn" id="btn-status-fail">✖ NÃO (REPROVADO)</button>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn-submit" id="btn-submit">
-                        REGISTRAR ENSAIO
+                        LANÇAR NA PLANILHA ABNT
                     </button>
                 </form>
             </div>
         </section>
 
-        <!-- PAINEL DIREITO: TABELA DE DADOS E FILTROS -->
+        <!-- PAINEL DIREITO: PLANILHA ABNT SEPARADA POR ABAS DE BITOLA -->
         <section class="panel">
             <div class="panel-header">
-                <span class="panel-title">Histórico & Rastreabilidade de Lotes</span>
-                <div class="header-btn-group">
-                    <button type="button" class="btn-danger-all" id="btn-limpar-tudo" title="Apagar todos os testes da planilha">
-                        🗑️ Zerar Histórico
-                    </button>
-                    <button type="button" class="btn-filter-clear" id="btn-recarregar">
-                        🔄 Sincronizar Planilha
-                    </button>
+                <span class="panel-title">Espelho da Planilha ABNT (Grande Aço)</span>
+                <div style="display:flex; gap:8px;">
+                    <button type="button" class="btn-action" id="btn-recarregar">🔄 Sincronizar Nuvem</button>
                 </div>
+            </div>
+
+            <!-- ABAS IDÊNTICAS AO EXCEL (3,4 | 3,8 | 4,2 | 4,6 | 5,0 | 6,0) -->
+            <div class="sheet-tabs-bar" id="abas-bitola">
+                <button class="sheet-tab active" data-aba="TODAS">TODAS</button>
+                <button class="sheet-tab" data-aba="3.4">Aba 3,4</button>
+                <button class="sheet-tab" data-aba="3.8">Aba 3,8</button>
+                <button class="sheet-tab" data-aba="4.2">Aba 4,2</button>
+                <button class="sheet-tab" data-aba="4.6">Aba 4,6</button>
+                <button class="sheet-tab" data-aba="5.0">Aba 5,0</button>
+                <button class="sheet-tab" data-aba="6.0">Aba 6,0</button>
             </div>
 
             <div class="toolbar-filtros">
                 <div class="filter-group">
-                    <label for="filtro-data">Dia:</label>
+                    <label>Data:</label>
                     <input type="date" id="filtro-data">
                 </div>
                 <div class="filter-group">
-                    <label for="filtro-bitola">Bitola:</label>
-                    <select id="filtro-bitola">
-                        <option value="">Todas as bitolas</option>
-                        <option value="3.4">Ø 3.4 mm</option>
-                        <option value="3.8">Ø 3.8 mm</option>
-                        <option value="4.2">Ø 4.2 mm</option>
-                        <option value="4.5">Ø 4.5 mm</option>
-                        <option value="5.0">Ø 5.0 mm</option>
-                        <option value="6.0">Ø 6.0 mm</option>
-                    </select>
+                    <label>Lote/OP:</label>
+                    <input type="text" id="filtro-lote" placeholder="Filtrar lote...">
                 </div>
-                <div class="filter-group">
-                    <label for="filtro-status">Laudo:</label>
-                    <select id="filtro-status">
-                        <option value="">Todos</option>
-                        <option value="aprovado">Apenas Aprovados</option>
-                        <option value="reprovado">Apenas Reprovados</option>
-                    </select>
-                </div>
-                <button type="button" class="btn-filter-clear" id="btn-limpar-filtro">Limpar Filtros</button>
+                <button type="button" class="btn-action" id="btn-limpar-filtro">Limpar Filtros</button>
             </div>
 
             <div class="table-container">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th style="width: 130px;">Data</th>
-                            <th style="width: 130px;">Bitola</th>
-                            <th style="width: 150px;">Laudo</th>
-                            <th>Observação / Motivo da Falha</th>
-                            <th style="width: 160px;">Operador</th>
-                            <th style="width: 180px;">Anexo</th>
-                            <th style="width: 100px; text-align: right;">Ação</th>
+                            <th>Amostra</th>
+                            <th>Prova / C.P.</th>
+                            <th>LOTE</th>
+                            <th>Data</th>
+                            <th>Bitola Real (mm)</th>
+                            <th>Massa Lin. (g/mm)</th>
+                            <th>LR (MPa)</th>
+                            <th>LE (MPa)</th>
+                            <th>Along. (%)</th>
+                            <th>Relação LR/LE</th>
+                            <th>Dobram.</th>
+                            <th>Aprovado</th>
+                            <th>Responsável</th>
+                            <th>PDF</th>
+                            <th>Ação</th>
                         </tr>
                     </thead>
                     <tbody id="tabela-corpo">
-                        <tr>
-                            <td colspan="7" class="state-msg">Sincronizando dados com a planilha Google...</td>
-                        </tr>
+                        <tr><td colspan="15" style="padding:40px; color:var(--text-muted);">Carregando planilha ABNT...</td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
-
     </main>
+
+    <!-- MODAL DE VISUALIZAÇÃO DO PDF -->
+    <div class="pdf-modal-overlay" id="pdf-modal">
+        <div class="pdf-modal-box">
+            <div class="pdf-modal-header">
+                <span id="modal-titulo" style="font-family:'JetBrains Mono'; font-weight:700; color:var(--brand-blue);">📄 Laudo PDF</span>
+                <button type="button" class="btn-top" id="btn-fechar-modal">✖ Fechar</button>
+            </div>
+            <div class="pdf-modal-body" id="modal-conteudo"></div>
+        </div>
+    </div>
 
     <div id="toast-box"></div>
 
     <script>
         const LINK_PLANILHA = "https://script.google.com/macros/s/AKfycbwmKocpEDyZZsbpxiemeNORc790IB2wNBQM80dOI3WhDJu9LM9ywNRdx-iq2mRAip1juA/exec";
 
-        const formTeste = document.getElementById('form-teste');
-        const bitolaInput = document.getElementById('bitola');
-        const statusInput = document.getElementById('status');
-        const grupoReprovacao = document.getElementById('grupo-reprovacao');
-        const motivoFalhaSelect = document.getElementById('motivo-falha');
-        const grupoOutros = document.getElementById('grupo-outros');
-        const outroMotivoInput = document.getElementById('outro-motivo');
-        const tabelaCorpo = document.getElementById('tabela-corpo');
-        const btnLimparTudo = document.getElementById('btn-limpar-tudo');
-
-        const filtroData = document.getElementById('filtro-data');
-        const filtroBitola = document.getElementById('filtro-bitola');
-        const filtroStatus = document.getElementById('filtro-status');
+        // Configuração do PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         let historicoTestes = [];
-        let listaFiltrada = [];
+        let abaAtiva = "TODAS";
+        let pdfAtualBase64 = null;
+        let pdfAtualNome = null;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('data').value = new Date().toISOString().split('T')[0];
-            const opSalvo = localStorage.getItem('ga_operador');
-            if (opSalvo) document.getElementById('operador').value = opSalvo;
+        // ==========================================================================
+        // 1. CÁLCULOS AUTOMÁTICOS ABNT NBR 7480 (RELAÇÃO LR/LE E MASSA LINEAR)
+        // ==========================================================================
+        const inputBitolaReal = document.getElementById('bitola-real');
+        const inputMassaLinear = document.getElementById('massa-linear');
+        const inputLR = document.getElementById('lr');
+        const inputLE = document.getElementById('le');
+        const inputAlong = document.getElementById('alongamento');
+        const inputRelacao = document.getElementById('relacao');
 
-            const temaSalvo = localStorage.getItem('ga_tema') || 'dark';
-            definirTema(temaSalvo);
-
-            carregarDadosDaPlanilha();
+        // Calcula Massa Linear teórica do aço (g/mm) se o operador digitar a Bitola Real
+        inputBitolaReal.addEventListener('input', () => {
+            const d = parseFloat(inputBitolaReal.value);
+            if (d > 0 && !inputMassaLinear.dataset.manual) {
+                // Área = pi * (d/2)^2 | Densidade do aço = 0.00785 g/mm³
+                const massa = Math.PI * Math.pow(d / 2, 2) * 0.00785;
+                inputMassaLinear.value = massa.toFixed(3);
+            }
         });
 
-        document.getElementById('btn-theme').addEventListener('click', () => {
-            const atual = document.documentElement.getAttribute('data-theme');
-            const novo = atual === 'dark' ? 'light' : 'dark';
-            definirTema(novo);
-            localStorage.setItem('ga_tema', novo);
+        // Calcula Relação LR/LE e valida aprovação ABNT automaticamente
+        function recalcularABNT() {
+            const lr = parseFloat(inputLR.value);
+            const le = parseFloat(inputLE.value);
+            const along = parseFloat(inputAlong.value);
+
+            if (lr > 0 && le > 0) {
+                const rel = lr / le;
+                inputRelacao.value = rel.toFixed(4);
+
+                // Critério ABNT NBR 7480 para CA-60: LE >= 600, LR/LE >= 1.05, Along >= 5%
+                const aprovadoABNT = (le >= 600) && (rel >= 1.05) && (isNaN(along) || along >= 5);
+                definirStatus(aprovadoABNT ? 'aprovado' : 'reprovado');
+            }
+        }
+
+        inputLR.addEventListener('input', recalcularABNT);
+        inputLE.addEventListener('input', recalcularABNT);
+        inputAlong.addEventListener('input', recalcularABNT);
+
+        // ==========================================================================
+        // 2. LEITOR AUTOMÁTICO DE PDF (EXTRAI DADOS DO RELATÓRIO DE TRAÇÃO)
+        // ==========================================================================
+        document.getElementById('anexo').addEventListener('change', async function() {
+            if (!this.files || this.files.length === 0) return;
+            const file = this.files[0];
+            pdfAtualNome = file.name;
+            const statusTxt = document.getElementById('status-leitura-pdf');
+            statusTxt.innerHTML = "⏳ Lendo dados internos do PDF...";
+
+            // Guarda Base64 para visualização no Modal
+            const readerB64 = new FileReader();
+            readerB64.onload = async (e) => {
+                pdfAtualBase64 = e.target.result;
+                await salvarPDFNoNavegador(pdfAtualNome, pdfAtualBase64);
+                document.getElementById('btn-preview-form').style.display = 'inline-block';
+            };
+            readerB64.readAsDataURL(file);
+
+            // Extrai Lote e Bitola já pelo nome do arquivo (Ex: "OP150 4.20MM.pdf")
+            const matchOpNome = file.name.match(/(?:OR\d+-)?OP\s*\d+(?:-T\d+)?/i);
+            if (matchOpNome) document.getElementById('lote').value = matchOpNome[0].toUpperCase().replace(/\s+/g, '');
+
+            const matchBitolaNome = file.name.match(/(3[\.,]4|3[\.,]8|4[\.,]2|4[\.,]6|5[\.,]0|6[\.,]0)/);
+            if (matchBitolaNome) {
+                const bNom = matchBitolaNome[1].replace(',', '.');
+                selecionarBitolaNominal(bNom);
+                if (!inputBitolaReal.value) {
+                    inputBitolaReal.value = bNom;
+                    inputBitolaReal.dispatchEvent(new Event('input'));
+                }
+            }
+
+            if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    let textoCompleto = "";
+
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const content = await page.getTextContent();
+                        textoCompleto += content.items.map(item => item.str).join(" ") + "\n";
+                    }
+
+                    preencherCamposPeloTextoPDF(textoCompleto);
+                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ PDF lido com sucesso! Confira os valores extraídos abaixo.</span>`;
+                } catch (err) {
+                    console.error(err);
+                    statusTxt.innerHTML = `⚠️ PDF anexado (preencha os valores manualmente se o PDF for imagem escaneada).`;
+                }
+            }
         });
 
-        function definirTema(tema) {
-            document.documentElement.setAttribute('data-theme', tema);
-            document.getElementById('btn-theme').innerHTML = tema === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Escuro';
+        function preencherCamposPeloTextoPDF(txt) {
+            const limpo = txt.replace(/\s+/g, ' ');
+
+            // 1. Procura Lote / OP no texto
+            const mLote = limpo.match(/(?:Lote|OP|Ordem|Identifica[çc][ãa]o)\s*[:\-]?\s*([A-Z0-9\-_\/]{3,20})/i);
+            if (mLote && !document.getElementById('lote').value) {
+                document.getElementById('lote').value = mLote[1].toUpperCase();
+            }
+
+            // 2. Procura Diâmetro / Bitola Real (entre 3.00 e 6.50 mm)
+            const mDiam = limpo.match(/(?:Di[âa]metro|Bitola|Espessura)\s*[:\-]?\s*([3456][\.,]\d{1,2})/i);
+            if (mDiam) {
+                inputBitolaReal.value = mDiam[1].replace(',', '.');
+                inputBitolaReal.dispatchEvent(new Event('input'));
+            }
+
+            // 3. Procura LR (Resistência à Tração / Tensão Máxima em MPa - geralmente entre 550 e 1100 MPa)
+            const mLR = limpo.match(/(?:Resist[êe]ncia|Ruptura|M[áa]xima|LR|Rm|f\s*st)\s*[^0-9]{0,25}(\d{3,4}(?:[\.,]\d+)?)\s*(?:MPa)?/i);
+            if (mLR) inputLR.value = Math.round(parseFloat(mLR[1].replace(',', '.')));
+
+            // 4. Procura LE (Escoamento / fy / Re em MPa - geralmente entre 400 e 950 MPa)
+            const mLE = limpo.match(/(?:Escoamento|LE|Re|f\s*y|0[\.,]2\s*%)\s*[^0-9]{0,25}(\d{3,4}(?:[\.,]\d+)?)\s*(?:MPa)?/i);
+            if (mLE) inputLE.value = Math.round(parseFloat(mLE[1].replace(',', '.')));
+
+            // 5. Fallback inteligente: se o PDF lista os valores MPa em tabela numérica
+            if (!inputLR.value || !inputLE.value) {
+                const numerosMPa = [...limpo.matchAll(/\b([56789]\d{2}(?:[\.,]\d+)?)\b/g)]
+                    .map(m => Math.round(parseFloat(m[1].replace(',', '.'))))
+                    .filter(n => n >= 500 && n <= 1050);
+
+                if (numerosMPa.length >= 2) {
+                    const maior = Math.max(...numerosMPa);
+                    const menor = Math.min(...numerosMPa);
+                    if (!inputLR.value) inputLR.value = maior;
+                    if (!inputLE.value) inputLE.value = menor;
+                }
+            }
+
+            // 6. Procura Alongamento (%)
+            const mAlong = limpo.match(/(?:Alongamento|Along|A\s*%|Deforma[çc][ãa]o)\s*[^0-9]{0,20}(\d{1,2}(?:[\.,]\d{1,2})?)\s*%?/i);
+            if (mAlong) inputAlong.value = parseFloat(mAlong[1].replace(',', '.'));
+
+            recalcularABNT();
+        }
+
+        // ==========================================================================
+        // 3. CONTROLES DE INTERFACE E VISUALIZADOR DE PDF (IndexedDB)
+        // ==========================================================================
+        function selecionarBitolaNominal(val) {
+            document.getElementById('bitola-nominal').value = val;
+            document.querySelectorAll('.bitola-btn').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-val') === val);
+            });
         }
 
         document.querySelectorAll('.bitola-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.bitola-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                bitolaInput.value = btn.getAttribute('data-val');
+            btn.addEventListener('click', () => selecionarBitolaNominal(btn.getAttribute('data-val')));
+        });
+
+        function definirStatus(st) {
+            document.getElementById('status').value = st;
+            document.getElementById('btn-status-ok').classList.toggle('active-ok', st === 'aprovado');
+            document.getElementById('btn-status-fail').classList.toggle('active-fail', st === 'reprovado');
+        }
+
+        document.getElementById('btn-status-ok').addEventListener('click', () => definirStatus('aprovado'));
+        document.getElementById('btn-status-fail').addEventListener('click', () => definirStatus('reprovado'));
+
+        // Abas da Tabela (3,4 a 6,0)
+        document.querySelectorAll('.sheet-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.sheet-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                abaAtiva = tab.getAttribute('data-aba');
+                atualizarTabela();
             });
         });
 
-        const btnOk = document.getElementById('btn-status-ok');
-        const btnFail = document.getElementById('btn-status-fail');
+        // Banco de Dados do Navegador para abrir PDF
+        function abrirDB() {
+            return new Promise((res, rej) => {
+                const req = indexedDB.open("GrandeAco_PDF_Vault", 1);
+                req.onupgradeneeded = e => e.target.result.createObjectStore("arquivos");
+                req.onsuccess = e => res(e.target.result);
+                req.onerror = e => rej(e);
+            });
+        }
 
-        btnOk.addEventListener('click', () => {
-            btnOk.classList.add('active-ok');
-            btnFail.classList.remove('active-fail');
-            statusInput.value = 'aprovado';
-            grupoReprovacao.style.display = 'none';
-            motivoFalhaSelect.required = false;
-            motivoFalhaSelect.value = '';
-            grupoOutros.style.display = 'none';
-            outroMotivoInput.required = false;
-            outroMotivoInput.value = '';
+        async function salvarPDFNoNavegador(nome, b64) {
+            try {
+                const db = await abrirDB();
+                db.transaction("arquivos", "readwrite").objectStore("arquivos").put(b64, nome);
+            } catch (e) {}
+        }
+
+        async function buscarPDFNoNavegador(nome) {
+            try {
+                const db = await abrirDB();
+                return new Promise(res => {
+                    const req = db.transaction("arquivos", "readonly").objectStore("arquivos").get(nome);
+                    req.onsuccess = () => res(req.result || null);
+                    req.onerror = () => res(null);
+                });
+            } catch (e) { return null; }
+        }
+
+        function abrirModalPDF(nome, b64) {
+            const partes = b64.split(',');
+            const mime = partes[0].match(/:(.*?);/)[1];
+            const bstr = atob(partes[1]);
+            const u8 = new Uint8Array(bstr.length);
+            for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
+            const url = URL.createObjectURL(new Blob([u8], { type: mime }));
+
+            document.getElementById('modal-titulo').textContent = `📄 ${nome}`;
+            document.getElementById('modal-conteudo').innerHTML = `<iframe src="${url}"></iframe>`;
+            document.getElementById('pdf-modal').style.display = 'flex';
+        }
+
+        document.getElementById('btn-preview-form').addEventListener('click', () => {
+            if (pdfAtualBase64) abrirModalPDF(pdfAtualNome, pdfAtualBase64);
         });
 
-        btnFail.addEventListener('click', () => {
-            btnFail.classList.add('active-fail');
-            btnOk.classList.remove('active-ok');
-            statusInput.value = 'reprovado';
-            grupoReprovacao.style.display = 'block';
-            motivoFalhaSelect.required = true;
+        document.getElementById('btn-fechar-modal').addEventListener('click', () => {
+            document.getElementById('pdf-modal').style.display = 'none';
+            document.getElementById('modal-conteudo').innerHTML = '';
         });
 
-        motivoFalhaSelect.addEventListener('change', function() {
-            if (this.value === 'outros') {
-                grupoOutros.style.display = 'block';
-                outroMotivoInput.required = true;
-            } else {
-                grupoOutros.style.display = 'none';
-                outroMotivoInput.required = false;
-                outroMotivoInput.value = '';
-            }
-        });
+        async function verPDFTabela(nome) {
+            const b64 = await buscarPDFNoNavegador(nome);
+            if (b64) abrirModalPDF(nome, b64);
+            else alert(`O PDF "${nome}" não está no cache deste navegador.`);
+        }
 
         function toast(msg) {
             const box = document.getElementById('toast-box');
@@ -936,8 +756,10 @@
             setTimeout(() => el.remove(), 3500);
         }
 
+        // ==========================================================================
+        // 4. SINCRONIZAÇÃO COM A PLANILHA GOOGLE E RENDERIZAÇÃO ABNT
+        // ==========================================================================
         function carregarDadosDaPlanilha() {
-            tabelaCorpo.innerHTML = '<tr><td colspan="7" class="state-msg">Sincronizando banco de dados da nuvem...</td></tr>';
             fetch(LINK_PLANILHA)
                 .then(r => r.json())
                 .then(dados => {
@@ -945,234 +767,162 @@
                     atualizarTabela();
                 })
                 .catch(() => {
-                    tabelaCorpo.innerHTML = '<tr><td colspan="7" class="state-msg">⚠️ Erro ao conectar à planilha. Verifique a internet.</td></tr>';
+                    document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="15" style="padding:30px;">⚠️ Erro ao carregar planilha.</td></tr>';
                 });
         }
-
-        document.getElementById('btn-recarregar').addEventListener('click', carregarDadosDaPlanilha);
 
         function atualizarTabela() {
-            tabelaCorpo.innerHTML = '';
-            let dados = [...historicoTestes];
+            const tbody = document.getElementById('tabela-corpo');
+            tbody.innerHTML = '';
 
-            if (filtroData.value) {
-                const dFormat = filtroData.value.split('-').reverse().join('/');
-                dados = dados.filter(t => t.dataFormatada === dFormat);
-            }
-            if (filtroBitola.value) {
-                dados = dados.filter(t => String(t.bitola) === filtroBitola.value);
-            }
-            if (filtroStatus.value) {
-                dados = dados.filter(t => t.status === filtroStatus.value);
+            let lista = [...historicoTestes];
+
+            if (abaAtiva !== "TODAS") {
+                lista = lista.filter(t => String(t.bitolaNominal || t.bitola) === abaAtiva);
             }
 
-            listaFiltrada = dados;
+            const fData = document.getElementById('filtro-data').value;
+            if (fData) {
+                const df = fData.split('-').reverse().join('/');
+                lista = lista.filter(t => t.dataFormatada === df);
+            }
 
-            const total = dados.length;
-            const aprov = dados.filter(t => t.status === 'aprovado').length;
-            const reprov = total - aprov;
-            const taxa = total > 0 ? Math.round((aprov / total) * 100) : 0;
+            const fLote = document.getElementById('filtro-lote').value.trim().toUpperCase();
+            if (fLote) {
+                lista = lista.filter(t => String(t.lote || '').toUpperCase().includes(fLote));
+            }
 
+            // KPIs
+            const total = lista.length;
+            const aprov = lista.filter(t => t.status === 'aprovado' || t.aprovado === 'SIM').length;
             document.getElementById('kpi-total').textContent = total;
             document.getElementById('kpi-aprovados').textContent = aprov;
-            document.getElementById('kpi-reprovados').textContent = reprov;
-            document.getElementById('kpi-taxa').textContent = taxa + '%';
+            document.getElementById('kpi-reprovados').textContent = total - aprov;
+            document.getElementById('kpi-taxa').textContent = (total > 0 ? Math.round((aprov / total) * 100) : 0) + '%';
 
-            if (dados.length === 0) {
-                tabelaCorpo.innerHTML = '<tr><td colspan="7" class="state-msg">Nenhum ensaio registrado no banco de dados.</td></tr>';
+            if (lista.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="15" style="padding:40px; color:var(--text-muted);">Nenhum registro nesta aba.</td></tr>';
                 return;
             }
 
-            const porDia = {};
-            [...dados].reverse().forEach(t => {
-                if (!porDia[t.dataFormatada]) porDia[t.dataFormatada] = [];
-                porDia[t.dataFormatada].push(t);
+            [...lista].reverse().forEach((t, idx) => {
+                const isOk = t.status === 'aprovado' || t.aprovado === 'SIM';
+                const tr = document.createElement('tr');
+                const arq = t.nomeArquivo || "Nenhum anexo";
+                const btnPdf = (arq !== "Nenhum anexo" && arq !== "Nenhum")
+                    ? `<button class="btn-view-pdf" onclick="verPDFTabela('${arq.replace(/'/g, "\\'")}')">👁️ PDF</button>`
+                    : `-`;
+
+                tr.innerHTML = `
+                    <td>${t.amostra || (lista.length - idx)}</td>
+                    <td>${t.tipoProva || 'PROVA'}</td>
+                    <td style="font-weight:700; color:var(--brand-blue);">${t.lote || '-'}</td>
+                    <td>${t.dataFormatada}</td>
+                    <td>${t.bitolaReal || t.bitola}</td>
+                    <td>${t.massaLinear || '-'}</td>
+                    <td style="font-weight:700;">${t.lr || '-'}</td>
+                    <td style="font-weight:700;">${t.le || '-'}</td>
+                    <td>${t.alongamento ? t.alongamento + '%' : '-'}</td>
+                    <td>${t.relacao ? Number(t.relacao).toFixed(2) : '-'}</td>
+                    <td>${t.dobramento || 'OK'}</td>
+                    <td><span class="${isOk ? 'pill-ok' : 'pill-fail'}">${isOk ? 'SIM' : 'NÃO'}</span></td>
+                    <td>${t.operador}</td>
+                    <td>${btnPdf}</td>
+                    <td><button class="btn-action" onclick="deletarTeste(${t.linha}, '${t.aba || ''}')">🗑️</button></td>
+                `;
+                tbody.appendChild(tr);
             });
-
-            for (const dia in porDia) {
-                const trGrupo = document.createElement('tr');
-                trGrupo.className = 'day-group-row';
-                trGrupo.innerHTML = `<td colspan="7">📅 LOTE DIÁRIO: ${dia} — (${porDia[dia].length} ensaios registrados)</td>`;
-                tabelaCorpo.appendChild(trGrupo);
-
-                porDia[dia].forEach(teste => {
-                    const isOk = teste.status === 'aprovado';
-                    const tr = document.createElement('tr');
-                    if (!isOk) tr.classList.add('row-reprovado');
-
-                    const motivoTxt = (teste.textoMotivo && teste.textoMotivo !== "Nenhum") 
-                        ? `<strong style="color:var(--fail-color)">${teste.textoMotivo}</strong>` 
-                        : `<span style="color:var(--text-muted)">Conformidade OK</span>`;
-
-                    tr.innerHTML = `
-                        <td style="font-family:'JetBrains Mono',monospace;">${teste.dataFormatada}</td>
-                        <td><span class="pill-bitola">Ø ${teste.bitola} mm</span></td>
-                        <td>
-                            <span class="pill-status ${isOk ? 'pill-ok' : 'pill-fail'}">
-                                ${isOk ? '✔ APROVADO' : '✖ REPROVADO'}
-                            </span>
-                        </td>
-                        <td>${motivoTxt}</td>
-                        <td>👷 ${teste.operador}</td>
-                        <td style="color:var(--text-muted); font-size:12px;">📎 ${teste.nomeArquivo || 'Nenhum'}</td>
-                        <td style="text-align: right;">
-                            <button class="btn-del-row" onclick="deletarTeste(${teste.linha})">Excluir</button>
-                        </td>
-                    `;
-                    tabelaCorpo.appendChild(tr);
-                });
-            }
         }
 
-        filtroData.addEventListener('change', atualizarTabela);
-        filtroBitola.addEventListener('change', atualizarTabela);
-        filtroStatus.addEventListener('change', atualizarTabela);
+        document.getElementById('filtro-data').addEventListener('change', atualizarTabela);
+        document.getElementById('filtro-lote').addEventListener('input', atualizarTabela);
         document.getElementById('btn-limpar-filtro').addEventListener('click', () => {
-            filtroData.value = '';
-            filtroBitola.value = '';
-            filtroStatus.value = '';
+            document.getElementById('filtro-data').value = '';
+            document.getElementById('filtro-lote').value = '';
             atualizarTabela();
         });
+        document.getElementById('btn-recarregar').addEventListener('click', carregarDadosDaPlanilha);
 
-        // Excluir 1 Teste Individual
-        function deletarTeste(linha) {
-            if (!confirm("Deseja realmente excluir este registro da planilha?")) return;
-            toast("Excluindo registro na nuvem...");
-
-            fetch(LINK_PLANILHA, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ acao: "deletar", linha: linha })
-            }).then(() => {
-                toast("✔ Registro excluído!");
-                carregarDadosDaPlanilha();
-            });
-        }
-
-        // ZERAR TODOS OS TESTES ANTERIORES (DE BAIXO PARA CIMA)
-        btnLimparTudo.addEventListener('click', async () => {
-            if (historicoTestes.length === 0) {
-                toast("⚠️ O histórico já está vazio!");
-                return;
-            }
-
-            const confirmacao = prompt(
-                `ATENÇÃO: Isso vai apagar TODOS os ${historicoTestes.length} testes salvos na planilha!\n\nDigite ZERAR (em maiúsculas) para confirmar:`
-            );
-
-            if (confirmacao !== "ZERAR") {
-                toast("Operação cancelada.");
-                return;
-            }
-
-            btnLimparTudo.disabled = true;
-
-            // Ordena as linhas da maior para a menor para não deslocar os índices na Planilha Google
-            const linhasOrdenadas = historicoTestes
-                .map(t => Number(t.linha))
-                .filter(n => !isNaN(n))
-                .sort((a, b) => b - a);
-
-            for (let i = 0; i < linhasOrdenadas.length; i++) {
-                const linhaAtual = linhasOrdenadas[i];
-                tabelaCorpo.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="state-msg">
-                            🗑️ Limpando banco de dados na nuvem... (${i + 1} de ${linhasOrdenadas.length} excluídos)
-                        </td>
-                    </tr>`;
-
-                await fetch(LINK_PLANILHA, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ acao: "deletar", linha: linhaAtual })
-                });
-
-                // Pequena pausa para o Google Apps Script processar a exclusão sem travar
-                await new Promise(r => setTimeout(r, 350));
-            }
-
-            toast("✔ Todos os testes anteriores foram excluídos!");
-            btnLimparTudo.disabled = false;
-            carregarDadosDaPlanilha();
-        });
-
-        // Submeter Novo Teste
-        formTeste.addEventListener('submit', function(e) {
+        // Salvar na Planilha ABNT
+        document.getElementById('form-teste').addEventListener('submit', function(e) {
             e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            btn.disabled = true;
+            btn.textContent = "GRAVANDO NA PLANILHA ABNT...";
 
-            if (!bitolaInput.value) {
-                toast("⚠️ Selecione uma bitola (3.4 a 6.0 mm)!");
-                return;
-            }
-            if (!statusInput.value) {
-                toast("⚠️ Selecione o Laudo (Aprovado ou Reprovado)!");
-                return;
-            }
+            const op = document.getElementById('operador').value.trim().toUpperCase();
+            localStorage.setItem('ga_operador', op);
 
-            const btnSubmit = document.getElementById('btn-submit');
-            btnSubmit.disabled = true;
-            btnSubmit.textContent = "GRAVANDO NA NUVEM...";
-
-            const data = document.getElementById('data').value;
-            const operador = document.getElementById('operador').value.trim();
-            localStorage.setItem('ga_operador', operador);
-
-            const anexoInput = document.getElementById('anexo');
-            const nomeArquivo = anexoInput.files.length > 0 ? anexoInput.files[0].name : "Nenhum anexo";
-
-            let motivoLimpo = "Nenhum";
-            if (statusInput.value === 'reprovado') {
-                motivoLimpo = motivoFalhaSelect.value === 'outros' 
-                    ? outroMotivoInput.value 
-                    : motivoFalhaSelect.options[motivoFalhaSelect.selectedIndex].text;
-            }
-
-            const novoTeste = {
+            const payload = {
                 acao: "inserir",
-                dataFormatada: data.split('-').reverse().join('/'),
-                operador: operador,
-                bitola: bitolaInput.value,
-                status: statusInput.value,
-                textoMotivo: motivoLimpo,
-                nomeArquivo: nomeArquivo
+                bitolaNominal: document.getElementById('bitola-nominal').value,
+                bitola: document.getElementById('bitola-nominal').value,
+                tipoProva: document.getElementById('tipo-prova').value,
+                lote: document.getElementById('lote').value.trim().toUpperCase(),
+                dataFormatada: document.getElementById('data').value.split('-').reverse().join('/'),
+                bitolaReal: inputBitolaReal.value,
+                massaLinear: inputMassaLinear.value,
+                lr: inputLR.value,
+                le: inputLE.value,
+                alongamento: inputAlong.value,
+                relacao: inputRelacao.value,
+                dobramento: document.getElementById('dobramento').value || "OK",
+                status: document.getElementById('status').value,
+                textoMotivo: document.getElementById('dobramento').value,
+                operador: op,
+                nomeArquivo: pdfAtualNome || "Nenhum anexo"
             };
 
             fetch(LINK_PLANILHA, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(novoTeste)
+                body: JSON.stringify(payload)
             }).then(() => {
-                toast("✔ Ensaio registrado com sucesso!");
-                btnSubmit.disabled = false;
-                btnSubmit.textContent = "REGISTRAR ENSAIO";
-
-                document.querySelectorAll('.bitola-btn').forEach(b => b.classList.remove('active'));
-                bitolaInput.value = '';
-                btnOk.classList.remove('active-ok');
-                btnFail.classList.remove('active-fail');
-                statusInput.value = '';
-                grupoReprovacao.style.display = 'none';
-                anexoInput.value = '';
-
+                toast("✔ Amostra lançada no padrão ABNT!");
+                btn.disabled = false;
+                btn.textContent = "LANÇAR NA PLANILHA ABNT";
                 carregarDadosDaPlanilha();
             });
         });
 
-        // Exportar CSV
-        document.getElementById('btn-exportar').addEventListener('click', () => {
-            if (listaFiltrada.length === 0) return toast("⚠️ Sem dados para exportar.");
-            let csv = "data:text/csv;charset=utf-8,\uFEFFData;Operador;Bitola;Status;Motivo;Arquivo\n";
-            listaFiltrada.forEach(t => {
-                csv += `${t.dataFormatada};${t.operador};${t.bitola};${t.status.toUpperCase()};${t.textoMotivo || 'OK'};${t.nomeArquivo}\n`;
+        function deletarTeste(linha, aba) {
+            if (!confirm("Excluir esta amostra da planilha?")) return;
+            fetch(LINK_PLANILHA, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ acao: "deletar", linha: linha, aba: aba })
+            }).then(() => {
+                toast("✔ Amostra excluída!");
+                setTimeout(carregarDadosDaPlanilha, 500);
             });
-            const link = document.createElement("a");
-            link.href = encodeURI(csv);
-            link.download = `Ensaios_CA60_GrandeAco.csv`;
-            link.click();
+        }
+
+        // Exportar CSV exatamente com as colunas do Grande Aco 2025.xlsx
+        document.getElementById('btn-exportar').addEventListener('click', () => {
+            let csv = "data:text/csv;charset=utf-8,\uFEFFAMOSTRAS;prova;LOTE;Data;Bitola Real (mm);Massa linear (g/mm);LR (MPa);LE (MPa);Along. (%);Relacao (LR/LE);dobramento;aprovado;responsavel\n";
+            historicoTestes.forEach((t, i) => {
+                csv += `${t.amostra || (i+1)};${t.tipoProva || 'PROVA'};${t.lote || '-'};${t.dataFormatada};${t.bitolaReal || t.bitola};${t.massaLinear || ''};${t.lr || ''};${t.le || ''};${t.alongamento || ''};${t.relacao || ''};${t.dobramento || 'OK'};${t.status === 'aprovado' ? 'SIM' : 'NÃO'};${t.operador}\n`;
+            });
+            const a = document.createElement('a');
+            a.href = encodeURI(csv);
+            a.download = `Grande_Aco_ABNT_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+        });
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('data').value = new Date().toISOString().split('T')[0];
+            document.getElementById('operador').value = localStorage.getItem('ga_operador') || 'FLÁVIO';
+            const tema = localStorage.getItem('ga_tema') || 'dark';
+            document.documentElement.setAttribute('data-theme', tema);
+            document.getElementById('btn-theme').onclick = () => {
+                const novo = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', novo);
+                localStorage.setItem('ga_tema', novo);
+            };
+            carregarDadosDaPlanilha();
         });
     </script>
 </body>
