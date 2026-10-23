@@ -74,7 +74,7 @@
         }
 
         /* ==========================================================================
-           TOPBAR WIDESCREEN
+           TOPBAR WIDESCREEN (CABEÇALHO DESKTOP)
            ========================================================================== */
         .topbar {
             height: 72px;
@@ -197,7 +197,7 @@
         }
 
         /* ==========================================================================
-           WORKSPACE DESKTOP (2 COLUNAS)
+           WORKSPACE DESKTOP (2 COLUNAS LADO A LADO)
            ========================================================================== */
         .workspace {
             flex: 1;
@@ -268,7 +268,7 @@
         }
 
         /* ==========================================================================
-           FORMULÁRIO DE LANÇAMENTO
+           COLUNA ESQUERDA: FORMULÁRIO DE LANÇAMENTO
            ========================================================================== */
         .form-body {
             padding: 20px;
@@ -417,30 +417,6 @@
             margin-right: 10px;
         }
 
-        /* Botão de Pré-visualizar Anexo antes de enviar */
-        .preview-bar {
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(48, 156, 225, 0.12);
-            border: 1px solid var(--brand-blue);
-            padding: 8px 12px;
-            border-radius: 4px;
-            margin-top: 8px;
-            font-size: 12px;
-        }
-
-        .btn-preview-inline {
-            background: var(--brand-blue);
-            color: #fff;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
         .btn-submit {
             width: 100%;
             height: 46px;
@@ -467,7 +443,7 @@
         }
 
         /* ==========================================================================
-           TABELA DE DADOS E BOTÃO DE VISUALIZAR PDF
+           COLUNA DIREITA: TABELA DE DADOS E RASTREABILIDADE
            ========================================================================== */
         .toolbar-filtros {
             padding: 14px 20px;
@@ -537,9 +513,15 @@
             color: #ffffff;
         }
 
+        .btn-danger-all:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .table-container {
             flex: 1;
             overflow-y: auto;
+            padding: 0;
         }
 
         table.data-table {
@@ -624,28 +606,6 @@
             border: 1px solid var(--fail-color);
         }
 
-        /* Botão Clicável de Abrir PDF */
-        .btn-view-pdf {
-            background-color: rgba(48, 156, 225, 0.15);
-            color: var(--brand-blue);
-            border: 1px solid var(--brand-blue);
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .btn-view-pdf:hover {
-            background-color: var(--brand-blue);
-            color: #ffffff;
-        }
-
         .btn-del-row {
             background: transparent;
             color: var(--text-muted);
@@ -669,78 +629,6 @@
             text-align: center;
             color: var(--text-muted);
             font-size: 14px;
-        }
-
-        /* ==========================================================================
-           MODAL VISUALIZADOR DE PDF / LAUDO (TELA CHEIA)
-           ========================================================================== */
-        .pdf-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(5, 10, 15, 0.85);
-            backdrop-filter: blur(4px);
-            z-index: 9990;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-        }
-
-        .pdf-modal-box {
-            background: var(--bg-panel);
-            border: 2px solid var(--brand-blue);
-            border-radius: 6px;
-            width: 90vw;
-            max-width: 1200px;
-            height: 88vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
-            overflow: hidden;
-        }
-
-        .pdf-modal-header {
-            background: var(--bg-header);
-            color: #fff;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .pdf-modal-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--brand-blue);
-        }
-
-        .pdf-modal-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .pdf-modal-body {
-            flex: 1;
-            background: #1e293b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .pdf-modal-body iframe,
-        .pdf-modal-body embed {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .pdf-modal-body img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
         }
 
         #toast-box {
@@ -875,13 +763,8 @@
                     </div>
 
                     <div class="field-group">
-                        <label for="anexo">Anexar Relatório MaxTest / Foto (PDF ou Imagem):</label>
+                        <label for="anexo">Anexar Relatório MaxTest / Foto (Opcional):</label>
                         <input type="file" id="anexo" accept="image/*, .pdf">
-                        <!-- Barra de pré-visualização imediata -->
-                        <div class="preview-bar" id="preview-bar">
-                            <span id="preview-nome">Arquivo pronto</span>
-                            <button type="button" class="btn-preview-inline" id="btn-ver-selecionado">👁️ Testar Visualização</button>
-                        </div>
                     </div>
 
                     <button type="submit" class="btn-submit" id="btn-submit">
@@ -937,13 +820,13 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th style="width: 120px;">Data</th>
-                            <th style="width: 120px;">Bitola</th>
-                            <th style="width: 140px;">Laudo</th>
+                            <th style="width: 130px;">Data</th>
+                            <th style="width: 130px;">Bitola</th>
+                            <th style="width: 150px;">Laudo</th>
                             <th>Observação / Motivo da Falha</th>
-                            <th style="width: 140px;">Operador</th>
-                            <th style="width: 240px;">Laudo PDF / Anexo</th>
-                            <th style="width: 90px; text-align: right;">Ação</th>
+                            <th style="width: 160px;">Operador</th>
+                            <th style="width: 180px;">Anexo</th>
+                            <th style="width: 100px; text-align: right;">Ação</th>
                         </tr>
                     </thead>
                     <tbody id="tabela-corpo">
@@ -957,23 +840,6 @@
 
     </main>
 
-    <!-- JANELA MODAL PARA VISUALIZAR O PDF / IMAGEM NA TELA -->
-    <div class="pdf-modal-overlay" id="pdf-modal">
-        <div class="pdf-modal-box">
-            <div class="pdf-modal-header">
-                <span class="pdf-modal-title" id="modal-titulo">📄 Visualizador de Laudo Técnico</span>
-                <div class="pdf-modal-actions">
-                    <a id="modal-btn-nova-aba" href="#" target="_blank" class="btn-top" style="text-decoration:none;">↗ Abrir em Nova Aba / Baixar</a>
-                    <button type="button" class="btn-danger-all" id="btn-fechar-modal">✖ Fechar (ESC)</button>
-                </div>
-            </div>
-            <div class="pdf-modal-body" id="modal-conteudo"></div>
-        </div>
-    </div>
-
-    <!-- Input oculto para vincular um PDF a um teste antigo caso não esteja no cache -->
-    <input type="file" id="input-vincular-pdf" accept="image/*, .pdf" style="display:none;">
-
     <div id="toast-box"></div>
 
     <script>
@@ -986,7 +852,6 @@
         const motivoFalhaSelect = document.getElementById('motivo-falha');
         const grupoOutros = document.getElementById('grupo-outros');
         const outroMotivoInput = document.getElementById('outro-motivo');
-        const anexoInput = document.getElementById('anexo');
         const tabelaCorpo = document.getElementById('tabela-corpo');
         const btnLimparTudo = document.getElementById('btn-limpar-tudo');
 
@@ -996,161 +861,7 @@
 
         let historicoTestes = [];
         let listaFiltrada = [];
-        let arquivoSelecionadoBase64 = null;
-        let arquivoSelecionadoMime = null;
-        let arquivoSelecionadoNome = null;
 
-        // ==========================================================================
-        // BANCO DE DADOS LOCAL (IndexedDB) PARA GUARDAR E ABRIR OS PDFs NO NAVEGADOR
-        // ==========================================================================
-        function abrirDB() {
-            return new Promise((resolve, reject) => {
-                const req = indexedDB.open("GrandeAco_PDF_Vault", 1);
-                req.onupgradeneeded = e => {
-                    e.target.result.createObjectStore("arquivos");
-                };
-                req.onsuccess = e => resolve(e.target.result);
-                req.onerror = e => reject(e);
-            });
-        }
-
-        async function salvarPDFNoNavegador(nomeArquivo, base64Data) {
-            try {
-                const db = await abrirDB();
-                const tx = db.transaction("arquivos", "readwrite");
-                tx.objectStore("arquivos").put(base64Data, nomeArquivo);
-            } catch (e) {
-                console.error("Erro ao guardar PDF localmente:", e);
-            }
-        }
-
-        async function buscarPDFNoNavegador(nomeArquivo) {
-            try {
-                const db = await abrirDB();
-                return new Promise((resolve) => {
-                    const tx = db.transaction("arquivos", "readonly");
-                    const req = tx.objectStore("arquivos").get(nomeArquivo);
-                    req.onsuccess = () => resolve(req.result || null);
-                    req.onerror = () => resolve(null);
-                });
-            } catch (e) {
-                return null;
-            }
-        }
-
-        // Converte DataURL Base64 para Blob URL (Garante que o Chrome abra o PDF sem bloquear)
-        function base64ParaBlobUrl(dataUrl) {
-            const partes = dataUrl.split(',');
-            const mime = partes[0].match(/:(.*?);/)[1];
-            const bstr = atob(partes[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while (n--) {
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            const blob = new Blob([u8arr], { type: mime });
-            return URL.createObjectURL(blob);
-        }
-
-        // ==========================================================================
-        // LEITURA DO ARQUIVO AO SELECIONAR NO FORMULÁRIO
-        // ==========================================================================
-        anexoInput.addEventListener('change', function() {
-            const previewBar = document.getElementById('preview-bar');
-            if (this.files && this.files.length > 0) {
-                const file = this.files[0];
-                arquivoSelecionadoNome = file.name;
-                arquivoSelecionadoMime = file.type || 'application/pdf';
-
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    arquivoSelecionadoBase64 = evt.target.result;
-                    previewBar.style.display = 'flex';
-                    document.getElementById('preview-nome').textContent = `📄 ${file.name}`;
-                };
-                reader.readAsDataURL(file);
-            } else {
-                arquivoSelecionadoBase64 = null;
-                previewBar.style.display = 'none';
-            }
-        });
-
-        document.getElementById('btn-ver-selecionado').addEventListener('click', () => {
-            if (arquivoSelecionadoBase64) {
-                abrirModalVisualizador(arquivoSelecionadoNome, arquivoSelecionadoBase64);
-            }
-        });
-
-        // ==========================================================================
-        // FUNÇÃO PARA ABRIR O MODAL COM O PDF OU IMAGEM
-        // ==========================================================================
-        function abrirModalVisualizador(titulo, fonteDados) {
-            const modal = document.getElementById('pdf-modal');
-            const conteudo = document.getElementById('modal-conteudo');
-            const btnNovaAba = document.getElementById('modal-btn-nova-aba');
-            document.getElementById('modal-titulo').textContent = `📄 ${titulo}`;
-
-            let urlFinal = fonteDados;
-            if (fonteDados.startsWith('data:')) {
-                urlFinal = base64ParaBlobUrl(fonteDados);
-            }
-
-            btnNovaAba.href = urlFinal;
-
-            if (fonteDados.startsWith('data:image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(titulo)) {
-                conteudo.innerHTML = `<img src="${urlFinal}" alt="${titulo}">`;
-            } else {
-                conteudo.innerHTML = `<iframe src="${urlFinal}"></iframe>`;
-            }
-
-            modal.style.display = 'flex';
-        }
-
-        document.getElementById('btn-fechar-modal').addEventListener('click', () => {
-            document.getElementById('pdf-modal').style.display = 'none';
-            document.getElementById('modal-conteudo').innerHTML = '';
-        });
-
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') document.getElementById('btn-fechar-modal').click();
-        });
-
-        // Chamada ao clicar no botão "👁️ Abrir PDF" na tabela
-        async function visualizarAnexoDaTabela(nomeOuLink) {
-            // 1. Se a planilha já devolveu um link direto do Google Drive
-            if (nomeOuLink.startsWith('http://') || nomeOuLink.startsWith('https://')) {
-                window.open(nomeOuLink, '_blank');
-                return;
-            }
-
-            // 2. Procura no banco de dados interno do navegador (IndexedDB)
-            const salvoLocal = await buscarPDFNoNavegador(nomeOuLink);
-            if (salvoLocal) {
-                abrirModalVisualizador(nomeOuLink, salvoLocal);
-                return;
-            }
-
-            // 3. Se for um teste antigo que só tinha o nome salvo, permite localizar o PDF na hora
-            if (confirm(`O arquivo "${nomeOuLink}" foi salvo antes da ativação do visualizador.\n\nDeseja selecionar o PDF "${nomeOuLink}" no seu computador agora para abrir e deixar vinculado?`)) {
-                const inputVincular = document.getElementById('input-vincular-pdf');
-                inputVincular.onchange = function() {
-                    if (this.files && this.files.length > 0) {
-                        const reader = new FileReader();
-                        reader.onload = async function(evt) {
-                            const b64 = evt.target.result;
-                            await salvarPDFNoNavegador(nomeOuLink, b64);
-                            abrirModalVisualizador(nomeOuLink, b64);
-                        };
-                        reader.readAsDataURL(this.files[0]);
-                    }
-                };
-                inputVincular.click();
-            }
-        }
-
-        // ==========================================================================
-        // INICIALIZAÇÃO E EVENTOS GERAIS
-        // ==========================================================================
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('data').value = new Date().toISOString().split('T')[0];
             const opSalvo = localStorage.getItem('ga_operador');
@@ -1293,20 +1004,6 @@
                         ? `<strong style="color:var(--fail-color)">${teste.textoMotivo}</strong>` 
                         : `<span style="color:var(--text-muted)">Conformidade OK</span>`;
 
-                    // Renderiza o botão clicável de visualizar PDF se houver arquivo anexado
-                    const arq = teste.nomeArquivo || "Nenhum anexo";
-                    let colunaAnexoHtml = `<span style="color:var(--text-muted); font-size:12px;">Sem anexo</span>`;
-                    
-                    if (arq !== "Nenhum anexo" && arq !== "Nenhum") {
-                        const argSeguro = arq.replace(/'/g, "\\'");
-                        const nomeCurto = arq.startsWith('http') ? 'Abrir Laudo Drive' : arq;
-                        colunaAnexoHtml = `
-                            <button type="button" class="btn-view-pdf" onclick="visualizarAnexoDaTabela('${argSeguro}')" title="Clique para abrir o PDF">
-                                👁️ ${nomeCurto}
-                            </button>
-                        `;
-                    }
-
                     tr.innerHTML = `
                         <td style="font-family:'JetBrains Mono',monospace;">${teste.dataFormatada}</td>
                         <td><span class="pill-bitola">Ø ${teste.bitola} mm</span></td>
@@ -1317,7 +1014,7 @@
                         </td>
                         <td>${motivoTxt}</td>
                         <td>👷 ${teste.operador}</td>
-                        <td>${colunaAnexoHtml}</td>
+                        <td style="color:var(--text-muted); font-size:12px;">📎 ${teste.nomeArquivo || 'Nenhum'}</td>
                         <td style="text-align: right;">
                             <button class="btn-del-row" onclick="deletarTeste(${teste.linha})">Excluir</button>
                         </td>
@@ -1337,6 +1034,7 @@
             atualizarTabela();
         });
 
+        // Excluir 1 Teste Individual
         function deletarTeste(linha) {
             if (!confirm("Deseja realmente excluir este registro da planilha?")) return;
             toast("Excluindo registro na nuvem...");
@@ -1352,6 +1050,7 @@
             });
         }
 
+        // ZERAR TODOS OS TESTES ANTERIORES (DE BAIXO PARA CIMA)
         btnLimparTudo.addEventListener('click', async () => {
             if (historicoTestes.length === 0) {
                 toast("⚠️ O histórico já está vazio!");
@@ -1369,6 +1068,7 @@
 
             btnLimparTudo.disabled = true;
 
+            // Ordena as linhas da maior para a menor para não deslocar os índices na Planilha Google
             const linhasOrdenadas = historicoTestes
                 .map(t => Number(t.linha))
                 .filter(n => !isNaN(n))
@@ -1390,6 +1090,7 @@
                     body: JSON.stringify({ acao: "deletar", linha: linhaAtual })
                 });
 
+                // Pequena pausa para o Google Apps Script processar a exclusão sem travar
                 await new Promise(r => setTimeout(r, 350));
             }
 
@@ -1398,8 +1099,8 @@
             carregarDadosDaPlanilha();
         });
 
-        // Submeter Novo Teste + Guardar PDF para Visualização
-        formTeste.addEventListener('submit', async function(e) {
+        // Submeter Novo Teste
+        formTeste.addEventListener('submit', function(e) {
             e.preventDefault();
 
             if (!bitolaInput.value) {
@@ -1419,12 +1120,8 @@
             const operador = document.getElementById('operador').value.trim();
             localStorage.setItem('ga_operador', operador);
 
-            let nomeArquivo = "Nenhum anexo";
-            if (anexoInput.files.length > 0 && arquivoSelecionadoBase64) {
-                nomeArquivo = anexoInput.files[0].name;
-                // Guarda no cofre do navegador para abrir instantaneamente quando clicar na tabela
-                await salvarPDFNoNavegador(nomeArquivo, arquivoSelecionadoBase64);
-            }
+            const anexoInput = document.getElementById('anexo');
+            const nomeArquivo = anexoInput.files.length > 0 ? anexoInput.files[0].name : "Nenhum anexo";
 
             let motivoLimpo = "Nenhum";
             if (statusInput.value === 'reprovado') {
@@ -1440,10 +1137,7 @@
                 bitola: bitolaInput.value,
                 status: statusInput.value,
                 textoMotivo: motivoLimpo,
-                nomeArquivo: nomeArquivo,
-                // Também envia o Base64 caso o seu Google Apps Script salve no Google Drive
-                arquivoBase64: arquivoSelecionadoBase64 ? arquivoSelecionadoBase64.split(',')[1] : "",
-                mimeType: arquivoSelecionadoMime || ""
+                nomeArquivo: nomeArquivo
             };
 
             fetch(LINK_PLANILHA, {
@@ -1452,7 +1146,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(novoTeste)
             }).then(() => {
-                toast("✔ Ensaio e PDF registrados com sucesso!");
+                toast("✔ Ensaio registrado com sucesso!");
                 btnSubmit.disabled = false;
                 btnSubmit.textContent = "REGISTRAR ENSAIO";
 
@@ -1463,8 +1157,6 @@
                 statusInput.value = '';
                 grupoReprovacao.style.display = 'none';
                 anexoInput.value = '';
-                arquivoSelecionadoBase64 = null;
-                document.getElementById('preview-bar').style.display = 'none';
 
                 carregarDadosDaPlanilha();
             });
