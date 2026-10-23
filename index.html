@@ -474,6 +474,9 @@
         </div>
     </div>
 
+    <!-- Input invisível para vincular PDF antigo caso clique nele -->
+    <input type="file" id="input-vincular-antigo" accept=".pdf,image/*" style="display:none;">
+
     <div id="toast-box"></div>
 
     <script>
@@ -643,12 +646,25 @@
             document.getElementById('modal-conteudo').innerHTML = '';
         });
 
+        // Função inteligente para abrir PDF antigo ou novo da nuvem
         function verPDFTabela(linkOuNome) {
             if (linkOuNome.startsWith('http://') || linkOuNome.startsWith('https://')) {
-                // Se for link do Google Drive, abre direto no modal ou nova aba
                 abrirModalPDFURL("Laudo Técnico", linkOuNome);
             } else {
-                alert(`O arquivo "${linkOuNome}" é antigo e não possui link na nuvem. Faça um novo lançamento para enviar à nuvem.`);
+                // Se for um registro antigo que só tem o nome, permite localizar o PDF na hora sem dar erro chato
+                if (confirm(`O arquivo "${linkOuNome}" é de um lançamento anterior.\n\nDeseja carregar este PDF agora do seu computador para visualizá-lo?`)) {
+                    const inputVincular = document.getElementById('input-vincular-antigo');
+                    inputVincular.onchange = function() {
+                        if (this.files && this.files.length > 0) {
+                            const reader = new FileReader();
+                            reader.onload = function(evt) {
+                                abrirModalPDFURL(linkOuNome, evt.target.result);
+                            };
+                            reader.readAsDataURL(this.files[0]);
+                        }
+                    };
+                    inputVincular.click();
+                }
             }
         }
 
@@ -774,7 +790,6 @@
                 textoMotivo: document.getElementById('dobramento').value,
                 operador: op,
                 nomeArquivo: pdfAtualNome || "Nenhum anexo",
-                // Envia o PDF convertido em Base64 para o Apps Script salvar no Drive
                 arquivoBase64: pdfAtualBase64 ? pdfAtualBase64.split(',')[1] : "",
                 mimeType: pdfAtualMime || ""
             };
@@ -803,7 +818,7 @@
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: "deletar", acao: "deletar", linha: linha, aba: aba })
+                body: JSON.stringify({ acao: "deletar", linha: linha, aba: aba })
             }).then(() => {
                 toast("✔ Amostra excluída!");
                 setTimeout(carregarDadosDaPlanilha, 500);
