@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
-    <!-- Biblioteca PDF.js para ler o texto interno do PDF automaticamente -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     
     <style>
@@ -63,7 +62,6 @@
             flex-direction: column;
         }
 
-        /* TOPBAR */
         .topbar {
             height: 70px;
             background-color: var(--bg-header);
@@ -104,7 +102,6 @@
         }
         .btn-top:hover { background: var(--brand-blue); border-color: var(--brand-blue); }
 
-        /* WORKSPACE */
         .workspace {
             flex: 1;
             display: grid;
@@ -144,10 +141,8 @@
         }
         .panel-title::before { content: ''; width: 4px; height: 15px; background: var(--brand-blue); border-radius: 2px; }
 
-        /* FORMULÁRIO ABNT */
         .form-body { padding: 16px 18px; overflow-y: auto; flex: 1; }
 
-        /* Dropzone de Leitura Automática de PDF */
         .pdf-smart-box {
             background: rgba(48, 156, 225, 0.08);
             border: 2px dashed var(--brand-blue);
@@ -205,32 +200,16 @@
         }
         .btn-submit:hover { background: var(--brand-blue-dark); }
 
-        /* ABAS DE BITOLA E FILTROS (ESTILO EXCEL GRANDE AÇO 2025) */
         .sheet-tabs-bar {
-            display: flex;
-            background: var(--bg-input);
-            border-bottom: 2px solid var(--brand-blue);
-            padding: 8px 18px 0 18px;
-            gap: 6px;
+            display: flex; background: var(--bg-input); border-bottom: 2px solid var(--brand-blue);
+            padding: 8px 18px 0 18px; gap: 6px;
         }
-
         .sheet-tab {
-            background: var(--bg-card);
-            color: var(--text-sec);
-            border: 1px solid var(--border);
-            border-bottom: none;
-            padding: 8px 16px;
-            border-radius: 6px 6px 0 0;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
+            background: var(--bg-card); color: var(--text-sec); border: 1px solid var(--border);
+            border-bottom: none; padding: 8px 16px; border-radius: 6px 6px 0 0;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; cursor: pointer;
         }
-        .sheet-tab.active {
-            background: var(--brand-blue);
-            color: #fff;
-            border-color: var(--brand-blue);
-        }
+        .sheet-tab.active { background: var(--brand-blue); color: #fff; border-color: var(--brand-blue); }
 
         .toolbar-filtros {
             padding: 10px 18px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
@@ -246,7 +225,6 @@
         }
         .btn-action:hover { color: var(--text-main); border-color: var(--brand-blue); }
 
-        /* TABELA PADRÃO ABNT */
         .table-container { flex: 1; overflow: auto; }
         table.data-table { width: 100%; border-collapse: collapse; text-align: center; }
         table.data-table thead th {
@@ -267,7 +245,6 @@
         }
         .btn-view-pdf:hover { background: var(--brand-blue); color: #fff; }
 
-        /* MODAL PDF */
         .pdf-modal-overlay {
             position: fixed; inset: 0; background: rgba(5,10,15,0.85); z-index: 9990;
             display: none; align-items: center; justify-content: center; padding: 20px;
@@ -321,7 +298,6 @@
     </header>
 
     <main class="workspace">
-        <!-- PAINEL ESQUERDO: LEITOR DE PDF + FORMULÁRIO ABNT -->
         <section class="panel">
             <div class="panel-header">
                 <span class="panel-title">Lançamento Padrão ABNT</span>
@@ -331,7 +307,6 @@
             <div class="form-body">
                 <form id="form-teste">
                     
-                    <!-- 1. UPLOAD DO PDF COM EXTRAÇÃO AUTOMÁTICA -->
                     <div class="pdf-smart-box">
                         <span class="pdf-smart-title">⚡ 1. ANEXE O PDF PARA PREENCHER AUTOMATICAMENTE</span>
                         <input type="file" id="anexo" accept=".pdf,image/*" style="width:100%; font-size:11px;">
@@ -341,7 +316,6 @@
                         <button type="button" id="btn-preview-form" class="btn-view-pdf" style="display:none; margin-top:6px;">👁️ Visualizar PDF Anexado</button>
                     </div>
 
-                    <!-- 2. SELETOR DE ABA / BITOLA NOMINAL -->
                     <div class="field-group">
                         <label>Bitola Nominal (Aba da Planilha):</label>
                         <input type="hidden" id="bitola-nominal" value="4.2" required>
@@ -355,7 +329,6 @@
                         </div>
                     </div>
 
-                    <!-- 3. DADOS DE RASTREABILIDADE (AMOSTRA, LOTE, DATA) -->
                     <div class="form-grid-3">
                         <div class="field-group">
                             <label for="tipo-prova">Tipo de Ensaio:</label>
@@ -375,7 +348,6 @@
                         </div>
                     </div>
 
-                    <!-- 4. MEDIDAS FÍSICAS E MECÂNICAS (ABNT NBR 7480) -->
                     <div class="form-grid-3">
                         <div class="field-group">
                             <label for="bitola-real">Bitola Real (mm):</label>
@@ -417,7 +389,6 @@
                         </div>
                     </div>
 
-                    <!-- 5. LAUDO FINAL -->
                     <div class="field-group">
                         <label>Aprovado (Critério ABNT: LE ≥ 600 MPa | LR/LE ≥ 1.05 | Along ≥ 5%):</label>
                         <input type="hidden" id="status" value="aprovado" required>
@@ -434,7 +405,6 @@
             </div>
         </section>
 
-        <!-- PAINEL DIREITO: PLANILHA ABNT SEPARADA POR ABAS DE BITOLA -->
         <section class="panel">
             <div class="panel-header">
                 <span class="panel-title">Espelho da Planilha ABNT (Grande Aço)</span>
@@ -443,7 +413,6 @@
                 </div>
             </div>
 
-            <!-- ABAS IDÊNTICAS AO EXCEL (3,4 | 3,8 | 4,2 | 4,6 | 5,0 | 6,0) -->
             <div class="sheet-tabs-bar" id="abas-bitola">
                 <button class="sheet-tab active" data-aba="TODAS">TODAS</button>
                 <button class="sheet-tab" data-aba="3.4">Aba 3,4</button>
@@ -495,7 +464,6 @@
         </section>
     </main>
 
-    <!-- MODAL DE VISUALIZAÇÃO DO PDF -->
     <div class="pdf-modal-overlay" id="pdf-modal">
         <div class="pdf-modal-box">
             <div class="pdf-modal-header">
@@ -509,19 +477,16 @@
     <div id="toast-box"></div>
 
     <script>
-        const LINK_PLANILHA = "https://script.google.com/macros/s/AKfycbyAX8RiLYzZGRjsO7WyTRFjESWHASr4cPl6TTnKuEF4L6PkbD7FpFIm_jkh1cNUCjDHQA/exec";
+        const LINK_PLANILHA = "https://script.google.com/macros/s/AKfycbxLRytzsDXDmuo_vz0aE7Hicq6oe_N0a0E0Q2PvxGNZFe5LOTlRiSVp1SqDL-7u5YB2/exec";
 
-        // Configuração do PDF.js
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         let historicoTestes = [];
         let abaAtiva = "TODAS";
         let pdfAtualBase64 = null;
+        let pdfAtualMime = null;
         let pdfAtualNome = null;
 
-        // ==========================================================================
-        // 1. CÁLCULOS AUTOMÁTICOS ABNT NBR 7480 (RELAÇÃO LR/LE E MASSA LINEAR)
-        // ==========================================================================
         const inputBitolaReal = document.getElementById('bitola-real');
         const inputMassaLinear = document.getElementById('massa-linear');
         const inputLR = document.getElementById('lr');
@@ -529,17 +494,14 @@
         const inputAlong = document.getElementById('alongamento');
         const inputRelacao = document.getElementById('relacao');
 
-        // Calcula Massa Linear teórica do aço (g/mm) se o operador digitar a Bitola Real
         inputBitolaReal.addEventListener('input', () => {
             const d = parseFloat(inputBitolaReal.value);
-            if (d > 0 && !inputMassaLinear.dataset.manual) {
-                // Área = pi * (d/2)^2 | Densidade do aço = 0.00785 g/mm³
+            if (d > 0) {
                 const massa = Math.PI * Math.pow(d / 2, 2) * 0.00785;
                 inputMassaLinear.value = massa.toFixed(3);
             }
         });
 
-        // Calcula Relação LR/LE e valida aprovação ABNT automaticamente
         function recalcularABNT() {
             const lr = parseFloat(inputLR.value);
             const le = parseFloat(inputLE.value);
@@ -548,8 +510,6 @@
             if (lr > 0 && le > 0) {
                 const rel = lr / le;
                 inputRelacao.value = rel.toFixed(4);
-
-                // Critério ABNT NBR 7480 para CA-60: LE >= 600, LR/LE >= 1.05, Along >= 5%
                 const aprovadoABNT = (le >= 600) && (rel >= 1.05) && (isNaN(along) || along >= 5);
                 definirStatus(aprovadoABNT ? 'aprovado' : 'reprovado');
             }
@@ -559,26 +519,21 @@
         inputLE.addEventListener('input', recalcularABNT);
         inputAlong.addEventListener('input', recalcularABNT);
 
-        // ==========================================================================
-        // 2. LEITOR AUTOMÁTICO DE PDF (EXTRAI DADOS DO RELATÓRIO DE TRAÇÃO)
-        // ==========================================================================
         document.getElementById('anexo').addEventListener('change', async function() {
             if (!this.files || this.files.length === 0) return;
             const file = this.files[0];
             pdfAtualNome = file.name;
+            pdfAtualMime = file.type || "application/pdf";
             const statusTxt = document.getElementById('status-leitura-pdf');
             statusTxt.innerHTML = "⏳ Lendo dados internos do PDF...";
 
-            // Guarda Base64 para visualização no Modal
             const readerB64 = new FileReader();
-            readerB64.onload = async (e) => {
+            readerB64.onload = (e) => {
                 pdfAtualBase64 = e.target.result;
-                await salvarPDFNoNavegador(pdfAtualNome, pdfAtualBase64);
                 document.getElementById('btn-preview-form').style.display = 'inline-block';
             };
             readerB64.readAsDataURL(file);
 
-            // Extrai Lote e Bitola já pelo nome do arquivo (Ex: "OP150 4.20MM.pdf")
             const matchOpNome = file.name.match(/(?:OR\d+-)?OP\s*\d+(?:-T\d+)?/i);
             if (matchOpNome) document.getElementById('lote').value = matchOpNome[0].toUpperCase().replace(/\s+/g, '');
 
@@ -605,62 +560,38 @@
                     }
 
                     preencherCamposPeloTextoPDF(textoCompleto);
-                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ PDF lido com sucesso! Confira os valores extraídos abaixo.</span>`;
+                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ PDF lido com sucesso! Pronto para gravar na nuvem.</span>`;
                 } catch (err) {
-                    console.error(err);
-                    statusTxt.innerHTML = `⚠️ PDF anexado (preencha os valores manualmente se o PDF for imagem escaneada).`;
+                    statusTxt.innerHTML = `⚠️ PDF anexado (preencha os valores manualmente se necessário).`;
                 }
             }
         });
 
         function preencherCamposPeloTextoPDF(txt) {
             const limpo = txt.replace(/\s+/g, ' ');
-
-            // 1. Procura Lote / OP no texto
             const mLote = limpo.match(/(?:Lote|OP|Ordem|Identifica[çc][ãa]o)\s*[:\-]?\s*([A-Z0-9\-_\/]{3,20})/i);
             if (mLote && !document.getElementById('lote').value) {
                 document.getElementById('lote').value = mLote[1].toUpperCase();
             }
 
-            // 2. Procura Diâmetro / Bitola Real (entre 3.00 e 6.50 mm)
             const mDiam = limpo.match(/(?:Di[âa]metro|Bitola|Espessura)\s*[:\-]?\s*([3456][\.,]\d{1,2})/i);
             if (mDiam) {
                 inputBitolaReal.value = mDiam[1].replace(',', '.');
                 inputBitolaReal.dispatchEvent(new Event('input'));
             }
 
-            // 3. Procura LR (Resistência à Tração / Tensão Máxima em MPa - geralmente entre 550 e 1100 MPa)
-            const mLR = limpo.match(/(?:Resist[êe]ncia|Ruptura|M[áa]xima|LR|Rm|f\s*st)\s*[^0-9]{0,25}(\d{3,4}(?:[\.,]\d+)?)\s*(?:MPa)?/i);
+            const mLR = limpo.match(/(?:Resist[êe]ncia|Ruptura|M[áa]xima|LR|Rm)\s*[^0-9]{0,25}(\d{3,4}(?:[\.,]\d+)?)/i);
             if (mLR) inputLR.value = Math.round(parseFloat(mLR[1].replace(',', '.')));
 
-            // 4. Procura LE (Escoamento / fy / Re em MPa - geralmente entre 400 e 950 MPa)
-            const mLE = limpo.match(/(?:Escoamento|LE|Re|f\s*y|0[\.,]2\s*%)\s*[^0-9]{0,25}(\d{3,4}(?:[\.,]\d+)?)\s*(?:MPa)?/i);
+            const mLE = limpo.match(/(?:Escoamento|LE|Re)\s*[^0-9]{0,25}(\d{3,4}(?:[\.,]\d+)?)/i);
             if (mLE) inputLE.value = Math.round(parseFloat(mLE[1].replace(',', '.')));
 
-            // 5. Fallback inteligente: se o PDF lista os valores MPa em tabela numérica
-            if (!inputLR.value || !inputLE.value) {
-                const numerosMPa = [...limpo.matchAll(/\b([56789]\d{2}(?:[\.,]\d+)?)\b/g)]
-                    .map(m => Math.round(parseFloat(m[1].replace(',', '.'))))
-                    .filter(n => n >= 500 && n <= 1050);
-
-                if (numerosMPa.length >= 2) {
-                    const maior = Math.max(...numerosMPa);
-                    const menor = Math.min(...numerosMPa);
-                    if (!inputLR.value) inputLR.value = maior;
-                    if (!inputLE.value) inputLE.value = menor;
-                }
-            }
-
-            // 6. Procura Alongamento (%)
-            const mAlong = limpo.match(/(?:Alongamento|Along|A\s*%|Deforma[çc][ãa]o)\s*[^0-9]{0,20}(\d{1,2}(?:[\.,]\d{1,2})?)\s*%?/i);
+            const mAlong = limpo.match(/(?:Alongamento|Along|A\s*%)\s*[^0-9]{0,20}(\d{1,2}(?:[\.,]\d{1,2})?)/i);
             if (mAlong) inputAlong.value = parseFloat(mAlong[1].replace(',', '.'));
 
             recalcularABNT();
         }
 
-        // ==========================================================================
-        // 3. CONTROLES DE INTERFACE E VISUALIZADOR DE PDF (IndexedDB)
-        // ==========================================================================
         function selecionarBitolaNominal(val) {
             document.getElementById('bitola-nominal').value = val;
             document.querySelectorAll('.bitola-btn').forEach(b => {
@@ -681,7 +612,6 @@
         document.getElementById('btn-status-ok').addEventListener('click', () => definirStatus('aprovado'));
         document.getElementById('btn-status-fail').addEventListener('click', () => definirStatus('reprovado'));
 
-        // Abas da Tabela (3,4 a 6,0)
         document.querySelectorAll('.sheet-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.sheet-tab').forEach(t => t.classList.remove('active'));
@@ -691,49 +621,21 @@
             });
         });
 
-        // Banco de Dados do Navegador para abrir PDF
-        function abrirDB() {
-            return new Promise((res, rej) => {
-                const req = indexedDB.open("GrandeAco_PDF_Vault", 1);
-                req.onupgradeneeded = e => e.target.result.createObjectStore("arquivos");
-                req.onsuccess = e => res(e.target.result);
-                req.onerror = e => rej(e);
-            });
-        }
-
-        async function salvarPDFNoNavegador(nome, b64) {
-            try {
-                const db = await abrirDB();
-                db.transaction("arquivos", "readwrite").objectStore("arquivos").put(b64, nome);
-            } catch (e) {}
-        }
-
-        async function buscarPDFNoNavegador(nome) {
-            try {
-                const db = await abrirDB();
-                return new Promise(res => {
-                    const req = db.transaction("arquivos", "readonly").objectStore("arquivos").get(nome);
-                    req.onsuccess = () => res(req.result || null);
-                    req.onerror = () => res(null);
-                });
-            } catch (e) { return null; }
-        }
-
-        function abrirModalPDF(nome, b64) {
-            const partes = b64.split(',');
-            const mime = partes[0].match(/:(.*?);/)[1];
-            const bstr = atob(partes[1]);
-            const u8 = new Uint8Array(bstr.length);
-            for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
-            const url = URL.createObjectURL(new Blob([u8], { type: mime }));
-
+        function abrirModalPDFURL(nome, url) {
             document.getElementById('modal-titulo').textContent = `📄 ${nome}`;
             document.getElementById('modal-conteudo').innerHTML = `<iframe src="${url}"></iframe>`;
             document.getElementById('pdf-modal').style.display = 'flex';
         }
 
         document.getElementById('btn-preview-form').addEventListener('click', () => {
-            if (pdfAtualBase64) abrirModalPDF(pdfAtualNome, pdfAtualBase64);
+            if (pdfAtualBase64) {
+                const partes = pdfAtualBase64.split(',');
+                const bstr = atob(partes[1]);
+                const u8 = new Uint8Array(bstr.length);
+                for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
+                const blobUrl = URL.createObjectURL(new Blob([u8], { type: pdfAtualMime }));
+                abrirModalPDFURL(pdfAtualNome, blobUrl);
+            }
         });
 
         document.getElementById('btn-fechar-modal').addEventListener('click', () => {
@@ -741,10 +643,13 @@
             document.getElementById('modal-conteudo').innerHTML = '';
         });
 
-        async function verPDFTabela(nome) {
-            const b64 = await buscarPDFNoNavegador(nome);
-            if (b64) abrirModalPDF(nome, b64);
-            else alert(`O PDF "${nome}" não está no cache deste navegador.`);
+        function verPDFTabela(linkOuNome) {
+            if (linkOuNome.startsWith('http://') || linkOuNome.startsWith('https://')) {
+                // Se for link do Google Drive, abre direto no modal ou nova aba
+                abrirModalPDFURL("Laudo Técnico", linkOuNome);
+            } else {
+                alert(`O arquivo "${linkOuNome}" é antigo e não possui link na nuvem. Faça um novo lançamento para enviar à nuvem.`);
+            }
         }
 
         function toast(msg) {
@@ -756,9 +661,6 @@
             setTimeout(() => el.remove(), 3500);
         }
 
-        // ==========================================================================
-        // 4. SINCRONIZAÇÃO COM A PLANILHA GOOGLE E RENDERIZAÇÃO ABNT
-        // ==========================================================================
         function carregarDadosDaPlanilha() {
             fetch(LINK_PLANILHA)
                 .then(r => r.json())
@@ -792,7 +694,6 @@
                 lista = lista.filter(t => String(t.lote || '').toUpperCase().includes(fLote));
             }
 
-            // KPIs
             const total = lista.length;
             const aprov = lista.filter(t => t.status === 'aprovado' || t.aprovado === 'SIM').length;
             document.getElementById('kpi-total').textContent = total;
@@ -809,9 +710,12 @@
                 const isOk = t.status === 'aprovado' || t.aprovado === 'SIM';
                 const tr = document.createElement('tr');
                 const arq = t.nomeArquivo || "Nenhum anexo";
-                const btnPdf = (arq !== "Nenhum anexo" && arq !== "Nenhum")
-                    ? `<button class="btn-view-pdf" onclick="verPDFTabela('${arq.replace(/'/g, "\\'")}')">👁️ PDF</button>`
-                    : `-`;
+                
+                let btnPdf = `-`;
+                if (arq !== "Nenhum anexo" && arq !== "Nenhum") {
+                    const argSeguro = arq.replace(/'/g, "\\'");
+                    btnPdf = `<button class="btn-view-pdf" onclick="verPDFTabela('${argSeguro}')">👁️ PDF</button>`;
+                }
 
                 tr.innerHTML = `
                     <td>${t.amostra || (lista.length - idx)}</td>
@@ -843,12 +747,11 @@
         });
         document.getElementById('btn-recarregar').addEventListener('click', carregarDadosDaPlanilha);
 
-        // Salvar na Planilha ABNT
         document.getElementById('form-teste').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-submit');
             btn.disabled = true;
-            btn.textContent = "GRAVANDO NA PLANILHA ABNT...";
+            btn.textContent = "ENVIANDO PDF PARA A NUVEM...";
 
             const op = document.getElementById('operador').value.trim().toUpperCase();
             localStorage.setItem('ga_operador', op);
@@ -870,7 +773,10 @@
                 status: document.getElementById('status').value,
                 textoMotivo: document.getElementById('dobramento').value,
                 operador: op,
-                nomeArquivo: pdfAtualNome || "Nenhum anexo"
+                nomeArquivo: pdfAtualNome || "Nenhum anexo",
+                // Envia o PDF convertido em Base64 para o Apps Script salvar no Drive
+                arquivoBase64: pdfAtualBase64 ? pdfAtualBase64.split(',')[1] : "",
+                mimeType: pdfAtualMime || ""
             };
 
             fetch(LINK_PLANILHA, {
@@ -879,9 +785,14 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             }).then(() => {
-                toast("✔ Amostra lançada no padrão ABNT!");
+                toast("✔ PDF e ensaio salvos na nuvem com sucesso!");
                 btn.disabled = false;
                 btn.textContent = "LANÇAR NA PLANILHA ABNT";
+                document.getElementById('anexo').value = "";
+                pdfAtualBase64 = null;
+                pdfAtualNome = null;
+                document.getElementById('btn-preview-form').style.display = 'none';
+                document.getElementById('status-leitura-pdf').innerHTML = "Selecione o relatório PDF da máquina para extrair LR, LE, Alongamento e Lote.";
                 carregarDadosDaPlanilha();
             });
         });
@@ -892,18 +803,17 @@
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ acao: "deletar", linha: linha, aba: aba })
+                body: JSON.stringify({ action: "deletar", acao: "deletar", linha: linha, aba: aba })
             }).then(() => {
                 toast("✔ Amostra excluída!");
                 setTimeout(carregarDadosDaPlanilha, 500);
             });
         }
 
-        // Exportar CSV exatamente com as colunas do Grande Aco 2025.xlsx
         document.getElementById('btn-exportar').addEventListener('click', () => {
-            let csv = "data:text/csv;charset=utf-8,\uFEFFAMOSTRAS;prova;LOTE;Data;Bitola Real (mm);Massa linear (g/mm);LR (MPa);LE (MPa);Along. (%);Relacao (LR/LE);dobramento;aprovado;responsavel\n";
+            let csv = "data:text/csv;charset=utf-8,\uFEFFAMOSTRAS;prova;LOTE;Data;Bitola Real (mm);Massa linear (g/mm);LR (MPa);LE (MPa);Along. (%);Relacao (LR/LE);dobramento;aprovado;responsavel;Link Laudo\n";
             historicoTestes.forEach((t, i) => {
-                csv += `${t.amostra || (i+1)};${t.tipoProva || 'PROVA'};${t.lote || '-'};${t.dataFormatada};${t.bitolaReal || t.bitola};${t.massaLinear || ''};${t.lr || ''};${t.le || ''};${t.alongamento || ''};${t.relacao || ''};${t.dobramento || 'OK'};${t.status === 'aprovado' ? 'SIM' : 'NÃO'};${t.operador}\n`;
+                csv += `${t.amostra || (i+1)};${t.tipoProva || 'PROVA'};${t.lote || '-'};${t.dataFormatada};${t.bitolaReal || t.bitola};${t.massaLinear || ''};${t.lr || ''};${t.le || ''};${t.alongamento || ''};${t.relacao || ''};${t.dobramento || 'OK'};${t.status === 'aprovado' ? 'SIM' : 'NÃO'};${t.operador};${t.nomeArquivo || ''}\n`;
             });
             const a = document.createElement('a');
             a.href = encodeURI(csv);
@@ -911,7 +821,6 @@
             a.click();
         });
 
-        // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('data').value = new Date().toISOString().split('T')[0];
             document.getElementById('operador').value = localStorage.getItem('ga_operador') || 'FLÁVIO';
