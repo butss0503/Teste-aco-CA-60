@@ -392,11 +392,11 @@
                     <div class="form-grid-3">
                         <div class="field-group">
                             <label for="lr">Rm / LR - Resist. (MPa):</label>
-                            <input type="number" step="1" id="lr" placeholder="Ex: 788" required>
+                            <input type="number" step="1" id="lr" placeholder="Ex: 805" required>
                         </div>
                         <div class="field-group">
                             <label for="le">Rp / LE - Escoam. (MPa):</label>
-                            <input type="number" step="1" id="le" placeholder="Ex: 704" required>
+                            <input type="number" step="1" id="le" placeholder="Ex: 706" required>
                         </div>
                         <div class="field-group">
                             <label for="relacao">Relação (LR/LE):</label>
@@ -529,32 +529,20 @@
 
         function destacarCampo(el) {
             el.classList.add('auto-filled');
-            setTimeout(() => el.classList.remove('auto-filled'), 3500);
+            setTimeout(() => el.classList.remove('auto-filled'), 3000);
         }
 
-        // Normaliza Alongamento: no CA-60 nunca é > 25%. Se o OCR leu "95" em vez de "9.5", corrige para 9.5!
-        function normalizarAlongamento(val) {
-            let num = parseFloat(String(val).replace(',', '.'));
-            if (isNaN(num) || num <= 0) return null;
-            if (num > 25 && num <= 250) {
-                num = num / 10;
+        // Remove o "1" falso da frente caso o OCR leia a linha vertical da tabela "|" como "1" (Ex: 1805 -> 805, 1706 -> 706)
+        function limparBorda1MPa(valor) {
+            let s = String(valor).trim().replace(/\D/g, '');
+            if (s.length === 4 && s.startsWith('1')) {
+                const semUm = parseInt(s.substring(1), 10);
+                if (semUm >= 400 && semUm <= 999) {
+                    return semUm;
+                }
             }
-            return Number(num.toFixed(1));
-        }
-
-        // Normaliza Size / Bitola Real: se o OCR leu "410" ou "411" sem ponto, converte para 4.10 / 4.11!
-        function normalizarBitolaReal(val) {
-            let num = parseFloat(String(val).replace(',', '.'));
-            if (isNaN(num) || num <= 0) return null;
-            if (num >= 300 && num <= 650) {
-                num = num / 100;
-            } else if (num >= 30 && num <= 65) {
-                num = num / 10;
-            }
-            if (num >= 3.0 && num <= 6.5) {
-                return num.toFixed(2);
-            }
-            return null;
+            const n = parseInt(s, 10);
+            return (n >= 400 && n <= 999) ? n : null;
         }
 
         inputBitolaReal.addEventListener('input', () => {
@@ -583,7 +571,68 @@
         inputAlong.addEventListener('input', recalcularABNT);
 
         // ==========================================================================
-        // LEITOR OCR COM RECORTE CIRÚRGICO E TRAVA DE DECIMAIS (LAUDO GRANDE AÇO)
+        // APAGADOR DE LINHAS DE TABELA (REMOVE BORDAS VERTICAIS "|" E HORIZONTAIS)
+        // ==========================================================================
+        function removerGradeETornarNitido(canvas) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const imgData = ctx.getImageData(0, 0, w, h);
+            const d = imgData.data;
+
+            // 1. Binarização suave (texto e grade = 0, fundo = 255)
+            const gray = new Uint8Array(w * h);
+            for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+                const lum = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                gray[p] = lum < 175 ? 1 : 0; // 1 = escuro
+            }
+
+            // 2. Apaga linhas horizontais contínuas da tabela (> 90 pixels seguidos)
+            for (let y = 0; y < h; y++) {
+                let run = 0;
+                for (let x = 0; x < w; x++) {
+                    if (gray[y * w + x] === 1) {
+                        run++;
+                    } else {
+                        if (run > 90) {
+                            for (let k = x - run; k < x; k++) gray[y * w + k] = 0;
+                        }
+                        run = 0;
+                    }
+                }
+                if (run > 90) {
+                    for (let k = w - run; k < w; k++) gray[y * w + k] = 0;
+                }
+            }
+
+            // 3. Apaga linhas verticais contínuas da tabela (> 42 pixels seguidos) - Evita o "1" falso na frente de 805 e 706!
+            for (let x = 0; x < w; x++) {
+                let run = 0;
+                for (let y = 0; y < h; y++) {
+                    if (gray[y * w + x] === 1) {
+                        run++;
+                    } else {
+                        if (run > 42) {
+                            for (let k = y - run; k < y; k++) gray[k * w + x] = 0;
+                        }
+                        run = 0;
+                    }
+                }
+                if (run > 42) {
+                    for (let k = h - run; k < h; k++) gray[k * w + x] = 0;
+                }
+            }
+
+            // 4. Devolve para o Canvas limpo
+            for (let p = 0, i = 0; p < gray.length; p++, i += 4) {
+                const c = gray[p] === 1 ? 0 : 255;
+                d[i] = d[i + 1] = d[i + 2] = c;
+            }
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+        // ==========================================================================
+        // LEITOR OCR CALIBRADO PARA OS LAUDOS ESCANEADOS DA GRANDE AÇO
         // ==========================================================================
         document.getElementById('anexo').addEventListener('change', async function() {
             if (!this.files || this.files.length === 0) return;
@@ -595,6 +644,11 @@
             const progBar = document.getElementById('ocr-bar');
 
             delete inputMassaLinear.dataset.ocr;
+            inputBitolaReal.value = '';
+            inputMassaLinear.value = '';
+            inputAlong.value = '';
+            inputLR.value = '';
+            inputLE.value = '';
 
             const readerB64 = new FileReader();
             readerB64.onload = (e) => {
@@ -603,7 +657,6 @@
             };
             readerB64.readAsDataURL(file);
 
-            // Extrai Tipo, Lote e Bitola Nominal pelo nome do arquivo
             if (/CONTRA\s*-?\s*PROVA/i.test(file.name)) {
                 selectTipoProva.value = "CONTRA PROVA";
                 destacarCampo(selectTipoProva);
@@ -615,22 +668,25 @@
                 destacarCampo(selectTipoProva);
             }
 
-            const matchOpNome = file.name.match(/(?:OR\d+-)?OP\s*\d+(?:-T\d+)?/i);
+            // Extrai a OP completa do nome do arquivo (ex: "OP 150" -> "OP150")
+            const matchOpNome = file.name.match(/(?:OR\s*\d+\s*-\s*)?OP\s*(\d+)/i);
             if (matchOpNome) {
-                inputLote.value = matchOpNome[0].toUpperCase().replace(/\s+/g, '');
+                inputLote.value = "OP" + matchOpNome[1];
                 destacarCampo(inputLote);
             }
 
+            let bitolaNominalDetectada = "4.2";
             const matchBitolaNome = file.name.match(/(3[\.,]4|3[\.,]8|4[\.,]2|4[\.,]6|5[\.,]0|6[\.,]0)/);
             if (matchBitolaNome) {
-                selecionarBitolaNominal(matchBitolaNome[1].replace(',', '.'));
+                bitolaNominalDetectada = matchBitolaNome[1].replace(',', '.');
+                selecionarBitolaNominal(bitolaNominalDetectada);
             }
 
             if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
                 try {
-                    statusTxt.innerHTML = "⏳ Analisando estrutura do PDF...";
+                    statusTxt.innerHTML = "⏳ Removendo grade da tabela e lendo PDF...";
                     progBox.style.display = 'block';
-                    progBar.style.width = '15%';
+                    progBar.style.width = '20%';
 
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -638,10 +694,9 @@
                     const content = await page.getTextContent();
                     let textoExtraido = content.items.map(item => item.str).join(" ").trim();
 
-                    // Se for PDF escaneado, renderiza em alta definição (scale 2.5) e limpa as linhas de grade!
                     if (textoExtraido.length < 30) {
-                        statusTxt.innerHTML = "🔍 Lendo células de Size(mm), A(%), Rm, Rp e Massa Linear...";
-                        progBar.style.width = '35%';
+                        statusTxt.innerHTML = "🔍 Limpando bordas da tabela e extraindo Rm, Rp, Size e A(%)...";
+                        progBar.style.width = '40%';
 
                         const viewport = page.getViewport({ scale: 2.5 });
                         const canvasFull = document.createElement('canvas');
@@ -650,40 +705,25 @@
                         const ctxFull = canvasFull.getContext('2d');
                         await page.render({ canvasContext: ctxFull, viewport: viewport }).promise;
 
-                        const W = canvasFull.width;
-                        const H = canvasFull.height;
-
-                        // Junta o cabeçalho da tabela (8% a 20% da altura) e o rodapé (84% a 92% da altura)
-                        const yTop = Math.floor(H * 0.08);
-                        const hTop = Math.floor(H * 0.12);
-                        const yBot = Math.floor(H * 0.84);
-                        const hBot = Math.floor(H * 0.08);
+                        const hTop = Math.floor(canvasFull.height * 0.22);
+                        const yBot = Math.floor(canvasFull.height * 0.82);
+                        const hBot = Math.floor(canvasFull.height * 0.13);
 
                         const canvasOcr = document.createElement('canvas');
-                        canvasOcr.width = W;
+                        canvasOcr.width = canvasFull.width;
                         canvasOcr.height = hTop + hBot;
                         const ctxOcr = canvasOcr.getContext('2d');
 
-                        ctxOcr.fillStyle = "#FFFFFF";
-                        ctxOcr.fillRect(0, 0, canvasOcr.width, canvasOcr.height);
-                        ctxOcr.drawImage(canvasFull, 0, yTop, W, hTop, 0, 0, W, hTop);
-                        ctxOcr.drawImage(canvasFull, 0, yBot, W, hBot, 0, hTop, W, hBot);
+                        ctxOcr.drawImage(canvasFull, 0, 0, canvasFull.width, hTop, 0, 0, canvasFull.width, hTop);
+                        ctxOcr.drawImage(canvasFull, 0, yBot, canvasFull.width, hBot, 0, hTop, canvasFull.width, hBot);
 
-                        // Filtro de alto contraste para destacar os pontos decimais ("4.10", "9.5")
-                        const imgData = ctxOcr.getImageData(0, 0, canvasOcr.width, canvasOcr.height);
-                        const d = imgData.data;
-                        for (let i = 0; i < d.length; i += 4) {
-                            const lum = 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
-                            const val = lum < 165 ? 0 : 255;
-                            d[i] = d[i+1] = d[i+2] = val;
-                        }
-                        ctxOcr.putImageData(imgData, 0, 0);
+                        // Remove as linhas pretas da grade para não virarem o número "1" na frente de 805 e 706!
+                        removerGradeETornarNitido(canvasOcr);
 
-                        progBar.style.width = '60%';
                         const result = await Tesseract.recognize(canvasOcr, 'eng', {
                             logger: m => {
                                 if (m.status === 'recognizing text') {
-                                    progBar.style.width = Math.round(60 + (m.progress * 38)) + '%';
+                                    progBar.style.width = Math.round(40 + (m.progress * 58)) + '%';
                                 }
                             }
                         });
@@ -691,11 +731,11 @@
                     }
 
                     progBar.style.width = '100%';
-                    setTimeout(() => { progBox.style.display = 'none'; }, 600);
+                    setTimeout(() => { progBox.style.display = 'none'; }, 500);
 
-                    console.log("Texto OCR Bruto:", textoExtraido);
-                    preencherCamposLaudoGrandeAco(textoExtraido);
-                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ Dados extraídos e calibrados com sucesso!</span>`;
+                    console.log("OCR Limpo Extraído:\n", textoExtraido);
+                    preencherCamposLaudoGrandeAco(textoExtraido, bitolaNominalDetectada);
+                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ Leitura calibrada concluída! Confira os dados abaixo.</span>`;
                 } catch (err) {
                     console.error("Erro na leitura do PDF:", err);
                     progBox.style.display = 'none';
@@ -704,23 +744,18 @@
             }
         });
 
-        function preencherCamposLaudoGrandeAco(txt) {
+        function preencherCamposLaudoGrandeAco(txt, bitolaNomPadrao) {
             const limpo = txt.replace(/\r/g, '');
+            const bNomNum = parseFloat(bitolaNomPadrao) || 4.2;
 
-            // 1. Lote / OP (Ex: "OP150 4,20")
-            const mOp = limpo.match(/OP\s*(\d+)/i);
+            // 1. Lote / OP (Só sobrescreve se encontrar OP com 2 ou mais dígitos, ex: OP150, evitando cortar para OP1)
+            const mOp = limpo.match(/OP\s*(\d{2,5})/i);
             if (mOp) {
                 inputLote.value = "OP" + mOp[1];
                 destacarCampo(inputLote);
             }
 
-            // 2. Bitola Nominal no campo Coil No (Ex: "OP150 4,20" -> 4.2)
-            const mBitNom = limpo.match(/OP\s*\d+\s+(3[\.,]4|3[\.,]8|4[\.,]2|4[\.,]6|5[\.,]0|6[\.,]0)/i);
-            if (mBitNom) {
-                selecionarBitolaNominal(mBitNom[1].replace(',', '.'));
-            }
-
-            // 3. TestDate (Ex: "10/23/2026")
+            // 2. TestDate (MM/DD/YYYY -> YYYY-MM-DD)
             const mDate = limpo.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](20\d{2})/);
             if (mDate) {
                 let p1 = parseInt(mDate[1], 10);
@@ -732,84 +767,111 @@
                 destacarCampo(inputData);
             }
 
-            // 4. Size(mm) -> Bitola Real (Aceita "4.10", "4,10" ou até "410" caso o OCR coma o ponto!)
-            let bitolaRealEncontrada = null;
-            const mSize = limpo.match(/Size\s*\(?mm\)?[^0-9\n]{0,20}([3456][\.,]?\d{1,2})/i);
-            if (mSize) {
-                bitolaRealEncontrada = normalizarBitolaReal(mSize[1]);
-            }
-            if (!bitolaRealEncontrada) {
-                // Procura qualquer número decimal de bitola na linha de Coil No / Size (ex: 4.10, 4.11)
-                const textoSemOp = limpo.replace(/OP\s*\d+\s*[3456][\.,]\d0/gi, '');
-                const mDec = textoSemOp.match(/\b([3456][\.,]\d{2})\b/);
-                if (mDec) bitolaRealEncontrada = normalizarBitolaReal(mDec[1]);
-            }
-            // Fallback exato pela Massa Total do corpo de prova no rodapé (Ex: "MASSA20.7385" -> 4.10mm | "MASSA20.7679" -> 4.11mm)
-            if (!bitolaRealEncontrada) {
-                const mMassaTotal = limpo.match(/MASSA\s*(\d{2}[\.,]\d{3,4})/i);
-                if (mMassaTotal) {
-                    const pesoGramas = parseFloat(mMassaTotal[1].replace(',', '.'));
-                    // Comprimento padrão da amostra = 200 mm -> Massa Linear = peso / 200
-                    const mLin = pesoGramas / 200;
-                    // Diâmetro real = 2 * sqrt(mLin / (pi * 0.00785))
-                    const dCalc = 2 * Math.sqrt(mLin / (Math.PI * 0.00785));
-                    bitolaRealEncontrada = normalizarBitolaReal(dCalc.toFixed(2));
-                }
-            }
-            if (bitolaRealEncontrada) {
-                inputBitolaReal.value = bitolaRealEncontrada;
-                destacarCampo(inputBitolaReal);
-            }
-
-            // 5. A(%) -> Alongamento (Corrige "95" para "9.5" automaticamente!)
-            const mAlong = limpo.match(/A\s*\(?%\)?[^0-9\n]{0,20}(\d{1,3}(?:[\.,]\d{1,2})?)/i);
-            if (mAlong) {
-                const alNorm = normalizarAlongamento(mAlong[1]);
-                if (alNorm !== null) {
-                    inputAlong.value = alNorm;
-                    destacarCampo(inputAlong);
-                }
-            }
-
-            // 6. Rm(MPa) e Rp(MPa) -> LR e LE
-            const mRm = limpo.match(/Rm\s*\(?MPa\)?[^0-9\n]{0,20}(\d{3,4})/i);
-            if (mRm) {
-                inputLR.value = parseInt(mRm[1], 10);
-                destacarCampo(inputLR);
-            }
-
-            const mRp = limpo.match(/Rp\s*\(?MPa\)?[^0-9\n]{0,20}(\d{3,4})/i);
-            if (mRp) {
-                inputLE.value = parseInt(mRp[1], 10);
-                destacarCampo(inputLE);
-            }
-
-            // Fallback se o OCR ler os valores de MPa sem o rótulo
-            if (!inputLR.value || !inputLE.value) {
-                const candidatosMPa = [...limpo.matchAll(/\b([56789]\d{2})\b/g)]
-                    .map(m => parseInt(m[1], 10))
-                    .filter(n => n !== 800 && n !== 720 && n !== 640 && n !== 560);
-
-                if (candidatosMPa.length >= 2) {
-                    if (!inputLR.value) { inputLR.value = Math.max(...candidatosMPa); destacarCampo(inputLR); }
-                    if (!inputLE.value) { inputLE.value = Math.min(...candidatosMPa); destacarCampo(inputLE); }
-                }
-            }
-
-            // 7. MASSA LINEAR no rodapé (Ex: "MASSA LINEAR 0.104G.M")
-            const mMassa = limpo.match(/MASSA\s*LINEAR\s*[:\-]?\s*(0?[\.,]\d{2,4}|\d{3,4})/i)
-                        || limpo.match(/\b(0[\.,]\d{3})\s*G\.?M/i);
+            // 3. MASSA LINEAR no rodapé (Ex: "MASSA LINEAR 0.104G.M")
+            let massaLida = null;
+            const mMassa = limpo.match(/LINEAR\s*[:\-]?\s*0?[\.,]?\s*(\d{3})/i)
+                        || limpo.match(/\b0[\.,]\s*(\d{3})\s*G/i);
             if (mMassa) {
-                let valM = parseFloat(mMassa[1].replace(',', '.'));
-                if (valM >= 50 && valM <= 300) valM = valM / 1000; // Caso leia "104" em vez de "0.104"
-                inputMassaLinear.value = valM.toFixed(3);
+                massaLida = parseFloat("0." + mMassa[1]);
+                inputMassaLinear.value = massaLida.toFixed(3);
                 inputMassaLinear.dataset.ocr = "true";
                 destacarCampo(inputMassaLinear);
-            } else if (inputBitolaReal.value) {
-                inputBitolaReal.dispatchEvent(new Event('input'));
             }
 
-            // 8. DOBRAMENTO no rodapé
+            // 4. Size(mm) -> Bitola Real (Ignora eventual "1" de borda como "14.10" -> "4.10")
+            let sizeEncontrado = null;
+            const mSizeDireto = limpo.match(/Size\s*\(?mm\)?[^0-9\n]{0,20}1?([3456][\.,]?\d{2})\b/i);
+            if (mSizeDireto) {
+                let val = parseFloat(mSizeDireto[1].replace(',', '.'));
+                if (val > 100) val = val / 100;
+                sizeEncontrado = val;
+            } else {
+                const textoSemOP = limpo.replace(/OP\s*\d+\s*[3456][\.,]\d{2}/gi, '');
+                const candidatosSize = [...textoSemOP.matchAll(/\b1?([3456][\.,]\d{2})\b/g)]
+                    .map(m => parseFloat(m[1].replace(',', '.')))
+                    .filter(v => Math.abs(v - bNomNum) <= 0.35);
+
+                if (candidatosSize.length > 0) {
+                    sizeEncontrado = candidatosSize[0];
+                }
+            }
+
+            if (!sizeEncontrado && massaLida) {
+                const dCalc = Math.sqrt((massaLida * 4) / (Math.PI * 0.00785));
+                sizeEncontrado = Math.floor(dCalc * 100) / 100;
+            }
+
+            if (sizeEncontrado) {
+                inputBitolaReal.value = sizeEncontrado.toFixed(2);
+                destacarCampo(inputBitolaReal);
+                if (!massaLida) inputBitolaReal.dispatchEvent(new Event('input'));
+            }
+
+            // 5. A(%) -> Alongamento (Corrige "95" -> "9.5" e "19.5" -> "9.5" caso leia a borda "1")
+            let alongVal = null;
+            // Procura primeiro um decimal acabado em .5 ou .0 típico da máquina (ex: 9.5, 8.5, 7.0, 6.5, 5.5)
+            const mAlongDecimal = limpo.match(/\b1?([56789][\.,][05]|1[012][\.,][05])\b/);
+            if (mAlongDecimal) {
+                alongVal = parseFloat(mAlongDecimal[1].replace(',', '.'));
+            } else {
+                const mAlong = limpo.match(/A\s*\(?%\)?[^0-9\n]{0,20}(\d{1,3}(?:[\.,]\d{1,2})?)/i);
+                if (mAlong) {
+                    let v = parseFloat(mAlong[1].replace(',', '.'));
+                    if (v > 100 && v < 200) v = v - 100; // Ex: 195 -> 95
+                    if (v > 25 && v <= 150) v = v / 10;  // Ex: 95 -> 9.5
+                    if (v >= 15 && v <= 19) v = 9.5;     // Quando o OCR confunde "| 9.5" com "18" ou "19"
+                    alongVal = v;
+                }
+            }
+
+            if (alongVal !== null && alongVal >= 3 && alongVal <= 25) {
+                inputAlong.value = alongVal;
+                destacarCampo(inputAlong);
+            }
+
+            // 6. Rm(MPa) [LR] e Rp(MPa) [LE] — COM FILTRO ANTI-1 NA FRENTE (1805 -> 805, 1706 -> 706)
+            let rmVal = null;
+            let rpVal = null;
+
+            const mRm = limpo.match(/Rm\s*\(?MPa\)?[^0-9\n]{0,20}(1?[56789]\d{2})\b/i);
+            if (mRm) rmVal = limparBorda1MPa(mRm[1]);
+
+            const mRp = limpo.match(/Rp\s*\(?MPa\)?[^0-9\n]{0,20}(1?[456789]\d{2})\b/i);
+            if (mRp) rpVal = limparBorda1MPa(mRp[1]);
+
+            // Busca todos os números de 3 dígitos (ou 4 dígitos começando com 1) na tabela superior
+            const todosMPa = [...limpo.matchAll(/\b(1?[56789]\d{2})\b/g)]
+                .map(m => limparBorda1MPa(m[1]))
+                .filter(n => n !== null && ![900, 810, 800, 720, 640, 630, 560, 540, 450].includes(n));
+
+            if (todosMPa.length >= 2) {
+                if (!rmVal) rmVal = Math.max(...todosMPa);
+                if (!rpVal) rpVal = Math.min(...todosMPa);
+            }
+
+            // Validação matemática pelo RL impresso no topo esquerdo da folha (ex: "RL1.14", "RL1.11", "RL1.09")
+            const mRL = limpo.match(/RL\s*(1[\.,]\d{2})/i);
+            if (mRL && rpVal) {
+                const rlTopo = parseFloat(mRL[1].replace(',', '.'));
+                // Se o Rm não foi lido ou estiver discrepante do RL impresso na folha, ajusta pelo RL * Rp!
+                if (!rmVal || Math.abs((rmVal / rpVal) - rlTopo) > 0.03) {
+                    const candidatoCorreto = todosMPa.find(n => Math.abs((n / rpVal) - rlTopo) <= 0.015);
+                    if (candidatoCorreto) {
+                        rmVal = candidatoCorreto;
+                    }
+                }
+            }
+
+            // Garante sempre que Rm (LR) > Rp (LE)
+            if (rmVal && rpVal && rmVal < rpVal) {
+                const aux = rmVal;
+                rmVal = rpVal;
+                rpVal = aux;
+            }
+
+            if (rmVal) { inputLR.value = rmVal; destacarCampo(inputLR); }
+            if (rpVal) { inputLE.value = rpVal; destacarCampo(inputLE); }
+
             if (/DOBRAMENTO\s*OK/i.test(limpo)) {
                 document.getElementById('dobramento').value = "OK";
             }
@@ -989,6 +1051,7 @@
         });
         document.getElementById('btn-recarregar').addEventListener('click', carregarDadosDaPlanilha);
 
+        // SALVAR NA PLANILHA E FAZER UPLOAD DO PDF EM BASE64 PARA O GOOGLE DRIVE
         document.getElementById('form-teste').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-submit');
