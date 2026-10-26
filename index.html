@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
-    <!-- PDF.js + Tesseract.js (OCR Calibrado para Laudos Grande Aço) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     
@@ -326,7 +325,7 @@
         <section class="panel">
             <div class="panel-header">
                 <span class="panel-title">Lançamento Padrão ABNT</span>
-                <span style="font-size:11px; color:var(--ok-color); font-family:'JetBrains Mono'">● OCR + DRIVE CLOUD</span>
+                <span style="font-size:11px; color:var(--ok-color); font-family:'JetBrains Mono'">● OCR 3-DÍGITOS ATIVO</span>
             </div>
 
             <div class="form-body">
@@ -392,11 +391,11 @@
                     <div class="form-grid-3">
                         <div class="field-group">
                             <label for="lr">Rm / LR - Resist. (MPa):</label>
-                            <input type="number" step="1" id="lr" placeholder="Ex: 805" required>
+                            <input type="number" step="1" id="lr" placeholder="Ex: 788" required>
                         </div>
                         <div class="field-group">
                             <label for="le">Rp / LE - Escoam. (MPa):</label>
-                            <input type="number" step="1" id="le" placeholder="Ex: 706" required>
+                            <input type="number" step="1" id="le" placeholder="Ex: 704" required>
                         </div>
                         <div class="field-group">
                             <label for="relacao">Relação (LR/LE):</label>
@@ -532,16 +531,17 @@
             setTimeout(() => el.classList.remove('auto-filled'), 3000);
         }
 
-        // Remove o "1" falso da frente caso o OCR leia a linha vertical da tabela "|" como "1" (Ex: 1805 -> 805, 1706 -> 706)
-        function limparBorda1MPa(valor) {
-            let s = String(valor).trim().replace(/\D/g, '');
-            if (s.length === 4 && s.startsWith('1')) {
-                const semUm = parseInt(s.substring(1), 10);
-                if (semUm >= 400 && semUm <= 999) {
-                    return semUm;
-                }
+        // ==========================================================================
+        // TRAVA MATEMÁTICA OBRIGATÓRIA: CORTA SEMPRE O "1" DA FRENTE (1788 -> 788)
+        // ==========================================================================
+        function sanitizarMPa3Digitos(val) {
+            if (val === null || val === undefined || val === '') return null;
+            let n = parseInt(String(val).replace(/\D/g, ''), 10);
+            if (isNaN(n)) return null;
+            // Se tiver 4 dígitos começando por 1 (ex: 1788, 1704, 1805, 1706), arranca o milhar!
+            while (n >= 1000) {
+                n = n % 1000;
             }
-            const n = parseInt(s, 10);
             return (n >= 400 && n <= 999) ? n : null;
         }
 
@@ -554,6 +554,16 @@
         });
 
         function recalcularABNT() {
+            // Garante que mesmo antes de calcular a relação LR/LE, nenhum valor tenha "1" na frente!
+            let lrBruto = parseInt(inputLR.value, 10);
+            if (lrBruto >= 1000 && lrBruto < 2000) {
+                inputLR.value = lrBruto % 1000;
+            }
+            let leBruto = parseInt(inputLE.value, 10);
+            if (leBruto >= 1000 && leBruto < 2000) {
+                inputLE.value = leBruto % 1000;
+            }
+
             const lr = parseFloat(inputLR.value);
             const le = parseFloat(inputLE.value);
             const along = parseFloat(inputAlong.value);
@@ -571,68 +581,7 @@
         inputAlong.addEventListener('input', recalcularABNT);
 
         // ==========================================================================
-        // APAGADOR DE LINHAS DE TABELA (REMOVE BORDAS VERTICAIS "|" E HORIZONTAIS)
-        // ==========================================================================
-        function removerGradeETornarNitido(canvas) {
-            const ctx = canvas.getContext('2d');
-            const w = canvas.width;
-            const h = canvas.height;
-            const imgData = ctx.getImageData(0, 0, w, h);
-            const d = imgData.data;
-
-            // 1. Binarização suave (texto e grade = 0, fundo = 255)
-            const gray = new Uint8Array(w * h);
-            for (let i = 0, p = 0; i < d.length; i += 4, p++) {
-                const lum = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-                gray[p] = lum < 175 ? 1 : 0; // 1 = escuro
-            }
-
-            // 2. Apaga linhas horizontais contínuas da tabela (> 90 pixels seguidos)
-            for (let y = 0; y < h; y++) {
-                let run = 0;
-                for (let x = 0; x < w; x++) {
-                    if (gray[y * w + x] === 1) {
-                        run++;
-                    } else {
-                        if (run > 90) {
-                            for (let k = x - run; k < x; k++) gray[y * w + k] = 0;
-                        }
-                        run = 0;
-                    }
-                }
-                if (run > 90) {
-                    for (let k = w - run; k < w; k++) gray[y * w + k] = 0;
-                }
-            }
-
-            // 3. Apaga linhas verticais contínuas da tabela (> 42 pixels seguidos) - Evita o "1" falso na frente de 805 e 706!
-            for (let x = 0; x < w; x++) {
-                let run = 0;
-                for (let y = 0; y < h; y++) {
-                    if (gray[y * w + x] === 1) {
-                        run++;
-                    } else {
-                        if (run > 42) {
-                            for (let k = y - run; k < y; k++) gray[k * w + x] = 0;
-                        }
-                        run = 0;
-                    }
-                }
-                if (run > 42) {
-                    for (let k = h - run; k < h; k++) gray[k * w + x] = 0;
-                }
-            }
-
-            // 4. Devolve para o Canvas limpo
-            for (let p = 0, i = 0; p < gray.length; p++, i += 4) {
-                const c = gray[p] === 1 ? 0 : 255;
-                d[i] = d[i + 1] = d[i + 2] = c;
-            }
-            ctx.putImageData(imgData, 0, 0);
-        }
-
-        // ==========================================================================
-        // LEITOR OCR CALIBRADO PARA OS LAUDOS ESCANEADOS DA GRANDE AÇO
+        // LEITOR OCR COM SEPARAÇÃO DE METADE ESQUERDA E METADE DIREITA DA TABELA
         // ==========================================================================
         document.getElementById('anexo').addEventListener('change', async function() {
             if (!this.files || this.files.length === 0) return;
@@ -649,6 +598,7 @@
             inputAlong.value = '';
             inputLR.value = '';
             inputLE.value = '';
+            inputRelacao.value = '';
 
             const readerB64 = new FileReader();
             readerB64.onload = (e) => {
@@ -668,7 +618,6 @@
                 destacarCampo(selectTipoProva);
             }
 
-            // Extrai a OP completa do nome do arquivo (ex: "OP 150" -> "OP150")
             const matchOpNome = file.name.match(/(?:OR\s*\d+\s*-\s*)?OP\s*(\d+)/i);
             if (matchOpNome) {
                 inputLote.value = "OP" + matchOpNome[1];
@@ -684,58 +633,67 @@
 
             if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
                 try {
-                    statusTxt.innerHTML = "⏳ Removendo grade da tabela e lendo PDF...";
+                    statusTxt.innerHTML = "⏳ Separando blocos da tabela do PDF...";
                     progBox.style.display = 'block';
                     progBar.style.width = '20%';
 
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                     const page = await pdf.getPage(1);
-                    const content = await page.getTextContent();
-                    let textoExtraido = content.items.map(item => item.str).join(" ").trim();
 
-                    if (textoExtraido.length < 30) {
-                        statusTxt.innerHTML = "🔍 Limpando bordas da tabela e extraindo Rm, Rp, Size e A(%)...";
-                        progBar.style.width = '40%';
+                    statusTxt.innerHTML = "🔍 Lendo Coluna Esquerda (A%, Rp) e Coluna Direita (Size, Rm)...";
+                    progBar.style.width = '40%';
 
-                        const viewport = page.getViewport({ scale: 2.5 });
-                        const canvasFull = document.createElement('canvas');
-                        canvasFull.width = viewport.width;
-                        canvasFull.height = viewport.height;
-                        const ctxFull = canvasFull.getContext('2d');
-                        await page.render({ canvasContext: ctxFull, viewport: viewport }).promise;
+                    const viewport = page.getViewport({ scale: 2.4 });
+                    const canvasFull = document.createElement('canvas');
+                    canvasFull.width = viewport.width;
+                    canvasFull.height = viewport.height;
+                    const ctxFull = canvasFull.getContext('2d');
+                    await page.render({ canvasContext: ctxFull, viewport: viewport }).promise;
 
-                        const hTop = Math.floor(canvasFull.height * 0.22);
-                        const yBot = Math.floor(canvasFull.height * 0.82);
-                        const hBot = Math.floor(canvasFull.height * 0.13);
+                    const W = canvasFull.width;
+                    const H = canvasFull.height;
 
-                        const canvasOcr = document.createElement('canvas');
-                        canvasOcr.width = canvasFull.width;
-                        canvasOcr.height = hTop + hBot;
-                        const ctxOcr = canvasOcr.getContext('2d');
+                    // Empilha verticalmente:
+                    // Bloco 1: Metade Esquerda da tabela (x: 4% a 53%, y: 2% a 20%) -> Contém RL, OP, A(%) e Rp(MPa)
+                    // Bloco 2: Metade Direita da tabela (x: 54% a 96%, y: 2% a 20%) -> Contém TestDate, Size(mm) e Rm(MPa)
+                    // Bloco 3: Rodapé (x: 4% a 96%, y: 83% a 93%) -> Contém MASSA LINEAR e DOBRAMENTO
+                    const hTop = Math.floor(H * 0.18);
+                    const yTop = Math.floor(H * 0.02);
+                    const wEsq = Math.floor(W * 0.50);
+                    const wDir = Math.floor(W * 0.42);
+                    const yBot = Math.floor(H * 0.83);
+                    const hBot = Math.floor(H * 0.10);
 
-                        ctxOcr.drawImage(canvasFull, 0, 0, canvasFull.width, hTop, 0, 0, canvasFull.width, hTop);
-                        ctxOcr.drawImage(canvasFull, 0, yBot, canvasFull.width, hBot, 0, hTop, canvasFull.width, hBot);
+                    const canvasOcr = document.createElement('canvas');
+                    canvasOcr.width = W;
+                    canvasOcr.height = (hTop * 2) + hBot + 60;
+                    const ctxOcr = canvasOcr.getContext('2d');
+                    ctxOcr.fillStyle = "#FFFFFF";
+                    ctxOcr.fillRect(0, 0, canvasOcr.width, canvasOcr.height);
 
-                        // Remove as linhas pretas da grade para não virarem o número "1" na frente de 805 e 706!
-                        removerGradeETornarNitido(canvasOcr);
+                    // Desenha Bloco 1 (Esquerda)
+                    ctxOcr.drawImage(canvasFull, Math.floor(W * 0.04), yTop, wEsq, hTop, 10, 10, wEsq, hTop);
+                    // Desenha Bloco 2 (Direita) logo abaixo
+                    ctxOcr.drawImage(canvasFull, Math.floor(W * 0.54), yTop, wDir, hTop, 10, hTop + 30, wDir, hTop);
+                    // Desenha Bloco 3 (Rodapé) no final
+                    ctxOcr.drawImage(canvasFull, Math.floor(W * 0.04), yBot, Math.floor(W * 0.92), hBot, 10, (hTop * 2) + 50, Math.floor(W * 0.92), hBot);
 
-                        const result = await Tesseract.recognize(canvasOcr, 'eng', {
-                            logger: m => {
-                                if (m.status === 'recognizing text') {
-                                    progBar.style.width = Math.round(40 + (m.progress * 58)) + '%';
-                                }
+                    const result = await Tesseract.recognize(canvasOcr, 'eng', {
+                        logger: m => {
+                            if (m.status === 'recognizing text') {
+                                progBar.style.width = Math.round(40 + (m.progress * 58)) + '%';
                             }
-                        });
-                        textoExtraido = result.data.text;
-                    }
+                        }
+                    });
 
                     progBar.style.width = '100%';
                     setTimeout(() => { progBox.style.display = 'none'; }, 500);
 
-                    console.log("OCR Limpo Extraído:\n", textoExtraido);
+                    const textoExtraido = result.data.text;
+                    console.log("OCR Empilhado (Esquerda / Direita / Rodapé):\n", textoExtraido);
                     preencherCamposLaudoGrandeAco(textoExtraido, bitolaNominalDetectada);
-                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ Leitura calibrada concluída! Confira os dados abaixo.</span>`;
+                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ Leitura OCR 3-Dígitos concluída com sucesso!</span>`;
                 } catch (err) {
                     console.error("Erro na leitura do PDF:", err);
                     progBox.style.display = 'none';
@@ -748,7 +706,7 @@
             const limpo = txt.replace(/\r/g, '');
             const bNomNum = parseFloat(bitolaNomPadrao) || 4.2;
 
-            // 1. Lote / OP (Só sobrescreve se encontrar OP com 2 ou mais dígitos, ex: OP150, evitando cortar para OP1)
+            // 1. Lote / OP (Ex: OP150)
             const mOp = limpo.match(/OP\s*(\d{2,5})/i);
             if (mOp) {
                 inputLote.value = "OP" + mOp[1];
@@ -767,7 +725,7 @@
                 destacarCampo(inputData);
             }
 
-            // 3. MASSA LINEAR no rodapé (Ex: "MASSA LINEAR 0.104G.M")
+            // 3. MASSA LINEAR no rodapé (Ex: "0.104")
             let massaLida = null;
             const mMassa = limpo.match(/LINEAR\s*[:\-]?\s*0?[\.,]?\s*(\d{3})/i)
                         || limpo.match(/\b0[\.,]\s*(\d{3})\s*G/i);
@@ -778,70 +736,67 @@
                 destacarCampo(inputMassaLinear);
             }
 
-            // 4. Size(mm) -> Bitola Real (Ignora eventual "1" de borda como "14.10" -> "4.10")
+            // 4. Size(mm) -> Bitola Real (Ex: 4.10 ou 4.11)
             let sizeEncontrado = null;
-            const mSizeDireto = limpo.match(/Size\s*\(?mm\)?[^0-9\n]{0,20}1?([3456][\.,]?\d{2})\b/i);
-            if (mSizeDireto) {
-                let val = parseFloat(mSizeDireto[1].replace(',', '.'));
+            const mSize = limpo.match(/Size\s*\(?mm\)?[^0-9\n]{0,20}1?([3456][\.,]?\d{2})\b/i);
+            if (mSize) {
+                let val = parseFloat(mSize[1].replace(',', '.'));
                 if (val > 100) val = val / 100;
-                sizeEncontrado = val;
-            } else {
+                if (Math.abs(val - bNomNum) <= 0.35) sizeEncontrado = val;
+            }
+            if (!sizeEncontrado) {
                 const textoSemOP = limpo.replace(/OP\s*\d+\s*[3456][\.,]\d{2}/gi, '');
                 const candidatosSize = [...textoSemOP.matchAll(/\b1?([3456][\.,]\d{2})\b/g)]
                     .map(m => parseFloat(m[1].replace(',', '.')))
                     .filter(v => Math.abs(v - bNomNum) <= 0.35);
-
-                if (candidatosSize.length > 0) {
-                    sizeEncontrado = candidatosSize[0];
-                }
+                if (candidatosSize.length > 0) sizeEncontrado = candidatosSize[0];
             }
-
             if (!sizeEncontrado && massaLida) {
                 const dCalc = Math.sqrt((massaLida * 4) / (Math.PI * 0.00785));
                 sizeEncontrado = Math.floor(dCalc * 100) / 100;
             }
-
             if (sizeEncontrado) {
                 inputBitolaReal.value = sizeEncontrado.toFixed(2);
                 destacarCampo(inputBitolaReal);
                 if (!massaLida) inputBitolaReal.dispatchEvent(new Event('input'));
             }
 
-            // 5. A(%) -> Alongamento (Corrige "95" -> "9.5" e "19.5" -> "9.5" caso leia a borda "1")
+            // 5. A(%) -> Alongamento (Isolado na Metade Esquerda, sem interferência do Rm!)
             let alongVal = null;
-            // Procura primeiro um decimal acabado em .5 ou .0 típico da máquina (ex: 9.5, 8.5, 7.0, 6.5, 5.5)
-            const mAlongDecimal = limpo.match(/\b1?([56789][\.,][05]|1[012][\.,][05])\b/);
-            if (mAlongDecimal) {
-                alongVal = parseFloat(mAlongDecimal[1].replace(',', '.'));
-            } else {
-                const mAlong = limpo.match(/A\s*\(?%\)?[^0-9\n]{0,20}(\d{1,3}(?:[\.,]\d{1,2})?)/i);
-                if (mAlong) {
-                    let v = parseFloat(mAlong[1].replace(',', '.'));
-                    if (v > 100 && v < 200) v = v - 100; // Ex: 195 -> 95
-                    if (v > 25 && v <= 150) v = v / 10;  // Ex: 95 -> 9.5
-                    if (v >= 15 && v <= 19) v = 9.5;     // Quando o OCR confunde "| 9.5" com "18" ou "19"
-                    alongVal = v;
+            const mAlongLinha = limpo.match(/A\s*\(?%\)?[^\n]{0,25}/i);
+            if (mAlongLinha) {
+                const trecho = mAlongLinha[0].replace(/A\s*\(?%\)?/i, '');
+                const mNum = trecho.match(/(\d{1,3}(?:[\.,]\d{1,2})?)/);
+                if (mNum) {
+                    let v = parseFloat(mNum[1].replace(',', '.'));
+                    if (v > 100 && v < 200) v = v - 100; // Remove "1" de borda se leu 195 -> 95
+                    if (v > 25 && v <= 150) v = v / 10;  // Converte 95 -> 9.5
+                    if (v >= 3 && v <= 25) alongVal = v;
                 }
             }
-
-            if (alongVal !== null && alongVal >= 3 && alongVal <= 25) {
+            if (alongVal === null) {
+                const mDec = limpo.match(/\b1?([56789][\.,][05]|1[012][\.,][05])\b/);
+                if (mDec) alongVal = parseFloat(mDec[1].replace(',', '.'));
+            }
+            if (alongVal !== null) {
                 inputAlong.value = alongVal;
                 destacarCampo(inputAlong);
             }
 
-            // 6. Rm(MPa) [LR] e Rp(MPa) [LE] — COM FILTRO ANTI-1 NA FRENTE (1805 -> 805, 1706 -> 706)
+            // 6. Rm(MPa) [LR] e Rp(MPa) [LE] — SEMPRE 3 DÍGITOS (Corta qualquer "1" da frente via % 1000!)
             let rmVal = null;
             let rpVal = null;
 
             const mRm = limpo.match(/Rm\s*\(?MPa\)?[^0-9\n]{0,20}(1?[56789]\d{2})\b/i);
-            if (mRm) rmVal = limparBorda1MPa(mRm[1]);
+            if (mRm) rmVal = sanitizarMPa3Digitos(mRm[1]);
 
             const mRp = limpo.match(/Rp\s*\(?MPa\)?[^0-9\n]{0,20}(1?[456789]\d{2})\b/i);
-            if (mRp) rpVal = limparBorda1MPa(mRp[1]);
+            if (mRp) rpVal = sanitizarMPa3Digitos(mRp[1]);
 
-            // Busca todos os números de 3 dígitos (ou 4 dígitos começando com 1) na tabela superior
-            const todosMPa = [...limpo.matchAll(/\b(1?[56789]\d{2})\b/g)]
-                .map(m => limparBorda1MPa(m[1]))
+            // Busca todos os números de tensão MPa na tabela (convertendo 1788 -> 788, 1704 -> 704)
+            const textoSemMassa = limpo.replace(/MASSA\s*\d+[\.,]?\d*/gi, '');
+            const todosMPa = [...textoSemMassa.matchAll(/\b(1?[56789]\d{2})\b/g)]
+                .map(m => sanitizarMPa3Digitos(m[1]))
                 .filter(n => n !== null && ![900, 810, 800, 720, 640, 630, 560, 540, 450].includes(n));
 
             if (todosMPa.length >= 2) {
@@ -849,20 +804,6 @@
                 if (!rpVal) rpVal = Math.min(...todosMPa);
             }
 
-            // Validação matemática pelo RL impresso no topo esquerdo da folha (ex: "RL1.14", "RL1.11", "RL1.09")
-            const mRL = limpo.match(/RL\s*(1[\.,]\d{2})/i);
-            if (mRL && rpVal) {
-                const rlTopo = parseFloat(mRL[1].replace(',', '.'));
-                // Se o Rm não foi lido ou estiver discrepante do RL impresso na folha, ajusta pelo RL * Rp!
-                if (!rmVal || Math.abs((rmVal / rpVal) - rlTopo) > 0.03) {
-                    const candidatoCorreto = todosMPa.find(n => Math.abs((n / rpVal) - rlTopo) <= 0.015);
-                    if (candidatoCorreto) {
-                        rmVal = candidatoCorreto;
-                    }
-                }
-            }
-
-            // Garante sempre que Rm (LR) > Rp (LE)
             if (rmVal && rpVal && rmVal < rpVal) {
                 const aux = rmVal;
                 rmVal = rpVal;
@@ -909,9 +850,6 @@
             });
         });
 
-        // ==========================================================================
-        // VISUALIZADOR UNIVERSAL DE PDF
-        // ==========================================================================
         function abrirModalPDF(titulo, urlEmbed, urlExterna) {
             document.getElementById('modal-titulo').textContent = `📄 ${titulo}`;
             document.getElementById('btn-abrir-drive-externo').href = urlExterna || urlEmbed;
@@ -1051,7 +989,6 @@
         });
         document.getElementById('btn-recarregar').addEventListener('click', carregarDadosDaPlanilha);
 
-        // SALVAR NA PLANILHA E FAZER UPLOAD DO PDF EM BASE64 PARA O GOOGLE DRIVE
         document.getElementById('form-teste').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-submit');
