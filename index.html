@@ -7,7 +7,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <!-- PDF.js + Tesseract.js (OCR para ler PDF escaneado de máquina) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     
     <style>
         :root[data-theme="dark"] {
@@ -161,6 +163,22 @@
             display: block;
         }
 
+        .ocr-progress {
+            width: 100%;
+            height: 5px;
+            background: var(--bg-input);
+            border-radius: 3px;
+            margin-top: 6px;
+            overflow: hidden;
+            display: none;
+        }
+        .ocr-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--brand-blue);
+            transition: width 0.2s;
+        }
+
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
@@ -174,8 +192,13 @@
             width: 100%; height: 36px; padding: 0 10px; background: var(--bg-input);
             border: 1px solid var(--border); border-radius: 4px; color: var(--text-main);
             font-size: 13px; font-weight: 600; outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
         input:focus, select:focus { border-color: var(--brand-blue); }
+        .auto-filled {
+            border-color: var(--ok-color) !important;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
 
         .bitola-selector { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
         .bitola-btn {
@@ -282,7 +305,7 @@
             </div>
             <div class="brand-titles">
                 <span class="sys-tag">PADRÃO ABNT NBR 7480 // GRANDE AÇO 2025/2026</span>
-                <h1>CONTROLE DE TRAÇÃO CA-60 & LEITOR DE LAUDO PDF</h1>
+                <h1>CONTROLE DE TRAÇÃO CA-60 & LEITOR OCR DE LAUDO PDF</h1>
             </div>
         </div>
 
@@ -303,17 +326,18 @@
         <section class="panel">
             <div class="panel-header">
                 <span class="panel-title">Lançamento Padrão ABNT</span>
-                <span style="font-size:11px; color:var(--ok-color); font-family:'JetBrains Mono'">● DRIVE CLOUD ATIVO</span>
+                <span style="font-size:11px; color:var(--ok-color); font-family:'JetBrains Mono'">● OCR + DRIVE CLOUD</span>
             </div>
 
             <div class="form-body">
                 <form id="form-teste">
                     
                     <div class="pdf-smart-box">
-                        <span class="pdf-smart-title">⚡ 1. ANEXE O PDF PARA PREENCHER E SALVAR NA NUVEM</span>
+                        <span class="pdf-smart-title">⚡ 1. ANEXE O PDF ESCANEADO (LEITURA OCR AUTOMÁTICA)</span>
                         <input type="file" id="anexo" accept=".pdf,image/*" style="width:100%; font-size:11px;">
+                        <div class="ocr-progress" id="ocr-progress"><div class="ocr-progress-bar" id="ocr-bar"></div></div>
                         <div id="status-leitura-pdf" style="font-size:11px; color:var(--text-sec); margin-top:6px;">
-                            Selecione o relatório PDF da máquina para extrair LR, LE, Alongamento e Lote.
+                            Selecione o PDF (Prova / Contra Prova) para extrair Rm, Rp, Size, A(%) e Massa Linear.
                         </div>
                         <button type="button" id="btn-preview-form" class="btn-view-pdf" style="display:none; margin-top:6px;">👁️ Visualizar PDF Anexado</button>
                     </div>
@@ -342,7 +366,7 @@
                         </div>
                         <div class="field-group">
                             <label for="lote">Lote / OP:</label>
-                            <input type="text" id="lote" placeholder="Ex: OR83-OP97-T01" required>
+                            <input type="text" id="lote" placeholder="Ex: OP150" required>
                         </div>
                         <div class="field-group">
                             <label for="data">Data:</label>
@@ -352,27 +376,27 @@
 
                     <div class="form-grid-3">
                         <div class="field-group">
-                            <label for="bitola-real">Bitola Real (mm):</label>
-                            <input type="number" step="0.01" id="bitola-real" placeholder="Ex: 4.18" required>
+                            <label for="bitola-real">Size / Bitola Real (mm):</label>
+                            <input type="number" step="0.01" id="bitola-real" placeholder="Ex: 4.10" required>
                         </div>
                         <div class="field-group">
                             <label for="massa-linear">Massa Lin. (g/mm):</label>
-                            <input type="number" step="0.001" id="massa-linear" placeholder="Ex: 0.108" required>
+                            <input type="number" step="0.001" id="massa-linear" placeholder="Ex: 0.104" required>
                         </div>
                         <div class="field-group">
-                            <label for="alongamento">Alongamento (%):</label>
-                            <input type="number" step="0.1" id="alongamento" placeholder="Ex: 7.0" required>
+                            <label for="alongamento">A(%) Alongamento:</label>
+                            <input type="number" step="0.1" id="alongamento" placeholder="Ex: 9.5" required>
                         </div>
                     </div>
 
                     <div class="form-grid-3">
                         <div class="field-group">
-                            <label for="lr">LR - Resist. (MPa):</label>
-                            <input type="number" step="1" id="lr" placeholder="Ex: 786" required>
+                            <label for="lr">Rm / LR - Resist. (MPa):</label>
+                            <input type="number" step="1" id="lr" placeholder="Ex: 788" required>
                         </div>
                         <div class="field-group">
-                            <label for="le">LE - Escoam. (MPa):</label>
-                            <input type="number" step="1" id="le" placeholder="Ex: 710" required>
+                            <label for="le">Rp / LE - Escoam. (MPa):</label>
+                            <input type="number" step="1" id="le" placeholder="Ex: 704" required>
                         </div>
                         <div class="field-group">
                             <label for="relacao">Relação (LR/LE):</label>
@@ -387,7 +411,7 @@
                         </div>
                         <div class="field-group">
                             <label for="operador">Responsável:</label>
-                            <input type="text" id="operador" placeholder="Ex: FLÁVIO / MATEUS" required>
+                            <input type="text" id="operador" placeholder="Ex: FLÁVIO" required>
                         </div>
                     </div>
 
@@ -483,7 +507,6 @@
     <div id="toast-box"></div>
 
     <script>
-        // NOVA URL DO GOOGLE APPS SCRIPT ATUALIZADA
         const LINK_PLANILHA = "https://script.google.com/macros/s/AKfycbwOAP2i59khcPYBCGtj5t3TXKJjgCsixTfIVvX7SS-9AXYpM9xOCOpNNe46RXaBkxqu_w/exec";
 
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -494,6 +517,9 @@
         let pdfAtualMime = null;
         let pdfAtualNome = null;
 
+        const inputLote = document.getElementById('lote');
+        const inputData = document.getElementById('data');
+        const selectTipoProva = document.getElementById('tipo-prova');
         const inputBitolaReal = document.getElementById('bitola-real');
         const inputMassaLinear = document.getElementById('massa-linear');
         const inputLR = document.getElementById('lr');
@@ -501,9 +527,14 @@
         const inputAlong = document.getElementById('alongamento');
         const inputRelacao = document.getElementById('relacao');
 
+        function destacarCampo(el) {
+            el.classList.add('auto-filled');
+            setTimeout(() => el.classList.remove('auto-filled'), 3000);
+        }
+
         inputBitolaReal.addEventListener('input', () => {
             const d = parseFloat(inputBitolaReal.value);
-            if (d > 0 && !inputMassaLinear.dataset.manual) {
+            if (d > 0 && !inputMassaLinear.dataset.ocr) {
                 const massa = Math.PI * Math.pow(d / 2, 2) * 0.00785;
                 inputMassaLinear.value = massa.toFixed(3);
             }
@@ -526,15 +557,21 @@
         inputLE.addEventListener('input', recalcularABNT);
         inputAlong.addEventListener('input', recalcularABNT);
 
-        // LEITURA DO ARQUIVO PDF
+        // ==========================================================================
+        // LEITOR INTELIGENTE HÍBRIDO (TEXTO + OCR DE IMAGEM PARA LAUDO GRANDE AÇO)
+        // ==========================================================================
         document.getElementById('anexo').addEventListener('change', async function() {
             if (!this.files || this.files.length === 0) return;
             const file = this.files[0];
             pdfAtualNome = file.name;
             pdfAtualMime = file.type || "application/pdf";
             const statusTxt = document.getElementById('status-leitura-pdf');
-            statusTxt.innerHTML = "⏳ Lendo dados internos do PDF...";
+            const progBox = document.getElementById('ocr-progress');
+            const progBar = document.getElementById('ocr-bar');
 
+            delete inputMassaLinear.dataset.ocr;
+
+            // 1. Guarda Base64 para visualização e envio ao Google Drive
             const readerB64 = new FileReader();
             readerB64.onload = (e) => {
                 pdfAtualBase64 = e.target.result;
@@ -542,75 +579,182 @@
             };
             readerB64.readAsDataURL(file);
 
+            // 2. Extrai dados rápidos já pelo nome do arquivo (Ex: "OP 150 4,20MM (CONTRAPROVA).pdf")
+            if (/CONTRA\s*-?\s*PROVA/i.test(file.name)) {
+                selectTipoProva.value = "CONTRA PROVA";
+                destacarCampo(selectTipoProva);
+            } else if (/TESTEMUNHO/i.test(file.name)) {
+                selectTipoProva.value = "TESTEMUNHO";
+                destacarCampo(selectTipoProva);
+            } else if (/PROVA/i.test(file.name)) {
+                selectTipoProva.value = "PROVA";
+                destacarCampo(selectTipoProva);
+            }
+
             const matchOpNome = file.name.match(/(?:OR\d+-)?OP\s*\d+(?:-T\d+)?/i);
-            if (matchOpNome) document.getElementById('lote').value = matchOpNome[0].toUpperCase().replace(/\s+/g, '');
+            if (matchOpNome) {
+                inputLote.value = matchOpNome[0].toUpperCase().replace(/\s+/g, '');
+                destacarCampo(inputLote);
+            }
 
             const matchBitolaNome = file.name.match(/(3[\.,]4|3[\.,]8|4[\.,]2|4[\.,]6|5[\.,]0|6[\.,]0)/);
             if (matchBitolaNome) {
-                const bNom = matchBitolaNome[1].replace(',', '.');
-                selecionarBitolaNominal(bNom);
-                if (!inputBitolaReal.value) {
-                    inputBitolaReal.value = bNom;
-                    inputBitolaReal.dispatchEvent(new Event('input'));
-                }
+                selecionarBitolaNominal(matchBitolaNome[1].replace(',', '.'));
             }
 
+            // 3. Processa o interior do PDF (Texto ou OCR das Regiões da Tabela)
             if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
                 try {
+                    statusTxt.innerHTML = "⏳ Analisando estrutura do PDF...";
+                    progBox.style.display = 'block';
+                    progBar.style.width = '15%';
+
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                    let textoCompleto = "";
+                    const page = await pdf.getPage(1);
+                    const content = await page.getTextContent();
+                    let textoExtraido = content.items.map(item => item.str).join(" ").trim();
 
-                    for (let i = 1; i <= pdf.numPages; i++) {
-                        const page = await pdf.getPage(i);
-                        const content = await page.getTextContent();
-                        textoCompleto += content.items.map(item => item.str).join(" ") + "\n";
+                    // Se o PDF for escaneado (como os laudos da Grande Aço), roda OCR nas faixas da tabela e rodapé!
+                    if (textoExtraido.length < 30) {
+                        statusTxt.innerHTML = "🔍 PDF Escaneado detectado! Lendo tabela e rodapé via OCR...";
+                        progBar.style.width = '35%';
+
+                        const viewport = page.getViewport({ scale: 2.0 });
+                        const canvasFull = document.createElement('canvas');
+                        canvasFull.width = viewport.width;
+                        canvasFull.height = viewport.height;
+                        const ctxFull = canvasFull.getContext('2d');
+                        await page.render({ canvasContext: ctxFull, viewport: viewport }).promise;
+
+                        // Recorta apenas o Cabeçalho/Tabela (0% a 22% da altura) + Rodapé (82% a 95% da altura)
+                        // Isso ignora o gráfico do meio e torna a leitura OCR super rápida e precisa!
+                        const hTop = Math.floor(canvasFull.height * 0.22);
+                        const yBot = Math.floor(canvasFull.height * 0.82);
+                        const hBot = Math.floor(canvasFull.height * 0.13);
+
+                        const canvasOcr = document.createElement('canvas');
+                        canvasOcr.width = canvasFull.width;
+                        canvasOcr.height = hTop + hBot;
+                        const ctxOcr = canvasOcr.getContext('2d');
+
+                        ctxOcr.drawImage(canvasFull, 0, 0, canvasFull.width, hTop, 0, 0, canvasFull.width, hTop);
+                        ctxOcr.drawImage(canvasFull, 0, yBot, canvasFull.width, hBot, 0, hTop, canvasFull.width, hBot);
+
+                        progBar.style.width = '60%';
+                        const result = await Tesseract.recognize(canvasOcr, 'eng', {
+                            logger: m => {
+                                if (m.status === 'recognizing text') {
+                                    progBar.style.width = Math.round(60 + (m.progress * 38)) + '%';
+                                }
+                            }
+                        });
+                        textoExtraido = result.data.text;
                     }
 
-                    preencherCamposPeloTextoPDF(textoCompleto);
-                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ PDF pronto para ser salvo no Google Drive!</span>`;
+                    progBar.style.width = '100%';
+                    setTimeout(() => { progBox.style.display = 'none'; }, 600);
+
+                    console.log("Texto lido do Laudo:", textoExtraido);
+                    preencherCamposLaudoGrandeAco(textoExtraido);
+                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ Dados lidos automaticamente do PDF! Confira abaixo.</span>`;
                 } catch (err) {
-                    statusTxt.innerHTML = `⚠️ PDF anexado (preencha os valores manualmente se necessário).`;
+                    console.error("Erro na leitura do PDF:", err);
+                    progBox.style.display = 'none';
+                    statusTxt.innerHTML = `⚠️ PDF anexado. Verifique os campos manualmente.`;
                 }
             }
         });
 
-        function preencherCamposPeloTextoPDF(txt) {
-            const limpo = txt.replace(/\s+/g, ' ');
-            const mLote = limpo.match(/(?:Lote|OP|Ordem|Identifica[çc][ãa]o)\s*[:\-]?\s*([A-Z0-9\-_\/]{3,20})/i);
-            if (mLote && !document.getElementById('lote').value) {
-                document.getElementById('lote').value = mLote[1].toUpperCase();
+        // PARSER CALIBRADO ESPECIFICAMENTE PARA OS LAUDOS DA GRANDE AÇO
+        function preencherCamposLaudoGrandeAco(txt) {
+            const limpo = txt.replace(/\r/g, '');
+
+            // 1. Lote / Coil No/Packet No (Ex: "OP150 4,20")
+            const mOp = limpo.match(/OP\s*(\d+)/i);
+            if (mOp) {
+                inputLote.value = "OP" + mOp[1];
+                destacarCampo(inputLote);
             }
 
-            const mDiam = limpo.match(/(?:Di[âa]metro|Bitola|Espessura)\s*[:\-]?\s*([3456][\.,]\d{1,2})/i);
-            if (mDiam) {
-                inputBitolaReal.value = mDiam[1].replace(',', '.');
-                inputBitolaReal.dispatchEvent(new Event('input'));
+            // 2. Bitola Nominal no campo Coil No (Ex: "OP150 4,20" -> 4.2)
+            const mBitNom = limpo.match(/OP\s*\d+\s+(3[\.,]4|3[\.,]8|4[\.,]2|4[\.,]6|5[\.,]0|6[\.,]0)/i);
+            if (mBitNom) {
+                selecionarBitolaNominal(mBitNom[1].replace(',', '.'));
             }
 
-            const mLR = limpo.match(/(?:Resist[êe]ncia|Ruptura|M[áa]xima|LR|Rm|f\s*st)\s*[^0-9]{0,25}(\d{3,4}(?:[\.,]\d+)?)\s*(?:MPa)?/i);
-            if (mLR) inputLR.value = Math.round(parseFloat(mLR[1].replace(',', '.')));
+            // 3. TestDate no padrão MM/DD/YYYY do software da máquina (Ex: "10/23/2026")
+            const mDate = limpo.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](20\d{2})/);
+            if (mDate) {
+                let p1 = parseInt(mDate[1], 10);
+                let p2 = parseInt(mDate[2], 10);
+                const ano = mDate[3];
+                // No relatório em inglês (TestDate), o mês vem primeiro (10/23/2026)
+                const mes = p1 <= 12 ? String(p1).padStart(2, '0') : String(p2).padStart(2, '0');
+                const dia = p1 <= 12 ? String(p2).padStart(2, '0') : String(p1).padStart(2, '0');
+                inputData.value = `${ano}-${mes}-${dia}`;
+                destacarCampo(inputData);
+            }
 
-            const mLE = limpo.match(/(?:Escoamento|LE|Re|f\s*y|0[\.,]2\s*%)\s*[^0-9]{0,25}(\d{3,4}(?:[\.,]\d+)?)\s*(?:MPa)?/i);
-            if (mLE) inputLE.value = Math.round(parseFloat(mLE[1].replace(',', '.')));
+            // 4. Size(mm) -> Bitola Real (Ex: "Size(mm) 4.10" ou "Size(mm) | 4.11")
+            const mSize = limpo.match(/Size\s*\(?mm\)?[^0-9\n]{0,15}([3456][\.,]\d{1,2})/i)
+                       || limpo.match(/\b([3456]\.\d{2})\b/);
+            if (mSize) {
+                inputBitolaReal.value = parseFloat(mSize[1].replace(',', '.')).toFixed(2);
+                destacarCampo(inputBitolaReal);
+            }
 
+            // 5. A(%) -> Alongamento (Ex: "A(%) 9.5" | Na linha também tem Rm(MPa) 788)
+            const mAlong = limpo.match(/A\s*\(?%\)?[^0-9\n]{0,15}(\d{1,2}(?:[\.,]\d{1,2})?)/i);
+            if (mAlong) {
+                inputAlong.value = parseFloat(mAlong[1].replace(',', '.'));
+                destacarCampo(inputAlong);
+            }
+
+            // 6. Rm(MPa) -> LR - Limite de Resistência (Ex: "Rm(MPa) 788" ou "Rm(MPa) 781")
+            const mRm = limpo.match(/Rm\s*\(?MPa\)?[^0-9\n]{0,15}(\d{3,4})/i);
+            if (mRm) {
+                inputLR.value = parseInt(mRm[1], 10);
+                destacarCampo(inputLR);
+            }
+
+            // 7. Rp(MPa) -> LE - Limite de Escoamento (Ex: "Rp(MPa) 704" ou "Rp(MPa) 712")
+            const mRp = limpo.match(/Rp\s*\(?MPa\)?[^0-9\n]{0,15}(\d{3,4})/i);
+            if (mRp) {
+                inputLE.value = parseInt(mRp[1], 10);
+                destacarCampo(inputLE);
+            }
+
+            // Fallback caso o OCR junte Rm e Rp sem parênteses: procura os dois valores entre 550 e 1050 MPa na tabela
             if (!inputLR.value || !inputLE.value) {
-                const numerosMPa = [...limpo.matchAll(/\b([56789]\d{2}(?:[\.,]\d+)?)\b/g)]
-                    .map(m => Math.round(parseFloat(m[1].replace(',', '.'))))
-                    .filter(n => n >= 500 && n <= 1050);
+                const candidatosMPa = [...limpo.matchAll(/\b([56789]\d{2})\b/g)]
+                    .map(m => parseInt(m[1], 10))
+                    .filter(n => n !== 800 && n !== 720 && n !== 640 && n !== 560); // Ignora escala do eixo Y do gráfico
 
-                if (numerosMPa.length >= 2) {
-                    const maior = Math.max(...numerosMPa);
-                    const menor = Math.min(...numerosMPa);
-                    if (!inputLR.value) inputLR.value = maior;
-                    if (!inputLE.value) inputLE.value = menor;
+                if (candidatosMPa.length >= 2) {
+                    if (!inputLR.value) { inputLR.value = Math.max(...candidatosMPa); destacarCampo(inputLR); }
+                    if (!inputLE.value) { inputLE.value = Math.min(...candidatosMPa); destacarCampo(inputLE); }
                 }
             }
 
-            const mAlong = limpo.match(/(?:Alongamento|Along|A\s*%|Deforma[çc][ãa]o)\s*[^0-9]{0,20}(\d{1,2}(?:[\.,]\d{1,2})?)\s*%?/i);
-            if (mAlong) inputAlong.value = parseFloat(mAlong[1].replace(',', '.'));
+            // 8. MASSA LINEAR no rodapé (Ex: "MASSA20.7385 MASSA LINEAR 0.104G.M")
+            const mMassa = limpo.match(/MASSA\s*LINEAR\s*[:\-]?\s*(0[\.,]\d{2,4})/i)
+                        || limpo.match(/\b(0\.\d{3})\s*G\.?M/i);
+            if (mMassa) {
+                inputMassaLinear.value = parseFloat(mMassa[1].replace(',', '.')).toFixed(3);
+                inputMassaLinear.dataset.ocr = "true";
+                destacarCampo(inputMassaLinear);
+            } else if (inputBitolaReal.value) {
+                inputBitolaReal.dispatchEvent(new Event('input'));
+            }
+
+            // 9. DOBRAMENTO no rodapé (Ex: "DOBRAMENTO OK")
+            if (/DOBRAMENTO\s*OK/i.test(limpo)) {
+                document.getElementById('dobramento').value = "OK";
+            }
 
             recalcularABNT();
+            destacarCampo(inputRelacao);
         }
 
         function selecionarBitolaNominal(val) {
@@ -643,7 +787,7 @@
         });
 
         // ==========================================================================
-        // VISUALIZADOR UNIVERSAL DE PDF (ABRE DO GOOGLE DRIVE EM QUALQUER PC)
+        // VISUALIZADOR UNIVERSAL DE PDF
         // ==========================================================================
         function abrirModalPDF(titulo, urlEmbed, urlExterna) {
             document.getElementById('modal-titulo').textContent = `📄 ${titulo}`;
@@ -798,9 +942,9 @@
                 acao: "inserir",
                 bitolaNominal: document.getElementById('bitola-nominal').value,
                 bitola: document.getElementById('bitola-nominal').value,
-                tipoProva: document.getElementById('tipo-prova').value,
-                lote: document.getElementById('lote').value.trim().toUpperCase(),
-                dataFormatada: document.getElementById('data').value.split('-').reverse().join('/'),
+                tipoProva: selectTipoProva.value,
+                lote: inputLote.value.trim().toUpperCase(),
+                dataFormatada: inputData.value.split('-').reverse().join('/'),
                 bitolaReal: inputBitolaReal.value,
                 massaLinear: inputMassaLinear.value,
                 lr: inputLR.value,
@@ -829,7 +973,7 @@
                 pdfAtualBase64 = null;
                 pdfAtualNome = null;
                 document.getElementById('btn-preview-form').style.display = 'none';
-                document.getElementById('status-leitura-pdf').innerHTML = "Selecione o relatório PDF da máquina para extrair LR, LE, Alongamento e Lote.";
+                document.getElementById('status-leitura-pdf').innerHTML = "Selecione o PDF (Prova / Contra Prova) para extrair Rm, Rp, Size, A(%) e Massa Linear.";
                 setTimeout(carregarDadosDaPlanilha, 1500);
             }).catch(() => {
                 toast("⚠️ Erro de conexão ao enviar.");
@@ -863,7 +1007,7 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('data').value = new Date().toISOString().split('T')[0];
+            inputData.value = new Date().toISOString().split('T')[0];
             document.getElementById('operador').value = localStorage.getItem('ga_operador') || 'FLÁVIO';
             const tema = localStorage.getItem('ga_tema') || 'dark';
             document.documentElement.setAttribute('data-theme', tema);
