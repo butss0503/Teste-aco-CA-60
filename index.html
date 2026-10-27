@@ -28,6 +28,8 @@
             --ok-bg: rgba(16, 185, 129, 0.12);
             --fail-color: #ef4444;
             --fail-bg: rgba(239, 68, 68, 0.12);
+            --warn-color: #f59e0b;
+            --warn-bg: rgba(245, 158, 11, 0.15);
             --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
         }
 
@@ -48,6 +50,8 @@
             --ok-bg: rgba(16, 185, 129, 0.12);
             --fail-color: #dc2626;
             --fail-bg: rgba(239, 68, 68, 0.1);
+            --warn-color: #d97706;
+            --warn-bg: rgba(245, 158, 11, 0.15);
             --shadow: 0 4px 15px rgba(15, 28, 36, 0.08);
         }
 
@@ -70,37 +74,104 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 24px;
+            padding: 0 20px;
             flex-shrink: 0;
             color: #fff;
+            gap: 12px;
         }
 
-        .brand-section { display: flex; align-items: center; gap: 14px; }
+        .brand-section { display: flex; align-items: center; gap: 12px; }
         .logo-box {
-            width: 48px; height: 48px; border-radius: 50%; background: #fff; padding: 2px;
+            width: 46px; height: 46px; border-radius: 50%; background: #fff; padding: 2px;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 0 12px rgba(48, 156, 225, 0.4);
+            flex-shrink: 0;
         }
         .logo-box svg { width: 100%; height: 100%; }
-        .sys-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--brand-blue); letter-spacing: 1.2px; font-weight: 700; }
-        .brand-titles h1 { font-family: 'Rajdhani', sans-serif; font-size: 21px; font-weight: 700; color: #fff; }
+        .sys-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--brand-blue); letter-spacing: 1px; font-weight: 700; }
+        .brand-titles h1 { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; white-space: nowrap; }
 
-        .topbar-kpis { display: flex; gap: 12px; }
+        .topbar-kpis { display: flex; gap: 10px; align-items: center; }
         .mini-kpi {
             background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            border-left: 3px solid var(--brand-blue); padding: 5px 14px; border-radius: 4px; min-width: 125px;
+            border-left: 3px solid var(--brand-blue); padding: 4px 12px; border-radius: 4px; min-width: 105px;
         }
         .mini-kpi.kpi-ok { border-left-color: #10b981; }
         .mini-kpi.kpi-fail { border-left-color: #ef4444; }
         .mini-kpi.kpi-rate { border-left-color: #f59e0b; }
         .mini-kpi-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #94a3b8; display: block; }
-        .mini-kpi-val { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; }
+        .mini-kpi-val { font-family: 'Rajdhani', sans-serif; font-size: 19px; font-weight: 700; color: #fff; }
 
-        .topbar-actions { display: flex; gap: 8px; }
+        /* ==========================================================================
+           WIDGET DO TIMER DE COLETA (1 EM 1 HORA) NA TOPBAR
+           ========================================================================== */
+        .timer-widget {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid #10b981;
+            border-left: 4px solid #10b981;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .timer-widget:hover {
+            background: rgba(16, 185, 129, 0.22);
+        }
+        .timer-widget.timer-warning {
+            background: rgba(245, 158, 11, 0.18);
+            border-color: #f59e0b;
+        }
+        .timer-widget.timer-alarm {
+            background: rgba(239, 68, 68, 0.35);
+            border-color: #ef4444;
+            animation: pulseAlarm 0.8s infinite alternate;
+        }
+        @keyframes pulseAlarm {
+            from { box-shadow: 0 0 4px #ef4444; transform: scale(1); }
+            to { box-shadow: 0 0 20px #ef4444; transform: scale(1.03); }
+        }
+        .timer-info { display: flex; flex-direction: column; }
+        .timer-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            color: #cbd5e1;
+            letter-spacing: 0.5px;
+        }
+        .timer-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: #10b981;
+            line-height: 1.1;
+        }
+        .timer-widget.timer-warning .timer-display { color: #fbbf24; }
+        .timer-widget.timer-alarm .timer-display { color: #f87171; }
+
+        .timer-quick-btns {
+            display: flex;
+            gap: 4px;
+        }
+        .btn-timer-mini {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 4px 7px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-timer-mini:hover { background: var(--brand-blue); border-color: var(--brand-blue); }
+
+        .topbar-actions { display: flex; gap: 8px; align-items: center; }
         .btn-top {
             background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.18);
             padding: 8px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;
-            text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
         }
         .btn-top:hover { background: var(--brand-blue); border-color: var(--brand-blue); }
 
@@ -163,20 +234,10 @@
         }
 
         .ocr-progress {
-            width: 100%;
-            height: 5px;
-            background: var(--bg-input);
-            border-radius: 3px;
-            margin-top: 6px;
-            overflow: hidden;
-            display: none;
+            width: 100%; height: 5px; background: var(--bg-input);
+            border-radius: 3px; margin-top: 6px; overflow: hidden; display: none;
         }
-        .ocr-progress-bar {
-            height: 100%;
-            width: 0%;
-            background: var(--brand-blue);
-            transition: width 0.2s;
-        }
+        .ocr-progress-bar { height: 100%; width: 0%; background: var(--brand-blue); transition: width 0.2s; }
 
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
@@ -226,14 +287,16 @@
 
         .sheet-tabs-bar {
             display: flex; background: var(--bg-input); border-bottom: 2px solid var(--brand-blue);
-            padding: 8px 18px 0 18px; gap: 6px;
+            padding: 8px 18px 0 18px; gap: 6px; flex-wrap: wrap;
         }
         .sheet-tab {
             background: var(--bg-card); color: var(--text-sec); border: 1px solid var(--border);
-            border-bottom: none; padding: 8px 16px; border-radius: 6px 6px 0 0;
+            border-bottom: none; padding: 8px 14px; border-radius: 6px 6px 0 0;
             font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; cursor: pointer;
         }
         .sheet-tab.active { background: var(--brand-blue); color: #fff; border-color: var(--brand-blue); }
+        .sheet-tab.tab-ronda { border-top: 2px solid #10b981; color: #10b981; margin-left: auto; }
+        .sheet-tab.tab-ronda.active { background: #10b981; color: #fff; border-color: #10b981; }
 
         .toolbar-filtros {
             padding: 10px 18px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
@@ -269,8 +332,45 @@
         }
         .btn-view-pdf:hover { background: var(--brand-blue); color: #fff; }
 
-        .pdf-modal-overlay {
-            position: fixed; inset: 0; background: rgba(5,10,15,0.85); z-index: 9990;
+        /* PAINEL DEDICADO DA RONDA DE COLETA DE AMOSTRAS (ABA TIMER) */
+        .ronda-view {
+            display: none;
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            gap: 24px;
+            grid-template-columns: 380px 1fr;
+        }
+        .ronda-card-main {
+            background: var(--bg-card);
+            border: 2px solid var(--brand-blue);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .ronda-big-clock {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 54px;
+            font-weight: 700;
+            color: var(--ok-color);
+            margin: 14px 0;
+            letter-spacing: 2px;
+        }
+        .ronda-btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            margin-top: 14px;
+        }
+
+        /* MODAL PDF & MODAL ALARME DE COLETA */
+        .pdf-modal-overlay, .alarm-modal-overlay {
+            position: fixed; inset: 0; background: rgba(5,10,15,0.88); z-index: 9990;
             display: none; align-items: center; justify-content: center; padding: 20px;
         }
         .pdf-modal-box {
@@ -283,6 +383,60 @@
         }
         .pdf-modal-body { flex: 1; background: #1e293b; }
         .pdf-modal-body iframe { width: 100%; height: 100%; border: none; }
+
+        /* CAIXA DE ALERTA DE HORA DE SUBIR E PEGAR AMOSTRA */
+        .alarm-box {
+            background: var(--bg-panel);
+            border: 3px solid #ef4444;
+            border-radius: 10px;
+            max-width: 520px;
+            width: 100%;
+            padding: 32px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(239, 68, 68, 0.6);
+            animation: pulseAlarm 0.7s infinite alternate;
+        }
+        .alarm-icon { font-size: 52px; margin-bottom: 10px; }
+        .alarm-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ef4444;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .alarm-desc {
+            font-size: 15px;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        .alarm-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .btn-confirm-coleta {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 14px 22px;
+            border-radius: 6px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-confirm-coleta:hover { background: #059669; }
+        .btn-snooze-coleta {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 14px 18px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+        }
 
         #toast-box { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
         .toast-item { background: var(--bg-header); color: #fff; border-left: 4px solid var(--brand-blue); padding: 12px 16px; border-radius: 4px; font-size: 12px; font-weight: 600; }
@@ -303,21 +457,33 @@
                 </svg>
             </div>
             <div class="brand-titles">
-                <span class="sys-tag">PADRÃO ABNT NBR 7480 // GRANDE AÇO 2025/2026</span>
-                <h1>CONTROLE DE TRAÇÃO CA-60 & LEITOR OCR DE LAUDO PDF</h1>
+                <span class="sys-tag">PADRÃO ABNT NBR 7480 // GRANDE AÇO</span>
+                <h1>CONTROLE DE TRAÇÃO CA-60</h1>
+            </div>
+        </div>
+
+        <!-- WIDGET DO TIMER DE COLETA DE 1 EM 1 HORA -->
+        <div class="timer-widget" id="topbar-timer-widget" title="Clique para abrir o Painel de Rondas de Coleta">
+            <div class="timer-info" id="btn-abrir-aba-ronda">
+                <span class="timer-label">⏱️ PRÓXIMA COLETA (1H)</span>
+                <span class="timer-display" id="top-timer-display">60:00</span>
+            </div>
+            <div class="timer-quick-btns">
+                <button type="button" class="btn-timer-mini" id="btn-top-coletar" title="Confirmar que subiu e coletou amostra (Reiniciar 1h)">✔ Coletado</button>
+                <button type="button" class="btn-timer-mini" id="btn-top-pausar" title="Pausar / Retomar Timer">⏸</button>
             </div>
         </div>
 
         <div class="topbar-kpis">
             <div class="mini-kpi"><span class="mini-kpi-label">AMOSTRAS</span><strong class="mini-kpi-val" id="kpi-total">0</strong></div>
-            <div class="mini-kpi kpi-ok"><span class="mini-kpi-label">APROVADOS (SIM)</span><strong class="mini-kpi-val" id="kpi-aprovados">0</strong></div>
-            <div class="mini-kpi kpi-fail"><span class="mini-kpi-label">REPROVADOS (NÃO)</span><strong class="mini-kpi-val" id="kpi-reprovados">0</strong></div>
+            <div class="mini-kpi kpi-ok"><span class="mini-kpi-label">APROVADOS</span><strong class="mini-kpi-val" id="kpi-aprovados">0</strong></div>
+            <div class="mini-kpi kpi-fail"><span class="mini-kpi-label">REPROVADOS</span><strong class="mini-kpi-val" id="kpi-reprovados">0</strong></div>
             <div class="mini-kpi kpi-rate"><span class="mini-kpi-label">CONFORMIDADE</span><strong class="mini-kpi-val" id="kpi-taxa">0%</strong></div>
         </div>
 
         <div class="topbar-actions">
-            <button type="button" class="btn-top" id="btn-exportar">📥 Baixar Planilha ABNT (CSV)</button>
-            <button type="button" class="btn-top" id="btn-theme">☀️ Modo Claro</button>
+            <button type="button" class="btn-top" id="btn-exportar">📥 CSV</button>
+            <button type="button" class="btn-top" id="btn-theme">☀️</button>
         </div>
     </header>
 
@@ -432,7 +598,7 @@
 
         <section class="panel">
             <div class="panel-header">
-                <span class="panel-title">Espelho da Planilha ABNT (Grande Aço)</span>
+                <span class="panel-title">Espelho da Planilha ABNT & Rondas de Coleta</span>
                 <div style="display:flex; gap:8px;">
                     <button type="button" class="btn-action" id="btn-recarregar">🔄 Sincronizar Nuvem</button>
                 </div>
@@ -446,48 +612,115 @@
                 <button class="sheet-tab" data-aba="4.6">Aba 4,6</button>
                 <button class="sheet-tab" data-aba="5.0">Aba 5,0</button>
                 <button class="sheet-tab" data-aba="6.0">Aba 6,0</button>
+                <button class="sheet-tab tab-ronda" data-aba="RONDA" id="tab-btn-ronda">⏱️ RONDA DE COLETA (1 EM 1H)</button>
             </div>
 
-            <div class="toolbar-filtros">
-                <div class="filter-group">
-                    <label>Data:</label>
-                    <input type="date" id="filtro-data">
+            <!-- VISÃO 1: TABELA DE ENSAIOS ABNT -->
+            <div id=" container-tabela-abnt" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
+                <div class="toolbar-filtros">
+                    <div class="filter-group">
+                        <label>Data:</label>
+                        <input type="date" id="filtro-data">
+                    </div>
+                    <div class="filter-group">
+                        <label>Lote/OP:</label>
+                        <input type="text" id="filtro-lote" placeholder="Filtrar lote...">
+                    </div>
+                    <button type="button" class="btn-action" id="btn-limpar-filtro">Limpar Filtros</button>
                 </div>
-                <div class="filter-group">
-                    <label>Lote/OP:</label>
-                    <input type="text" id="filtro-lote" placeholder="Filtrar lote...">
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Amostra</th>
+                                <th>Prova / C.P.</th>
+                                <th>LOTE</th>
+                                <th>Data</th>
+                                <th>Bitola Real (mm)</th>
+                                <th>Massa Lin. (g/mm)</th>
+                                <th>LR (MPa)</th>
+                                <th>LE (MPa)</th>
+                                <th>Along. (%)</th>
+                                <th>Relação LR/LE</th>
+                                <th>Dobram.</th>
+                                <th>Aprovado</th>
+                                <th>Responsável</th>
+                                <th>PDF (Nuvem)</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-corpo">
+                            <tr><td colspan="15" style="padding:40px; color:var(--text-muted);">Carregando planilha ABNT...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-                <button type="button" class="btn-action" id="btn-limpar-filtro">Limpar Filtros</button>
             </div>
 
-            <div class="table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Amostra</th>
-                            <th>Prova / C.P.</th>
-                            <th>LOTE</th>
-                            <th>Data</th>
-                            <th>Bitola Real (mm)</th>
-                            <th>Massa Lin. (g/mm)</th>
-                            <th>LR (MPa)</th>
-                            <th>LE (MPa)</th>
-                            <th>Along. (%)</th>
-                            <th>Relação LR/LE</th>
-                            <th>Dobram.</th>
-                            <th>Aprovado</th>
-                            <th>Responsável</th>
-                            <th>PDF (Nuvem)</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-corpo">
-                        <tr><td colspan="15" style="padding:40px; color:var(--text-muted);">Carregando planilha ABNT...</td></tr>
-                    </tbody>
-                </table>
+            <!-- VISÃO 2: PAINEL DE RONDA DE COLETA DE AMOSTRAS (1 EM 1 HORA) -->
+            <div class="ronda-view" id="container-ronda-view">
+                <div class="ronda-card-main">
+                    <span class="sys-tag">CRONÔMETRO DE PRODUÇÃO // CA-60</span>
+                    <h3 style="font-family:'Rajdhani',sans-serif; font-size:22px; margin-top:4px;">TEMPO PARA PRÓXIMA COLETA</h3>
+                    <div class="ronda-big-clock" id="big-timer-display">60:00</div>
+                    <p style="font-size:12px; color:var(--text-sec); margin-bottom:10px;" id="ronda-status-txt">
+                        O alarme tocará automaticamente a cada 1 hora para buscar amostras na produção.
+                    </p>
+
+                    <button type="button" class="btn-submit" id="btn-ronda-coletar" style="background:#10b981;">
+                        ✔ SUBI E COLETEI AMOSTRAS (REINICIAR 1H)
+                    </button>
+
+                    <div class="ronda-btn-grid">
+                        <button type="button" class="btn-action" id="btn-ronda-pausar" style="height:38px;">⏸ Pausar / Retomar</button>
+                        <button type="button" class="btn-action" id="btn-ronda-testar" style="height:38px;">🔔 Testar Alarme</button>
+                        <button type="button" class="btn-action" id="btn-ronda-15m" style="height:38px;">⏱️ Ajustar p/ 15 min</button>
+                        <button type="button" class="btn-action" id="btn-ronda-60m" style="height:38px;">⏱️ Ajustar p/ 60 min</button>
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--border); border-radius:8px;">
+                    <div class="panel-header">
+                        <span class="panel-title">Histórico de Subidas / Coletas Realizadas Hoje</span>
+                        <button type="button" class="btn-action" id="btn-limpar-rondas">🗑️ Limpar</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nº Ronda</th>
+                                    <th>Horário da Coleta</th>
+                                    <th>Operador</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-rondas-corpo"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
+
+    <!-- MODAL DE ALARME SONORO E VISUAL DE HORA DE COLETA (1 EM 1 HORA) -->
+    <div class="alarm-modal-overlay" id="alarm-modal">
+        <div class="alarm-box">
+            <div class="alarm-icon">🚨</div>
+            <div class="alarm-title">HORA DE COLETAR AMOSTRAS!</div>
+            <p class="alarm-desc">
+                Já se passou <strong>1 hora</strong> desde a última coleta.<br>
+                Suba na produção para recolher as amostras de <strong>Aço CA-60</strong> para os ensaios de tração.
+            </p>
+            <div class="alarm-actions">
+                <button type="button" class="btn-confirm-coleta" id="btn-modal-confirmar-coleta">
+                    ✔ JÁ COLETEI / REINICIAR 1 HORA
+                </button>
+                <button type="button" class="btn-snooze-coleta" id="btn-modal-adiar">
+                    ⏳ Adiar +10 min
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL DE VISUALIZAÇÃO DO PDF -->
     <div class="pdf-modal-overlay" id="pdf-modal">
@@ -526,19 +759,208 @@
         const inputAlong = document.getElementById('alongamento');
         const inputRelacao = document.getElementById('relacao');
 
+        // ==========================================================================
+        // SISTEMA DE TIMER DE 1 EM 1 HORA + ALARME INDUSTRIAL SONORO (WEB AUDIO API)
+        // ==========================================================================
+        const INTERVALO_PADRAO_MS = 60 * 60 * 1000; // 1 Hora (3.600.000 ms)
+        let timerAlvoTimestamp = Number(localStorage.getItem('ga_timer_alvo')) || (Date.now() + INTERVALO_PADRAO_MS);
+        let timerPausadoRestante = Number(localStorage.getItem('ga_timer_pausado')) || 0;
+        let isTimerPausado = localStorage.getItem('ga_timer_is_paused') === 'true';
+        let alarmeAtivoInterval = null;
+        const tituloOriginalPagina = document.title;
+
+        if (!localStorage.getItem('ga_timer_alvo')) {
+            localStorage.setItem('ga_timer_alvo', timerAlvoTimestamp);
+        }
+
+        // Sintetizador de Sirene/Bipe Industrial via Web Audio API (Funciona offline sem MP3)
+        function tocarBipeAlarme() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(880, ctx.currentTime); // Lá 880Hz
+                osc.frequency.setValueAtTime(660, ctx.currentTime + 0.18);
+                osc.frequency.setValueAtTime(880, ctx.currentTime + 0.36);
+                gain.gain.setValueAtTime(0.25, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.65);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.65);
+            } catch (e) {}
+        }
+
+        function dispararAlarmeColeta() {
+            const modalAlarme = document.getElementById('alarm-modal');
+            if (modalAlarme.style.display === 'flex') return; // Já está aberto
+
+            modalAlarme.style.display = 'flex';
+            tocarBipeAlarme();
+            alarmeAtivoInterval = setInterval(() => {
+                tocarBipeAlarme();
+                document.title = document.title.startsWith("🚨") ? tituloOriginalPagina : "🚨 HORA DA COLETA CA-60!";
+            }, 2500);
+
+            // Notificação nativa do Windows / Chrome caso o operador esteja em outra janela
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("🚨 GRANDE AÇO — HORA DA COLETA!", {
+                    body: "Passou 1 hora! Suba na produção para pegar as amostras de CA-60."
+                });
+            }
+        }
+
+        function pararAlarmeSonoro() {
+            document.getElementById('alarm-modal').style.display = 'none';
+            if (alarmeAtivoInterval) {
+                clearInterval(alarmeAtivoInterval);
+                alarmeAtivoInterval = null;
+            }
+            document.title = tituloOriginalPagina;
+        }
+
+        function registrarColetaEReiniciar(minutos = 60) {
+            pararAlarmeSonoro();
+            isTimerPausado = false;
+            localStorage.setItem('ga_timer_is_paused', 'false');
+            timerAlvoTimestamp = Date.now() + (minutos * 60 * 1000);
+            localStorage.setItem('ga_timer_alvo', timerAlvoTimestamp);
+
+            if (minutos === 60) {
+                const logs = JSON.parse(localStorage.getItem('ga_historico_rondas') || '[]');
+                const agora = new Date();
+                logs.push({
+                    horario: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' (' + agora.toLocaleDateString('pt-BR') + ')',
+                    operador: document.getElementById('operador').value || 'FLÁVIO'
+                });
+                localStorage.setItem('ga_historico_rondas', JSON.stringify(logs));
+                renderizarHistoricoRondas();
+                toast("✔ Coleta confirmada! Cronômetro reiniciado para 01:00:00.");
+            } else {
+                toast(`⏱️ Cronômetro ajustado para ${minutos} minutos.`);
+            }
+            atualizarRelogioColeta();
+        }
+
+        function alternarPausaTimer() {
+            if (isTimerPausado) {
+                isTimerPausado = false;
+                timerAlvoTimestamp = Date.now() + timerPausadoRestante;
+                localStorage.setItem('ga_timer_alvo', timerAlvoTimestamp);
+                localStorage.setItem('ga_timer_is_paused', 'false');
+                toast("▶ Cronômetro de coleta retomado!");
+            } else {
+                isTimerPausado = true;
+                timerPausadoRestante = Math.max(0, timerAlvoTimestamp - Date.now());
+                localStorage.setItem('ga_timer_pausado', timerPausadoRestante);
+                localStorage.setItem('ga_timer_is_paused', 'true');
+                toast("⏸ Cronômetro de coleta pausado.");
+            }
+            atualizarRelogioColeta();
+        }
+
+        function atualizarRelogioColeta() {
+            const topDisplay = document.getElementById('top-timer-display');
+            const bigDisplay = document.getElementById('big-timer-display');
+            const widget = document.getElementById('topbar-timer-widget');
+            const btnPausaTop = document.getElementById('btn-top-pausar');
+
+            let restanteMs = isTimerPausado ? timerPausadoRestante : (timerAlvoTimestamp - Date.now());
+
+            if (restanteMs <= 0 && !isTimerPausado) {
+                restanteMs = 0;
+                topDisplay.textContent = "00:00";
+                bigDisplay.textContent = "00:00";
+                widget.classList.remove('timer-warning');
+                widget.classList.add('timer-alarm');
+                dispararAlarmeColeta();
+                return;
+            }
+
+            const totalSeg = Math.ceil(restanteMs / 1000);
+            const min = Math.floor(totalSeg / 60);
+            const seg = totalSeg % 60;
+            const textoTempo = `${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')}`;
+
+            topDisplay.textContent = isTimerPausado ? `⏸ ${textoTempo}` : textoTempo;
+            bigDisplay.textContent = textoTempo;
+            btnPausaTop.textContent = isTimerPausado ? "▶" : "⏸";
+
+            widget.classList.remove('timer-alarm');
+            if (min < 10) {
+                widget.classList.add('timer-warning');
+                bigDisplay.style.color = '#fbbf24';
+            } else {
+                widget.classList.remove('timer-warning');
+                bigDisplay.style.color = 'var(--ok-color)';
+            }
+        }
+
+        function renderizarHistoricoRondas() {
+            const tbody = document.getElementById('tabela-rondas-corpo');
+            const logs = JSON.parse(localStorage.getItem('ga_historico_rondas') || '[]');
+            if (logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="padding:30px; color:var(--text-muted);">Nenhuma coleta registrada ainda hoje.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = '';
+            [...logs].reverse().forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>#${logs.length - idx}</td>
+                    <td style="font-weight:700; color:var(--brand-blue);">${item.horario}</td>
+                    <td>👷 ${item.operador}</td>
+                    <td><span class="pill-ok">✔ AMOSTRA COLETADA</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        setInterval(atualizarRelogioColeta, 1000);
+
+        document.getElementById('btn-top-coletar').addEventListener('click', (e) => {
+            e.stopPropagation();
+            registrarColetaEReiniciar(60);
+        });
+        document.getElementById('btn-top-pausar').addEventListener('click', (e) => {
+            e.stopPropagation();
+            alternarPausaTimer();
+        });
+        document.getElementById('btn-abrir-aba-ronda').addEventListener('click', () => {
+            document.getElementById('tab-btn-ronda').click();
+        });
+        document.getElementById('btn-ronda-coletar').addEventListener('click', () => registrarColetaEReiniciar(60));
+        document.getElementById('btn-ronda-pausar').addEventListener('click', alternarPausaTimer);
+        document.getElementById('btn-ronda-testar').addEventListener('click', dispararAlarmeColeta);
+        document.getElementById('btn-ronda-15m').addEventListener('click', () => registrarColetaEReiniciar(15));
+        document.getElementById('btn-ronda-60m').addEventListener('click', () => registrarColetaEReiniciar(60));
+        document.getElementById('btn-modal-confirmar-coleta').addEventListener('click', () => registrarColetaEReiniciar(60));
+        document.getElementById('btn-modal-adiar').addEventListener('click', () => registrarColetaEReiniciar(10));
+        document.getElementById('btn-limpar-rondas').addEventListener('click', () => {
+            localStorage.removeItem('ga_historico_rondas');
+            renderizarHistoricoRondas();
+        });
+
+        // Solicita permissão de notificação do Windows ao clicar na página
+        document.addEventListener('click', () => {
+            if ("Notification" in window && Notification.permission === "default") {
+                Notification.requestPermission();
+            }
+        }, { once: true });
+
+        // ==========================================================================
+        // TRAVA MATEMÁTICA OBRIGATÓRIA: CORTA SEMPRE O "1" DA FRENTE (1788 -> 788)
+        // ==========================================================================
         function destacarCampo(el) {
             el.classList.add('auto-filled');
             setTimeout(() => el.classList.remove('auto-filled'), 3000);
         }
 
-        // ==========================================================================
-        // TRAVA MATEMÁTICA OBRIGATÓRIA: CORTA SEMPRE O "1" DA FRENTE (1788 -> 788)
-        // ==========================================================================
         function sanitizarMPa3Digitos(val) {
             if (val === null || val === undefined || val === '') return null;
             let n = parseInt(String(val).replace(/\D/g, ''), 10);
             if (isNaN(n)) return null;
-            // Se tiver 4 dígitos começando por 1 (ex: 1788, 1704, 1805, 1706), arranca o milhar!
             while (n >= 1000) {
                 n = n % 1000;
             }
@@ -554,7 +976,6 @@
         });
 
         function recalcularABNT() {
-            // Garante que mesmo antes de calcular a relação LR/LE, nenhum valor tenha "1" na frente!
             let lrBruto = parseInt(inputLR.value, 10);
             if (lrBruto >= 1000 && lrBruto < 2000) {
                 inputLR.value = lrBruto % 1000;
@@ -654,10 +1075,6 @@
                     const W = canvasFull.width;
                     const H = canvasFull.height;
 
-                    // Empilha verticalmente:
-                    // Bloco 1: Metade Esquerda da tabela (x: 4% a 53%, y: 2% a 20%) -> Contém RL, OP, A(%) e Rp(MPa)
-                    // Bloco 2: Metade Direita da tabela (x: 54% a 96%, y: 2% a 20%) -> Contém TestDate, Size(mm) e Rm(MPa)
-                    // Bloco 3: Rodapé (x: 4% a 96%, y: 83% a 93%) -> Contém MASSA LINEAR e DOBRAMENTO
                     const hTop = Math.floor(H * 0.18);
                     const yTop = Math.floor(H * 0.02);
                     const wEsq = Math.floor(W * 0.50);
@@ -672,11 +1089,8 @@
                     ctxOcr.fillStyle = "#FFFFFF";
                     ctxOcr.fillRect(0, 0, canvasOcr.width, canvasOcr.height);
 
-                    // Desenha Bloco 1 (Esquerda)
                     ctxOcr.drawImage(canvasFull, Math.floor(W * 0.04), yTop, wEsq, hTop, 10, 10, wEsq, hTop);
-                    // Desenha Bloco 2 (Direita) logo abaixo
                     ctxOcr.drawImage(canvasFull, Math.floor(W * 0.54), yTop, wDir, hTop, 10, hTop + 30, wDir, hTop);
-                    // Desenha Bloco 3 (Rodapé) no final
                     ctxOcr.drawImage(canvasFull, Math.floor(W * 0.04), yBot, Math.floor(W * 0.92), hBot, 10, (hTop * 2) + 50, Math.floor(W * 0.92), hBot);
 
                     const result = await Tesseract.recognize(canvasOcr, 'eng', {
@@ -691,7 +1105,6 @@
                     setTimeout(() => { progBox.style.display = 'none'; }, 500);
 
                     const textoExtraido = result.data.text;
-                    console.log("OCR Empilhado (Esquerda / Direita / Rodapé):\n", textoExtraido);
                     preencherCamposLaudoGrandeAco(textoExtraido, bitolaNominalDetectada);
                     statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ Leitura OCR 3-Dígitos concluída com sucesso!</span>`;
                 } catch (err) {
@@ -706,14 +1119,12 @@
             const limpo = txt.replace(/\r/g, '');
             const bNomNum = parseFloat(bitolaNomPadrao) || 4.2;
 
-            // 1. Lote / OP (Ex: OP150)
             const mOp = limpo.match(/OP\s*(\d{2,5})/i);
             if (mOp) {
                 inputLote.value = "OP" + mOp[1];
                 destacarCampo(inputLote);
             }
 
-            // 2. TestDate (MM/DD/YYYY -> YYYY-MM-DD)
             const mDate = limpo.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](20\d{2})/);
             if (mDate) {
                 let p1 = parseInt(mDate[1], 10);
@@ -725,7 +1136,6 @@
                 destacarCampo(inputData);
             }
 
-            // 3. MASSA LINEAR no rodapé (Ex: "0.104")
             let massaLida = null;
             const mMassa = limpo.match(/LINEAR\s*[:\-]?\s*0?[\.,]?\s*(\d{3})/i)
                         || limpo.match(/\b0[\.,]\s*(\d{3})\s*G/i);
@@ -736,7 +1146,6 @@
                 destacarCampo(inputMassaLinear);
             }
 
-            // 4. Size(mm) -> Bitola Real (Ex: 4.10 ou 4.11)
             let sizeEncontrado = null;
             const mSize = limpo.match(/Size\s*\(?mm\)?[^0-9\n]{0,20}1?([3456][\.,]?\d{2})\b/i);
             if (mSize) {
@@ -761,7 +1170,6 @@
                 if (!massaLida) inputBitolaReal.dispatchEvent(new Event('input'));
             }
 
-            // 5. A(%) -> Alongamento (Isolado na Metade Esquerda, sem interferência do Rm!)
             let alongVal = null;
             const mAlongLinha = limpo.match(/A\s*\(?%\)?[^\n]{0,25}/i);
             if (mAlongLinha) {
@@ -769,8 +1177,8 @@
                 const mNum = trecho.match(/(\d{1,3}(?:[\.,]\d{1,2})?)/);
                 if (mNum) {
                     let v = parseFloat(mNum[1].replace(',', '.'));
-                    if (v > 100 && v < 200) v = v - 100; // Remove "1" de borda se leu 195 -> 95
-                    if (v > 25 && v <= 150) v = v / 10;  // Converte 95 -> 9.5
+                    if (v > 100 && v < 200) v = v - 100;
+                    if (v > 25 && v <= 150) v = v / 10;
                     if (v >= 3 && v <= 25) alongVal = v;
                 }
             }
@@ -783,7 +1191,6 @@
                 destacarCampo(inputAlong);
             }
 
-            // 6. Rm(MPa) [LR] e Rp(MPa) [LE] — SEMPRE 3 DÍGITOS (Corta qualquer "1" da frente via % 1000!)
             let rmVal = null;
             let rpVal = null;
 
@@ -793,7 +1200,6 @@
             const mRp = limpo.match(/Rp\s*\(?MPa\)?[^0-9\n]{0,20}(1?[456789]\d{2})\b/i);
             if (mRp) rpVal = sanitizarMPa3Digitos(mRp[1]);
 
-            // Busca todos os números de tensão MPa na tabela (convertendo 1788 -> 788, 1704 -> 704)
             const textoSemMassa = limpo.replace(/MASSA\s*\d+[\.,]?\d*/gi, '');
             const todosMPa = [...textoSemMassa.matchAll(/\b(1?[56789]\d{2})\b/g)]
                 .map(m => sanitizarMPa3Digitos(m[1]))
@@ -841,12 +1247,25 @@
         document.getElementById('btn-status-ok').addEventListener('click', () => definirStatus('aprovado'));
         document.getElementById('btn-status-fail').addEventListener('click', () => definirStatus('reprovado'));
 
+        // Alternância entre Abas de Bitola e a nova Aba de Ronda de Coleta
         document.querySelectorAll('.sheet-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.sheet-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                abaAtiva = tab.getAttribute('data-aba');
-                atualizarTabela();
+                const selecionada = tab.getAttribute('data-aba');
+                const viewAbnt = document.getElementById(' container-tabela-abnt');
+                const viewRonda = document.getElementById('container-ronda-view');
+
+                if (selecionada === 'RONDA') {
+                    viewAbnt.style.display = 'none';
+                    viewRonda.style.display = 'grid';
+                    renderizarHistoricoRondas();
+                } else {
+                    viewAbnt.style.display = 'flex';
+                    viewRonda.style.display = 'none';
+                    abaAtiva = selecionada;
+                    atualizarTabela();
+                }
             });
         });
 
@@ -1076,6 +1495,8 @@
                 document.documentElement.setAttribute('data-theme', novo);
                 localStorage.setItem('ga_tema', novo);
             };
+            atualizarRelogioColeta();
+            renderizarHistoricoRondas();
             carregarDadosDaPlanilha();
         });
     </script>
