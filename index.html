@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGCQ Desktop ABNT | Grande Aço - Controle CA-60</title>
+    <title>SGCQ Enterprise ABNT | Grande Aço - Controle CA-60</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <!-- Biblioteca Chart.js para os Gráficos de CEP -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         :root[data-theme="dark"] {
@@ -84,8 +86,7 @@
         .logo-box {
             width: 46px; height: 46px; border-radius: 50%; background: #fff; padding: 2px;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 12px rgba(48, 156, 225, 0.4);
-            flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(48, 156, 225, 0.4); flex-shrink: 0;
         }
         .logo-box svg { width: 100%; height: 100%; }
         .sys-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--brand-blue); letter-spacing: 1px; font-weight: 700; }
@@ -102,68 +103,26 @@
         .mini-kpi-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #94a3b8; display: block; }
         .mini-kpi-val { font-family: 'Rajdhani', sans-serif; font-size: 19px; font-weight: 700; color: #fff; }
 
-        /* ==========================================================================
-           WIDGET DO TIMER DE COLETA (1 EM 1 HORA) NA TOPBAR
-           ========================================================================== */
         .timer-widget {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid #10b981;
-            border-left: 4px solid #10b981;
-            padding: 5px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; border-left: 4px solid #10b981;
+            padding: 5px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
         }
-        .timer-widget:hover {
-            background: rgba(16, 185, 129, 0.22);
-        }
-        .timer-widget.timer-warning {
-            background: rgba(245, 158, 11, 0.18);
-            border-color: #f59e0b;
-        }
-        .timer-widget.timer-alarm {
-            background: rgba(239, 68, 68, 0.35);
-            border-color: #ef4444;
-            animation: pulseAlarm 0.8s infinite alternate;
-        }
-        @keyframes pulseAlarm {
-            from { box-shadow: 0 0 4px #ef4444; transform: scale(1); }
-            to { box-shadow: 0 0 20px #ef4444; transform: scale(1.03); }
-        }
+        .timer-widget:hover { background: rgba(16, 185, 129, 0.22); }
+        .timer-widget.timer-warning { background: rgba(245, 158, 11, 0.18); border-color: #f59e0b; }
+        .timer-widget.timer-alarm { background: rgba(239, 68, 68, 0.35); border-color: #ef4444; animation: pulseAlarm 0.8s infinite alternate; }
+        @keyframes pulseAlarm { from { box-shadow: 0 0 4px #ef4444; } to { box-shadow: 0 0 20px #ef4444; } }
+
         .timer-info { display: flex; flex-direction: column; }
-        .timer-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9px;
-            font-weight: 700;
-            color: #cbd5e1;
-            letter-spacing: 0.5px;
-        }
-        .timer-display {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 18px;
-            font-weight: 700;
-            color: #10b981;
-            line-height: 1.1;
-        }
+        .timer-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; color: #cbd5e1; }
+        .timer-display { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: #10b981; line-height: 1.1; }
         .timer-widget.timer-warning .timer-display { color: #fbbf24; }
         .timer-widget.timer-alarm .timer-display { color: #f87171; }
 
-        .timer-quick-btns {
-            display: flex;
-            gap: 4px;
-        }
+        .timer-quick-btns { display: flex; gap: 4px; }
         .btn-timer-mini {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff;
-            padding: 4px 7px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;
+            padding: 4px 7px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;
         }
         .btn-timer-mini:hover { background: var(--brand-blue); border-color: var(--brand-blue); }
 
@@ -176,67 +135,34 @@
         .btn-top:hover { background: var(--brand-blue); border-color: var(--brand-blue); }
 
         .workspace {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 430px 1fr;
-            gap: 18px;
-            padding: 16px 24px;
-            overflow: hidden;
+            flex: 1; display: grid; grid-template-columns: 430px 1fr; gap: 18px; padding: 16px 24px; overflow: hidden;
         }
 
         .panel {
-            background-color: var(--bg-panel);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            background-color: var(--bg-panel); border: 1px solid var(--border); border-radius: 6px;
+            box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden;
         }
 
         .panel-header {
-            background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background-color: var(--bg-card); border-bottom: 1px solid var(--border); padding: 12px 18px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
 
         .panel-title {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase;
+            display: flex; align-items: center; gap: 8px;
         }
         .panel-title::before { content: ''; width: 4px; height: 15px; background: var(--brand-blue); border-radius: 2px; }
 
         .form-body { padding: 16px 18px; overflow-y: auto; flex: 1; }
 
         .pdf-smart-box {
-            background: rgba(48, 156, 225, 0.08);
-            border: 2px dashed var(--brand-blue);
-            border-radius: 6px;
-            padding: 12px;
-            margin-bottom: 14px;
-            text-align: center;
+            background: rgba(48, 156, 225, 0.08); border: 2px dashed var(--brand-blue); border-radius: 6px;
+            padding: 12px; margin-bottom: 14px; text-align: center;
         }
-        .pdf-smart-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--brand-blue);
-            margin-bottom: 6px;
-            display: block;
-        }
+        .pdf-smart-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--brand-blue); margin-bottom: 6px; display: block; }
 
-        .ocr-progress {
-            width: 100%; height: 5px; background: var(--bg-input);
-            border-radius: 3px; margin-top: 6px; overflow: hidden; display: none;
-        }
+        .ocr-progress { width: 100%; height: 5px; background: var(--bg-input); border-radius: 3px; margin-top: 6px; overflow: hidden; display: none; }
         .ocr-progress-bar { height: 100%; width: 0%; background: var(--brand-blue); transition: width 0.2s; }
 
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -244,59 +170,50 @@
 
         .field-group { margin-bottom: 12px; }
         .field-group label {
-            display: block; font-size: 10px; font-weight: 700; text-transform: uppercase;
-            color: var(--text-sec); margin-bottom: 4px; letter-spacing: 0.4px;
+            display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-sec); margin-bottom: 4px;
         }
 
         input[type="date"], input[type="text"], input[type="number"], select {
             width: 100%; height: 36px; padding: 0 10px; background: var(--bg-input);
-            border: 1px solid var(--border); border-radius: 4px; color: var(--text-main);
-            font-size: 13px; font-weight: 600; outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--border); border-radius: 4px; color: var(--text-main); font-size: 13px; font-weight: 600; outline: none;
         }
         input:focus, select:focus { border-color: var(--brand-blue); }
-        .auto-filled {
-            border-color: var(--ok-color) !important;
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
-        }
+        .auto-filled { border-color: var(--ok-color) !important; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25); }
 
         .bitola-selector { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
         .bitola-btn {
             background: var(--bg-input); border: 1px solid var(--border); color: var(--text-sec);
-            padding: 8px 0; border-radius: 4px; font-family: 'JetBrains Mono', monospace;
-            font-size: 12px; font-weight: 700; cursor: pointer;
+            padding: 8px 0; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; cursor: pointer;
         }
         .bitola-btn.active { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
 
         .status-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .status-btn {
             background: var(--bg-input); border: 1px solid var(--border); color: var(--text-sec);
-            padding: 9px; border-radius: 4px; font-family: 'Rajdhani', sans-serif;
-            font-size: 14px; font-weight: 700; cursor: pointer;
+            padding: 9px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;
         }
         .status-btn.active-ok { background: var(--ok-bg); border-color: var(--ok-color); color: var(--ok-color); }
         .status-btn.active-fail { background: var(--fail-bg); border-color: var(--fail-color); color: var(--fail-color); }
 
         .btn-submit {
             width: 100%; height: 42px; background: var(--brand-blue); color: #fff; border: none;
-            border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700;
-            letter-spacing: 1px; cursor: pointer; margin-top: 4px;
+            border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; cursor: pointer; margin-top: 4px;
         }
         .btn-submit:hover { background: var(--brand-blue-dark); }
-        .btn-submit:disabled { opacity: 0.6; cursor: wait; }
 
         .sheet-tabs-bar {
             display: flex; background: var(--bg-input); border-bottom: 2px solid var(--brand-blue);
             padding: 8px 18px 0 18px; gap: 6px; flex-wrap: wrap;
         }
         .sheet-tab {
-            background: var(--bg-card); color: var(--text-sec); border: 1px solid var(--border);
-            border-bottom: none; padding: 8px 14px; border-radius: 6px 6px 0 0;
-            font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; cursor: pointer;
+            background: var(--bg-card); color: var(--text-sec); border: 1px solid var(--border); border-bottom: none;
+            padding: 8px 12px; border-radius: 6px 6px 0 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; cursor: pointer;
         }
         .sheet-tab.active { background: var(--brand-blue); color: #fff; border-color: var(--brand-blue); }
-        .sheet-tab.tab-ronda { border-top: 2px solid #10b981; color: #10b981; margin-left: auto; }
+        .sheet-tab.tab-ronda { border-top: 2px solid #10b981; color: #10b981; }
         .sheet-tab.tab-ronda.active { background: #10b981; color: #fff; border-color: #10b981; }
+        .sheet-tab.tab-graficos { border-top: 2px solid #f59e0b; color: #f59e0b; }
+        .sheet-tab.tab-graficos.active { background: #f59e0b; color: #fff; border-color: #f59e0b; }
 
         .toolbar-filtros {
             padding: 10px 18px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
@@ -316,8 +233,7 @@
         table.data-table { width: 100%; border-collapse: collapse; text-align: center; }
         table.data-table thead th {
             position: sticky; top: 0; background: var(--bg-card); color: var(--text-sec);
-            font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
-            text-transform: uppercase; padding: 10px 8px; border-bottom: 2px solid var(--border); z-index: 2;
+            font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 10px 8px; border-bottom: 2px solid var(--border); z-index: 2;
         }
         table.data-table tbody tr { border-bottom: 1px solid var(--border); }
         table.data-table tbody tr:hover { background: var(--bg-hover); }
@@ -325,6 +241,7 @@
 
         .pill-ok { background: var(--ok-bg); color: var(--ok-color); border: 1px solid var(--ok-color); padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
         .pill-fail { background: var(--fail-bg); color: var(--fail-color); border: 1px solid var(--fail-color); padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+        .pill-warn { background: var(--warn-bg); color: var(--warn-color); border: 1px solid var(--warn-color); padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
 
         .btn-view-pdf {
             background: rgba(48,156,225,0.15); color: var(--brand-blue); border: 1px solid var(--brand-blue);
@@ -332,43 +249,25 @@
         }
         .btn-view-pdf:hover { background: var(--brand-blue); color: #fff; }
 
-        /* PAINEL DEDICADO DA RONDA DE COLETA DE AMOSTRAS (ABA TIMER) */
-        .ronda-view {
-            display: none;
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
-            gap: 24px;
-            grid-template-columns: 380px 1fr;
+        /* PAINEL DE GRÁFICOS (CEP) */
+        .graficos-view {
+            display: none; flex: 1; padding: 20px; overflow-y: auto; gap: 20px; grid-template-columns: 1fr 1fr;
         }
-        .ronda-card-main {
-            background: var(--bg-card);
-            border: 2px solid var(--brand-blue);
-            border-radius: 8px;
-            padding: 24px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .ronda-big-clock {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 54px;
-            font-weight: 700;
-            color: var(--ok-color);
-            margin: 14px 0;
-            letter-spacing: 2px;
-        }
-        .ronda-btn-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            width: 100%;
-            margin-top: 14px;
+        .chart-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 16px; display: flex; flex-direction: column; height: 320px;
         }
 
-        /* MODAL PDF & MODAL ALARME DE COLETA */
+        /* PAINEL DA RONDA DE COLETA */
+        .ronda-view {
+            display: none; flex: 1; padding: 24px; overflow-y: auto; gap: 24px; grid-template-columns: 380px 1fr;
+        }
+        .ronda-card-main {
+            background: var(--bg-card); border: 2px solid var(--brand-blue); border-radius: 8px; padding: 24px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .ronda-big-clock { font-family: 'JetBrains Mono', monospace; font-size: 54px; font-weight: 700; color: var(--ok-color); margin: 14px 0; letter-spacing: 2px; }
+        .ronda-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 14px; }
+
+        /* MODAIS */
         .pdf-modal-overlay, .alarm-modal-overlay {
             position: fixed; inset: 0; background: rgba(5,10,15,0.88); z-index: 9990;
             display: none; align-items: center; justify-content: center; padding: 20px;
@@ -377,66 +276,17 @@
             background: var(--bg-panel); border: 2px solid var(--brand-blue); border-radius: 6px;
             width: 90vw; max-width: 1200px; height: 88vh; display: flex; flex-direction: column;
         }
-        .pdf-modal-header {
-            background: var(--bg-header); color: #fff; padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .pdf-modal-header { background: var(--bg-header); color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
         .pdf-modal-body { flex: 1; background: #1e293b; }
         .pdf-modal-body iframe { width: 100%; height: 100%; border: none; }
 
-        /* CAIXA DE ALERTA DE HORA DE SUBIR E PEGAR AMOSTRA */
         .alarm-box {
-            background: var(--bg-panel);
-            border: 3px solid #ef4444;
-            border-radius: 10px;
-            max-width: 520px;
-            width: 100%;
-            padding: 32px;
-            text-align: center;
-            box-shadow: 0 0 50px rgba(239, 68, 68, 0.6);
-            animation: pulseAlarm 0.7s infinite alternate;
+            background: var(--bg-panel); border: 3px solid #ef4444; border-radius: 10px; max-width: 520px; width: 100%; padding: 32px; text-align: center; box-shadow: 0 0 50px rgba(239, 68, 68, 0.6);
         }
         .alarm-icon { font-size: 52px; margin-bottom: 10px; }
-        .alarm-title {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: #ef4444;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-        .alarm-desc {
-            font-size: 15px;
-            color: var(--text-main);
-            margin-bottom: 24px;
-            line-height: 1.5;
-        }
-        .alarm-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-        .btn-confirm-coleta {
-            background: #10b981;
-            color: #fff;
-            border: none;
-            padding: 14px 22px;
-            border-radius: 6px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .btn-confirm-coleta:hover { background: #059669; }
-        .btn-snooze-coleta {
-            background: var(--bg-card);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 14px 18px;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-        }
+        .alarm-title { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; color: #ef4444; text-transform: uppercase; margin-bottom: 8px; }
+        .alarm-desc { font-size: 15px; color: var(--text-main); margin-bottom: 24px; line-height: 1.5; }
+        .alarm-actions { display: flex; gap: 12px; justify-content: center; }
 
         #toast-box { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
         .toast-item { background: var(--bg-header); color: #fff; border-left: 4px solid var(--brand-blue); padding: 12px 16px; border-radius: 4px; font-size: 12px; font-weight: 600; }
@@ -458,19 +308,18 @@
             </div>
             <div class="brand-titles">
                 <span class="sys-tag">PADRÃO ABNT NBR 7480 // GRANDE AÇO</span>
-                <h1>CONTROLE DE TRAÇÃO CA-60</h1>
+                <h1>CONTROLE DE TRAÇÃO CA-60 ENTERPRISE</h1>
             </div>
         </div>
 
-        <!-- WIDGET DO TIMER DE COLETA DE 1 EM 1 HORA -->
-        <div class="timer-widget" id="topbar-timer-widget" title="Clique para abrir o Painel de Rondas de Coleta">
+        <div class="timer-widget" id="topbar-timer-widget" title="Clique para abrir o Painel de Rondas">
             <div class="timer-info" id="btn-abrir-aba-ronda">
                 <span class="timer-label">⏱️ PRÓXIMA COLETA (1H)</span>
                 <span class="timer-display" id="top-timer-display">60:00</span>
             </div>
             <div class="timer-quick-btns">
-                <button type="button" class="btn-timer-mini" id="btn-top-coletar" title="Confirmar que subiu e coletou amostra (Reiniciar 1h)">✔ Coletado</button>
-                <button type="button" class="btn-timer-mini" id="btn-top-pausar" title="Pausar / Retomar Timer">⏸</button>
+                <button type="button" class="btn-timer-mini" id="btn-top-coletar" title="Confirmar coleta">✔</button>
+                <button type="button" class="btn-timer-mini" id="btn-top-pausar" title="Pausar">⏸</button>
             </div>
         </div>
 
@@ -482,6 +331,7 @@
         </div>
 
         <div class="topbar-actions">
+            <button type="button" class="btn-top" id="btn-whatsapp" title="Copiar resumo para WhatsApp">📱 WhatsApp</button>
             <button type="button" class="btn-top" id="btn-exportar">📥 CSV</button>
             <button type="button" class="btn-top" id="btn-theme">☀️</button>
         </div>
@@ -491,18 +341,20 @@
         <section class="panel">
             <div class="panel-header">
                 <span class="panel-title">Lançamento Padrão ABNT</span>
-                <span style="font-size:11px; color:var(--ok-color); font-family:'JetBrains Mono'">● OCR 3-DÍGITOS ATIVO</span>
+                <div style="display:flex; gap:6px;">
+                    <button type="button" class="btn-action" id="btn-gerar-certificado" style="background:var(--brand-blue); color:#fff; font-weight:700;">📜 Certificado OP</button>
+                </div>
             </div>
 
             <div class="form-body">
                 <form id="form-teste">
                     
                     <div class="pdf-smart-box">
-                        <span class="pdf-smart-title">⚡ 1. ANEXE O PDF ESCANEADO (LEITURA OCR AUTOMÁTICA)</span>
+                        <span class="pdf-smart-title">⚡ 1. ANEXE O PDF ESCANEADO (LEITURA OCR + TOLERÂNCIA)</span>
                         <input type="file" id="anexo" accept=".pdf,image/*" style="width:100%; font-size:11px;">
                         <div class="ocr-progress" id="ocr-progress"><div class="ocr-progress-bar" id="ocr-bar"></div></div>
                         <div id="status-leitura-pdf" style="font-size:11px; color:var(--text-sec); margin-top:6px;">
-                            Selecione o PDF (Prova / Contra Prova) para extrair Rm, Rp, Size, A(%) e Massa Linear.
+                            Selecione o PDF para extrair Rm, Rp, Size, A(%) e validar Massa Linear.
                         </div>
                         <button type="button" id="btn-preview-form" class="btn-view-pdf" style="display:none; margin-top:6px;">👁️ Visualizar PDF Anexado</button>
                     </div>
@@ -541,7 +393,7 @@
 
                     <div class="form-grid-3">
                         <div class="field-group">
-                            <label for="bitola-real">Size / Bitola Real (mm):</label>
+                            <label for="bitola-real">Bitola Real (mm):</label>
                             <input type="number" step="0.01" id="bitola-real" placeholder="Ex: 4.10" required>
                         </div>
                         <div class="field-group">
@@ -549,19 +401,19 @@
                             <input type="number" step="0.001" id="massa-linear" placeholder="Ex: 0.104" required>
                         </div>
                         <div class="field-group">
-                            <label for="alongamento">A(%) Alongamento:</label>
+                            <label for="alongamento">A(%) Along.:</label>
                             <input type="number" step="0.1" id="alongamento" placeholder="Ex: 9.5" required>
                         </div>
                     </div>
 
                     <div class="form-grid-3">
                         <div class="field-group">
-                            <label for="lr">Rm / LR - Resist. (MPa):</label>
-                            <input type="number" step="1" id="lr" placeholder="Ex: 788" required>
+                            <label for="lr">Rm / LR (MPa):</label>
+                            <input type="number" step="1" id="lr" placeholder="Ex: 805" required>
                         </div>
                         <div class="field-group">
-                            <label for="le">Rp / LE - Escoam. (MPa):</label>
-                            <input type="number" step="1" id="le" placeholder="Ex: 704" required>
+                            <label for="le">Rp / LE (MPa):</label>
+                            <input type="number" step="1" id="le" placeholder="Ex: 706" required>
                         </div>
                         <div class="field-group">
                             <label for="relacao">Relação (LR/LE):</label>
@@ -571,8 +423,13 @@
 
                     <div class="form-grid-2">
                         <div class="field-group">
-                            <label for="dobramento">Dobramento / Obs:</label>
-                            <input type="text" id="dobramento" value="OK">
+                            <label for="maquina">Máquina / Trefila:</label>
+                            <select id="maquina">
+                                <option value="MAQ-01">Máquina 01 (Trefila Principal)</option>
+                                <option value="MAQ-02">Máquina 02</option>
+                                <option value="MAQ-03">Máquina 03</option>
+                                <option value="MAQ-04">Máquina 04</option>
+                            </select>
                         </div>
                         <div class="field-group">
                             <label for="operador">Responsável:</label>
@@ -580,14 +437,7 @@
                         </div>
                     </div>
 
-                    <div class="field-group">
-                        <label>Aprovado (Critério ABNT: LE ≥ 600 MPa | LR/LE ≥ 1.05 | Along ≥ 5%):</label>
-                        <input type="hidden" id="status" value="aprovado" required>
-                        <div class="status-selector">
-                            <button type="button" class="status-btn active-ok" id="btn-status-ok">✔ SIM (APROVADO)</button>
-                            <button type="button" class="status-btn" id="btn-status-fail">✖ NÃO (REPROVADO)</button>
-                        </div>
-                    </div>
+                    <div id="massa-feedback" style="font-size:11px; margin-bottom:10px; font-family:'JetBrains Mono';"></div>
 
                     <button type="submit" class="btn-submit" id="btn-submit">
                         LANÇAR NA PLANILHA ABNT + SALVAR PDF NA NUVEM
@@ -598,12 +448,13 @@
 
         <section class="panel">
             <div class="panel-header">
-                <span class="panel-title">Espelho da Planilha ABNT & Rondas de Coleta</span>
+                <span class="panel-title" id="panel-main-title">Espelho da Planilha ABNT (Grande Aço)</span>
                 <div style="display:flex; gap:8px;">
-                    <button type="button" class="btn-action" id="btn-recarregar">🔄 Sincronizar Nuvem</button>
+                    <button type="button" class="btn-action" id="btn-recarregar">🔄 Sincronizar</button>
                 </div>
             </div>
 
+            <!-- ABAS DE NAVEGAÇÃO -->
             <div class="sheet-tabs-bar" id="abas-bitola">
                 <button class="sheet-tab active" data-aba="TODAS">TODAS</button>
                 <button class="sheet-tab" data-aba="3.4">Aba 3,4</button>
@@ -612,11 +463,12 @@
                 <button class="sheet-tab" data-aba="4.6">Aba 4,6</button>
                 <button class="sheet-tab" data-aba="5.0">Aba 5,0</button>
                 <button class="sheet-tab" data-aba="6.0">Aba 6,0</button>
-                <button class="sheet-tab tab-ronda" data-aba="RONDA" id="tab-btn-ronda">⏱️ RONDA DE COLETA (1 EM 1H)</button>
+                <button class="sheet-tab tab-graficos" data-aba="GRAFICOS" id="tab-btn-graficos">📈 Gráficos CEP</button>
+                <button class="sheet-tab tab-ronda" data-aba="RONDA" id="tab-btn-ronda">⏱️ Ronda (1h)</button>
             </div>
 
-            <!-- VISÃO 1: TABELA DE ENSAIOS ABNT -->
-            <div id=" container-tabela-abnt" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
+            <!-- VISÃO 1: TABELA ABNT -->
+            <div id="container-tabela-abnt" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
                 <div class="toolbar-filtros">
                     <div class="filter-group">
                         <label>Data:</label>
@@ -637,16 +489,16 @@
                                 <th>Prova / C.P.</th>
                                 <th>LOTE</th>
                                 <th>Data</th>
-                                <th>Bitola Real (mm)</th>
-                                <th>Massa Lin. (g/mm)</th>
+                                <th>Bitola (mm)</th>
+                                <th>Massa (g/mm)</th>
                                 <th>LR (MPa)</th>
                                 <th>LE (MPa)</th>
-                                <th>Along. (%)</th>
-                                <th>Relação LR/LE</th>
-                                <th>Dobram.</th>
-                                <th>Aprovado</th>
-                                <th>Responsável</th>
-                                <th>PDF (Nuvem)</th>
+                                <th>Along.</th>
+                                <th>Relação</th>
+                                <th>Máquina</th>
+                                <th>Aprov.</th>
+                                <th>Resp.</th>
+                                <th>PDF</th>
                                 <th>Ação</th>
                             </tr>
                         </thead>
@@ -657,42 +509,40 @@
                 </div>
             </div>
 
-            <!-- VISÃO 2: PAINEL DE RONDA DE COLETA DE AMOSTRAS (1 EM 1 HORA) -->
+            <!-- VISÃO 2: GRÁFICOS DE CEP -->
+            <div class="graficos-view" id="container-graficos-view">
+                <div class="chart-card">
+                    <h4 style="font-family:'Rajdhani'; font-size:16px; margin-bottom:8px;">📈 Tendência LE - Limite de Escoamento (Min ABNT: 600 MPa)</h4>
+                    <div style="flex:1; position:relative;"><canvas id="chartLE"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <h4 style="font-family:'Rajdhani'; font-size:16px; margin-bottom:8px;">📉 Tendência LR - Limite de Resistência (MPa)</h4>
+                    <div style="flex:1; position:relative;"><canvas id="chartLR"></canvas></div>
+                </div>
+            </div>
+
+            <!-- VISÃO 3: RONDA DE COLETA (1 EM 1 HORA) -->
             <div class="ronda-view" id="container-ronda-view">
                 <div class="ronda-card-main">
                     <span class="sys-tag">CRONÔMETRO DE PRODUÇÃO // CA-60</span>
                     <h3 style="font-family:'Rajdhani',sans-serif; font-size:22px; margin-top:4px;">TEMPO PARA PRÓXIMA COLETA</h3>
                     <div class="ronda-big-clock" id="big-timer-display">60:00</div>
-                    <p style="font-size:12px; color:var(--text-sec); margin-bottom:10px;" id="ronda-status-txt">
-                        O alarme tocará automaticamente a cada 1 hora para buscar amostras na produção.
-                    </p>
-
-                    <button type="button" class="btn-submit" id="btn-ronda-coletar" style="background:#10b981;">
-                        ✔ SUBI E COLETEI AMOSTRAS (REINICIAR 1H)
-                    </button>
-
+                    <p style="font-size:12px; color:var(--text-sec); margin-bottom:10px;">O alarme tocará a cada 1 hora para buscar amostras na produção.</p>
+                    <button type="button" class="btn-submit" id="btn-ronda-coletar" style="background:#10b981;">✔ SUBI E COLETEI AMOSTRAS (REINICIAR 1H)</button>
                     <div class="ronda-btn-grid">
                         <button type="button" class="btn-action" id="btn-ronda-pausar" style="height:38px;">⏸ Pausar / Retomar</button>
                         <button type="button" class="btn-action" id="btn-ronda-testar" style="height:38px;">🔔 Testar Alarme</button>
-                        <button type="button" class="btn-action" id="btn-ronda-15m" style="height:38px;">⏱️ Ajustar p/ 15 min</button>
-                        <button type="button" class="btn-action" id="btn-ronda-60m" style="height:38px;">⏱️ Ajustar p/ 60 min</button>
                     </div>
                 </div>
-
                 <div style="display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--border); border-radius:8px;">
                     <div class="panel-header">
-                        <span class="panel-title">Histórico de Subidas / Coletas Realizadas Hoje</span>
+                        <span class="panel-title">Histórico de Coletas Realizadas Hoje</span>
                         <button type="button" class="btn-action" id="btn-limpar-rondas">🗑️ Limpar</button>
                     </div>
                     <div class="table-container">
                         <table class="data-table">
                             <thead>
-                                <tr>
-                                    <th>Nº Ronda</th>
-                                    <th>Horário da Coleta</th>
-                                    <th>Operador</th>
-                                    <th>Status</th>
-                                </tr>
+                                <tr><th>Nº Ronda</th><th>Horário</th><th>Operador</th><th>Status</th></tr>
                             </thead>
                             <tbody id="tabela-rondas-corpo"></tbody>
                         </table>
@@ -702,23 +552,30 @@
         </section>
     </main>
 
-    <!-- MODAL DE ALARME SONORO E VISUAL DE HORA DE COLETA (1 EM 1 HORA) -->
+    <!-- MODAL DE ALARME DE COLETA -->
     <div class="alarm-modal-overlay" id="alarm-modal">
         <div class="alarm-box">
             <div class="alarm-icon">🚨</div>
             <div class="alarm-title">HORA DE COLETAR AMOSTRAS!</div>
-            <p class="alarm-desc">
-                Já se passou <strong>1 hora</strong> desde a última coleta.<br>
-                Suba na produção para recolher as amostras de <strong>Aço CA-60</strong> para os ensaios de tração.
-            </p>
+            <p class="alarm-desc">Já se passou <strong>1 hora</strong>. Suba na produção para recolher as amostras de <strong>Aço CA-60</strong>.</p>
             <div class="alarm-actions">
-                <button type="button" class="btn-confirm-coleta" id="btn-modal-confirmar-coleta">
-                    ✔ JÁ COLETEI / REINICIAR 1 HORA
-                </button>
-                <button type="button" class="btn-snooze-coleta" id="btn-modal-adiar">
-                    ⏳ Adiar +10 min
-                </button>
+                <button type="button" class="btn-submit" id="btn-modal-confirmar-coleta" style="background:#10b981;">✔ JÁ COLETEI / REINICIAR 1H</button>
+                <button type="button" class="btn-action" id="btn-modal-adiar" style="height:42px; padding:0 16px;">⏳ Adiar +10 min</button>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CERTIFICADO DE QUALIDADE EM PDF / IMPRESSÃO -->
+    <div class="pdf-modal-overlay" id="cert-modal">
+        <div class="pdf-modal-box" style="max-width:850px; background:#fff; color:#000;">
+            <div class="pdf-modal-header" style="background:#0f1c24;">
+                <span style="font-family:'Rajdhani'; font-size:18px; font-weight:700; color:#fff;">📜 Certificado de Qualidade de Lote - Grande Aço</span>
+                <div style="display:flex; gap:10px;">
+                    <button type="button" class="btn-top" onclick="window.print()" style="background:#309ce1;">🖨️ Imprimir / Salvar PDF</button>
+                    <button type="button" class="btn-top" id="btn-fechar-cert" style="background:#ef4444;">✖ Fechar</button>
+                </div>
+            </div>
+            <div class="pdf-modal-body" id="cert-conteudo" style="background:#fff; padding:30px; overflow-y:auto; color:#000;"></div>
         </div>
     </div>
 
@@ -728,7 +585,7 @@
             <div class="pdf-modal-header">
                 <span id="modal-titulo" style="font-family:'JetBrains Mono'; font-weight:700; color:var(--brand-blue);">📄 Laudo PDF</span>
                 <div style="display:flex; gap:10px;">
-                    <a id="btn-abrir-drive-externo" href="#" target="_blank" class="btn-top">↗ Abrir em Nova Guia</a>
+                    <a id="btn-abrir-drive-externo" href="#" target="_blank" class="btn-top">↗ Abrir Guia</a>
                     <button type="button" class="btn-top" id="btn-fechar-modal">✖ Fechar</button>
                 </div>
             </div>
@@ -740,14 +597,12 @@
 
     <script>
         const LINK_PLANILHA = "https://script.google.com/macros/s/AKfycbwOAP2i59khcPYBCGtj5t3TXKJjgCsixTfIVvX7SS-9AXYpM9xOCOpNNe46RXaBkxqu_w/exec";
-
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         let historicoTestes = [];
         let abaAtiva = "TODAS";
-        let pdfAtualBase64 = null;
-        let pdfAtualMime = null;
-        let pdfAtualNome = null;
+        let pdfAtualBase64 = null, pdfAtualMime = null, pdfAtualNome = null;
+        let chartLEInstance = null, chartLRInstance = null;
 
         const inputLote = document.getElementById('lote');
         const inputData = document.getElementById('data');
@@ -758,212 +613,42 @@
         const inputLE = document.getElementById('le');
         const inputAlong = document.getElementById('alongamento');
         const inputRelacao = document.getElementById('relacao');
+        const selectMaquina = document.getElementById('maquina');
 
-        // ==========================================================================
-        // SISTEMA DE TIMER DE 1 EM 1 HORA + ALARME INDUSTRIAL SONORO (WEB AUDIO API)
-        // ==========================================================================
-        const INTERVALO_PADRAO_MS = 60 * 60 * 1000; // 1 Hora (3.600.000 ms)
-        let timerAlvoTimestamp = Number(localStorage.getItem('ga_timer_alvo')) || (Date.now() + INTERVALO_PADRAO_MS);
-        let timerPausadoRestante = Number(localStorage.getItem('ga_timer_pausado')) || 0;
-        let isTimerPausado = localStorage.getItem('ga_timer_is_paused') === 'true';
-        let alarmeAtivoInterval = null;
-        const tituloOriginalPagina = document.title;
-
-        if (!localStorage.getItem('ga_timer_alvo')) {
-            localStorage.setItem('ga_timer_alvo', timerAlvoTimestamp);
-        }
-
-        // Sintetizador de Sirene/Bipe Industrial via Web Audio API (Funciona offline sem MP3)
-        function tocarBipeAlarme() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(880, ctx.currentTime); // Lá 880Hz
-                osc.frequency.setValueAtTime(660, ctx.currentTime + 0.18);
-                osc.frequency.setValueAtTime(880, ctx.currentTime + 0.36);
-                gain.gain.setValueAtTime(0.25, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.65);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.65);
-            } catch (e) {}
-        }
-
-        function dispararAlarmeColeta() {
-            const modalAlarme = document.getElementById('alarm-modal');
-            if (modalAlarme.style.display === 'flex') return; // Já está aberto
-
-            modalAlarme.style.display = 'flex';
-            tocarBipeAlarme();
-            alarmeAtivoInterval = setInterval(() => {
-                tocarBipeAlarme();
-                document.title = document.title.startsWith("🚨") ? tituloOriginalPagina : "🚨 HORA DA COLETA CA-60!";
-            }, 2500);
-
-            // Notificação nativa do Windows / Chrome caso o operador esteja em outra janela
-            if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("🚨 GRANDE AÇO — HORA DA COLETA!", {
-                    body: "Passou 1 hora! Suba na produção para pegar as amostras de CA-60."
-                });
-            }
-        }
-
-        function pararAlarmeSonoro() {
-            document.getElementById('alarm-modal').style.display = 'none';
-            if (alarmeAtivoInterval) {
-                clearInterval(alarmeAtivoInterval);
-                alarmeAtivoInterval = null;
-            }
-            document.title = tituloOriginalPagina;
-        }
-
-        function registrarColetaEReiniciar(minutos = 60) {
-            pararAlarmeSonoro();
-            isTimerPausado = false;
-            localStorage.setItem('ga_timer_is_paused', 'false');
-            timerAlvoTimestamp = Date.now() + (minutos * 60 * 1000);
-            localStorage.setItem('ga_timer_alvo', timerAlvoTimestamp);
-
-            if (minutos === 60) {
-                const logs = JSON.parse(localStorage.getItem('ga_historico_rondas') || '[]');
-                const agora = new Date();
-                logs.push({
-                    horario: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' (' + agora.toLocaleDateString('pt-BR') + ')',
-                    operador: document.getElementById('operador').value || 'FLÁVIO'
-                });
-                localStorage.setItem('ga_historico_rondas', JSON.stringify(logs));
-                renderizarHistoricoRondas();
-                toast("✔ Coleta confirmada! Cronômetro reiniciado para 01:00:00.");
-            } else {
-                toast(`⏱️ Cronômetro ajustado para ${minutos} minutos.`);
-            }
-            atualizarRelogioColeta();
-        }
-
-        function alternarPausaTimer() {
-            if (isTimerPausado) {
-                isTimerPausado = false;
-                timerAlvoTimestamp = Date.now() + timerPausadoRestante;
-                localStorage.setItem('ga_timer_alvo', timerAlvoTimestamp);
-                localStorage.setItem('ga_timer_is_paused', 'false');
-                toast("▶ Cronômetro de coleta retomado!");
-            } else {
-                isTimerPausado = true;
-                timerPausadoRestante = Math.max(0, timerAlvoTimestamp - Date.now());
-                localStorage.setItem('ga_timer_pausado', timerPausadoRestante);
-                localStorage.setItem('ga_timer_is_paused', 'true');
-                toast("⏸ Cronômetro de coleta pausado.");
-            }
-            atualizarRelogioColeta();
-        }
-
-        function atualizarRelogioColeta() {
-            const topDisplay = document.getElementById('top-timer-display');
-            const bigDisplay = document.getElementById('big-timer-display');
-            const widget = document.getElementById('topbar-timer-widget');
-            const btnPausaTop = document.getElementById('btn-top-pausar');
-
-            let restanteMs = isTimerPausado ? timerPausadoRestante : (timerAlvoTimestamp - Date.now());
-
-            if (restanteMs <= 0 && !isTimerPausado) {
-                restanteMs = 0;
-                topDisplay.textContent = "00:00";
-                bigDisplay.textContent = "00:00";
-                widget.classList.remove('timer-warning');
-                widget.classList.add('timer-alarm');
-                dispararAlarmeColeta();
-                return;
-            }
-
-            const totalSeg = Math.ceil(restanteMs / 1000);
-            const min = Math.floor(totalSeg / 60);
-            const seg = totalSeg % 60;
-            const textoTempo = `${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')}`;
-
-            topDisplay.textContent = isTimerPausado ? `⏸ ${textoTempo}` : textoTempo;
-            bigDisplay.textContent = textoTempo;
-            btnPausaTop.textContent = isTimerPausado ? "▶" : "⏸";
-
-            widget.classList.remove('timer-alarm');
-            if (min < 10) {
-                widget.classList.add('timer-warning');
-                bigDisplay.style.color = '#fbbf24';
-            } else {
-                widget.classList.remove('timer-warning');
-                bigDisplay.style.color = 'var(--ok-color)';
-            }
-        }
-
-        function renderizarHistoricoRondas() {
-            const tbody = document.getElementById('tabela-rondas-corpo');
-            const logs = JSON.parse(localStorage.getItem('ga_historico_rondas') || '[]');
-            if (logs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="padding:30px; color:var(--text-muted);">Nenhuma coleta registrada ainda hoje.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = '';
-            [...logs].reverse().forEach((item, idx) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>#${logs.length - idx}</td>
-                    <td style="font-weight:700; color:var(--brand-blue);">${item.horario}</td>
-                    <td>👷 ${item.operador}</td>
-                    <td><span class="pill-ok">✔ AMOSTRA COLETADA</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        setInterval(atualizarRelogioColeta, 1000);
-
-        document.getElementById('btn-top-coletar').addEventListener('click', (e) => {
-            e.stopPropagation();
-            registrarColetaEReiniciar(60);
-        });
-        document.getElementById('btn-top-pausar').addEventListener('click', (e) => {
-            e.stopPropagation();
-            alternarPausaTimer();
-        });
-        document.getElementById('btn-abrir-aba-ronda').addEventListener('click', () => {
-            document.getElementById('tab-btn-ronda').click();
-        });
-        document.getElementById('btn-ronda-coletar').addEventListener('click', () => registrarColetaEReiniciar(60));
-        document.getElementById('btn-ronda-pausar').addEventListener('click', alternarPausaTimer);
-        document.getElementById('btn-ronda-testar').addEventListener('click', dispararAlarmeColeta);
-        document.getElementById('btn-ronda-15m').addEventListener('click', () => registrarColetaEReiniciar(15));
-        document.getElementById('btn-ronda-60m').addEventListener('click', () => registrarColetaEReiniciar(60));
-        document.getElementById('btn-modal-confirmar-coleta').addEventListener('click', () => registrarColetaEReiniciar(60));
-        document.getElementById('btn-modal-adiar').addEventListener('click', () => registrarColetaEReiniciar(10));
-        document.getElementById('btn-limpar-rondas').addEventListener('click', () => {
-            localStorage.removeItem('ga_historico_rondas');
-            renderizarHistoricoRondas();
-        });
-
-        // Solicita permissão de notificação do Windows ao clicar na página
-        document.addEventListener('click', () => {
-            if ("Notification" in window && Notification.permission === "default") {
-                Notification.requestPermission();
-            }
-        }, { once: true });
-
-        // ==========================================================================
-        // TRAVA MATEMÁTICA OBRIGATÓRIA: CORTA SEMPRE O "1" DA FRENTE (1788 -> 788)
-        // ==========================================================================
         function destacarCampo(el) {
             el.classList.add('auto-filled');
             setTimeout(() => el.classList.remove('auto-filled'), 3000);
         }
 
+        // ==========================================================================
+        // 4. VALIDAÇÃO AUTOMÁTICA DE TOLERÂNCIA DE MASSA LINEAR (±6% ABNT)
+        // ==========================================================================
+        const MASSAS_TEORICAS_CA60 = { "3.4": 0.071, "3.8": 0.089, "4.2": 0.109, "4.6": 0.130, "5.0": 0.154, "6.0": 0.222 };
+
+        function validarMassaLinearABNT(massaLida, bitolaNom) {
+            const feedback = document.getElementById('massa-feedback');
+            const teorica = MASSAS_TEORICAS_CA60[String(bitolaNom)] || (Math.PI * Math.pow(parseFloat(bitolaNom)/2, 2) * 0.00785);
+            const minTolerancia = teorica * 0.94; // -6%
+            const maxTolerancia = teorica * 1.06; // +6%
+
+            if (massaLida >= minTolerancia && massaLida <= maxTolerancia) {
+                feedback.innerHTML = `<span style="color:var(--ok-color)">✔ Massa linear dentro da norma ABNT (Teórica: ${teorica.toFixed(3)} g/mm, Variação permitida: ±6%)</span>`;
+            } else {
+                feedback.innerHTML = `<span style="color:var(--fail-color)">⚠️ Alerta: Massa linear fora da faixa de tolerância de ±6% da ABNT! (Ideal: ${teorica.toFixed(3)})</span>`;
+            }
+        }
+
+        inputMassaLinear.addEventListener('input', () => {
+            const m = parseFloat(inputMassaLinear.value);
+            const bNom = document.getElementById('bitola-nominal').value;
+            if (m > 0) validarMassaLinearABNT(m, bNom);
+        });
+
         function sanitizarMPa3Digitos(val) {
             if (val === null || val === undefined || val === '') return null;
             let n = parseInt(String(val).replace(/\D/g, ''), 10);
             if (isNaN(n)) return null;
-            while (n >= 1000) {
-                n = n % 1000;
-            }
+            while (n >= 1000) n = n % 1000;
             return (n >= 400 && n <= 999) ? n : null;
         }
 
@@ -972,18 +657,15 @@
             if (d > 0 && !inputMassaLinear.dataset.ocr) {
                 const massa = Math.PI * Math.pow(d / 2, 2) * 0.00785;
                 inputMassaLinear.value = massa.toFixed(3);
+                validarMassaLinearABNT(massa, document.getElementById('bitola-nominal').value);
             }
         });
 
         function recalcularABNT() {
-            let lrBruto = parseInt(inputLR.value, 10);
-            if (lrBruto >= 1000 && lrBruto < 2000) {
-                inputLR.value = lrBruto % 1000;
-            }
-            let leBruto = parseInt(inputLE.value, 10);
-            if (leBruto >= 1000 && leBruto < 2000) {
-                inputLE.value = leBruto % 1000;
-            }
+            let lrB = parseInt(inputLR.value, 10);
+            if (lrB >= 1000 && lrB < 2000) inputLR.value = lrB % 1000;
+            let leB = parseInt(inputLE.value, 10);
+            if (leB >= 1000 && leB < 2000) inputLE.value = leB % 1000;
 
             const lr = parseFloat(inputLR.value);
             const le = parseFloat(inputLE.value);
@@ -1002,8 +684,38 @@
         inputAlong.addEventListener('input', recalcularABNT);
 
         // ==========================================================================
-        // LEITOR OCR COM SEPARAÇÃO DE METADE ESQUERDA E METADE DIREITA DA TABELA
+        // 1 & 3. LEITOR OCR COM SUPORTE A MÁQUINAS E FILTRO DE GRADE
         // ==========================================================================
+        function removerGradeETornarNitido(canvas) {
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            const imgData = ctx.getImageData(0, 0, w, h);
+            const d = imgData.data;
+            const gray = new Uint8Array(w * h);
+            for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+                gray[p] = (0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2]) < 175 ? 1 : 0;
+            }
+            for (let y = 0; y < h; y++) {
+                let run = 0;
+                for (let x = 0; x < w; x++) {
+                    if (gray[y * w + x] === 1) run++;
+                    else { if (run > 90) { for (let k = x - run; k < x; k++) gray[y * w + k] = 0; } run = 0; }
+                }
+            }
+            for (let x = 0; x < w; x++) {
+                let run = 0;
+                for (let y = 0; y < h; y++) {
+                    if (gray[y * w + x] === 1) run++;
+                    else { if (run > 42) { for (let k = y - run; k < y; k++) gray[k * w + x] = 0; } run = 0; }
+                }
+            }
+            for (let p = 0, i = 0; p < gray.length; p++, i += 4) {
+                const c = gray[p] === 1 ? 0 : 255;
+                d[i] = d[i+1] = d[i+2] = c;
+            }
+            ctx.putImageData(imgData, 0, 0);
+        }
+
         document.getElementById('anexo').addEventListener('change', async function() {
             if (!this.files || this.files.length === 0) return;
             const file = this.files[0];
@@ -1014,36 +726,18 @@
             const progBar = document.getElementById('ocr-bar');
 
             delete inputMassaLinear.dataset.ocr;
-            inputBitolaReal.value = '';
-            inputMassaLinear.value = '';
-            inputAlong.value = '';
-            inputLR.value = '';
-            inputLE.value = '';
-            inputRelacao.value = '';
+            inputBitolaReal.value = ''; inputMassaLinear.value = ''; inputAlong.value = ''; inputLR.value = ''; inputLE.value = ''; inputRelacao.value = '';
 
             const readerB64 = new FileReader();
-            readerB64.onload = (e) => {
-                pdfAtualBase64 = e.target.result;
-                document.getElementById('btn-preview-form').style.display = 'inline-block';
-            };
+            readerB64.onload = (e) => { pdfAtualBase64 = e.target.result; document.getElementById('btn-preview-form').style.display = 'inline-block'; };
             readerB64.readAsDataURL(file);
 
-            if (/CONTRA\s*-?\s*PROVA/i.test(file.name)) {
-                selectTipoProva.value = "CONTRA PROVA";
-                destacarCampo(selectTipoProva);
-            } else if (/TESTEMUNHO/i.test(file.name)) {
-                selectTipoProva.value = "TESTEMUNHO";
-                destacarCampo(selectTipoProva);
-            } else if (/PROVA/i.test(file.name)) {
-                selectTipoProva.value = "PROVA";
-                destacarCampo(selectTipoProva);
-            }
+            if (/CONTRA\s*-?\s*PROVA/i.test(file.name)) selectTipoProva.value = "CONTRA PROVA";
+            else if (/TESTEMUNHO/i.test(file.name)) selectTipoProva.value = "TESTEMUNHO";
+            else selectTipoProva.value = "PROVA";
 
             const matchOpNome = file.name.match(/(?:OR\s*\d+\s*-\s*)?OP\s*(\d+)/i);
-            if (matchOpNome) {
-                inputLote.value = "OP" + matchOpNome[1];
-                destacarCampo(inputLote);
-            }
+            if (matchOpNome) { inputLote.value = "OP" + matchOpNome[1]; destacarCampo(inputLote); }
 
             let bitolaNominalDetectada = "4.2";
             const matchBitolaNome = file.name.match(/(3[\.,]4|3[\.,]8|4[\.,]2|4[\.,]6|5[\.,]0|6[\.,]0)/);
@@ -1054,63 +748,42 @@
 
             if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
                 try {
-                    statusTxt.innerHTML = "⏳ Separando blocos da tabela do PDF...";
-                    progBox.style.display = 'block';
-                    progBar.style.width = '20%';
+                    statusTxt.innerHTML = "⏳ Processando OCR do laudo...";
+                    progBox.style.display = 'block'; progBar.style.width = '30%';
 
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                     const page = await pdf.getPage(1);
-
-                    statusTxt.innerHTML = "🔍 Lendo Coluna Esquerda (A%, Rp) e Coluna Direita (Size, Rm)...";
-                    progBar.style.width = '40%';
-
-                    const viewport = page.getViewport({ scale: 2.4 });
+                    const viewport = page.getViewport({ scale: 2.5 });
                     const canvasFull = document.createElement('canvas');
-                    canvasFull.width = viewport.width;
-                    canvasFull.height = viewport.height;
+                    canvasFull.width = viewport.width; canvasFull.height = viewport.height;
                     const ctxFull = canvasFull.getContext('2d');
                     await page.render({ canvasContext: ctxFull, viewport: viewport }).promise;
 
-                    const W = canvasFull.width;
-                    const H = canvasFull.height;
-
-                    const hTop = Math.floor(H * 0.18);
-                    const yTop = Math.floor(H * 0.02);
-                    const wEsq = Math.floor(W * 0.50);
-                    const wDir = Math.floor(W * 0.42);
-                    const yBot = Math.floor(H * 0.83);
-                    const hBot = Math.floor(H * 0.10);
+                    const W = canvasFull.width, H = canvasFull.height;
+                    const hTop = Math.floor(H * 0.22), yTop = Math.floor(H * 0.02), wEsq = Math.floor(W * 0.50), wDir = Math.floor(W * 0.42), yBot = Math.floor(H * 0.83), hBot = Math.floor(H * 0.10);
 
                     const canvasOcr = document.createElement('canvas');
-                    canvasOcr.width = W;
-                    canvasOcr.height = (hTop * 2) + hBot + 60;
+                    canvasOcr.width = W; canvasOcr.height = (hTop * 2) + hBot + 60;
                     const ctxOcr = canvasOcr.getContext('2d');
-                    ctxOcr.fillStyle = "#FFFFFF";
-                    ctxOcr.fillRect(0, 0, canvasOcr.width, canvasOcr.height);
+                    ctxOcr.fillStyle = "#FFFFFF"; ctxOcr.fillRect(0, 0, canvasOcr.width, canvasOcr.height);
 
                     ctxOcr.drawImage(canvasFull, Math.floor(W * 0.04), yTop, wEsq, hTop, 10, 10, wEsq, hTop);
                     ctxOcr.drawImage(canvasFull, Math.floor(W * 0.54), yTop, wDir, hTop, 10, hTop + 30, wDir, hTop);
                     ctxOcr.drawImage(canvasFull, Math.floor(W * 0.04), yBot, Math.floor(W * 0.92), hBot, 10, (hTop * 2) + 50, Math.floor(W * 0.92), hBot);
 
-                    const result = await Tesseract.recognize(canvasOcr, 'eng', {
-                        logger: m => {
-                            if (m.status === 'recognizing text') {
-                                progBar.style.width = Math.round(40 + (m.progress * 58)) + '%';
-                            }
-                        }
-                    });
+                    removerGradeETornarNitido(canvasOcr);
+                    progBar.style.width = '70%';
 
+                    const result = await Tesseract.recognize(canvasOcr, 'eng');
                     progBar.style.width = '100%';
                     setTimeout(() => { progBox.style.display = 'none'; }, 500);
 
-                    const textoExtraido = result.data.text;
-                    preencherCamposLaudoGrandeAco(textoExtraido, bitolaNominalDetectada);
-                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ Leitura OCR 3-Dígitos concluída com sucesso!</span>`;
+                    preencherCamposLaudoGrandeAco(result.data.text, bitolaNominalDetectada);
+                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ OCR lido com sucesso!</span>`;
                 } catch (err) {
-                    console.error("Erro na leitura do PDF:", err);
                     progBox.style.display = 'none';
-                    statusTxt.innerHTML = `⚠️ PDF anexado. Verifique os campos manualmente.`;
+                    statusTxt.innerHTML = `⚠️ Erro na leitura automática. Preencha manualmente.`;
                 }
             }
         });
@@ -1120,29 +793,24 @@
             const bNomNum = parseFloat(bitolaNomPadrao) || 4.2;
 
             const mOp = limpo.match(/OP\s*(\d{2,5})/i);
-            if (mOp) {
-                inputLote.value = "OP" + mOp[1];
-                destacarCampo(inputLote);
-            }
+            if (mOp) { inputLote.value = "OP" + mOp[1]; destacarCampo(inputLote); }
 
             const mDate = limpo.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](20\d{2})/);
             if (mDate) {
-                let p1 = parseInt(mDate[1], 10);
-                let p2 = parseInt(mDate[2], 10);
-                const ano = mDate[3];
+                let p1 = parseInt(mDate[1], 10), p2 = parseInt(mDate[2], 10);
                 const mes = p1 <= 12 ? String(p1).padStart(2, '0') : String(p2).padStart(2, '0');
                 const dia = p1 <= 12 ? String(p2).padStart(2, '0') : String(p1).padStart(2, '0');
-                inputData.value = `${ano}-${mes}-${dia}`;
+                inputData.value = `${mDate[3]}-${mes}-${dia}`;
                 destacarCampo(inputData);
             }
 
             let massaLida = null;
-            const mMassa = limpo.match(/LINEAR\s*[:\-]?\s*0?[\.,]?\s*(\d{3})/i)
-                        || limpo.match(/\b0[\.,]\s*(\d{3})\s*G/i);
+            const mMassa = limpo.match(/LINEAR\s*[:\-]?\s*0?[\.,]?\s*(\d{3})/i) || limpo.match(/\b0[\.,]\s*(\d{3})\s*G/i);
             if (mMassa) {
                 massaLida = parseFloat("0." + mMassa[1]);
                 inputMassaLinear.value = massaLida.toFixed(3);
                 inputMassaLinear.dataset.ocr = "true";
+                validarMassaLinearABNT(massaLida, bNomNum);
                 destacarCampo(inputMassaLinear);
             }
 
@@ -1153,28 +821,18 @@
                 if (val > 100) val = val / 100;
                 if (Math.abs(val - bNomNum) <= 0.35) sizeEncontrado = val;
             }
-            if (!sizeEncontrado) {
-                const textoSemOP = limpo.replace(/OP\s*\d+\s*[3456][\.,]\d{2}/gi, '');
-                const candidatosSize = [...textoSemOP.matchAll(/\b1?([3456][\.,]\d{2})\b/g)]
-                    .map(m => parseFloat(m[1].replace(',', '.')))
-                    .filter(v => Math.abs(v - bNomNum) <= 0.35);
-                if (candidatosSize.length > 0) sizeEncontrado = candidatosSize[0];
-            }
             if (!sizeEncontrado && massaLida) {
-                const dCalc = Math.sqrt((massaLida * 4) / (Math.PI * 0.00785));
-                sizeEncontrado = Math.floor(dCalc * 100) / 100;
+                sizeEncontrado = Math.sqrt((massaLida * 4) / (Math.PI * 0.00785));
             }
             if (sizeEncontrado) {
                 inputBitolaReal.value = sizeEncontrado.toFixed(2);
                 destacarCampo(inputBitolaReal);
-                if (!massaLida) inputBitolaReal.dispatchEvent(new Event('input'));
             }
 
             let alongVal = null;
             const mAlongLinha = limpo.match(/A\s*\(?%\)?[^\n]{0,25}/i);
             if (mAlongLinha) {
-                const trecho = mAlongLinha[0].replace(/A\s*\(?%\)?/i, '');
-                const mNum = trecho.match(/(\d{1,3}(?:[\.,]\d{1,2})?)/);
+                const mNum = mAlongLinha[0].match(/(\d{1,3}(?:[\.,]\d{1,2})?)/);
                 if (mNum) {
                     let v = parseFloat(mNum[1].replace(',', '.'));
                     if (v > 100 && v < 200) v = v - 100;
@@ -1182,26 +840,15 @@
                     if (v >= 3 && v <= 25) alongVal = v;
                 }
             }
-            if (alongVal === null) {
-                const mDec = limpo.match(/\b1?([56789][\.,][05]|1[012][\.,][05])\b/);
-                if (mDec) alongVal = parseFloat(mDec[1].replace(',', '.'));
-            }
-            if (alongVal !== null) {
-                inputAlong.value = alongVal;
-                destacarCampo(inputAlong);
-            }
+            if (alongVal !== null) { inputAlong.value = alongVal; destacarCampo(inputAlong); }
 
-            let rmVal = null;
-            let rpVal = null;
-
+            let rmVal = null, rpVal = null;
             const mRm = limpo.match(/Rm\s*\(?MPa\)?[^0-9\n]{0,20}(1?[56789]\d{2})\b/i);
             if (mRm) rmVal = sanitizarMPa3Digitos(mRm[1]);
-
             const mRp = limpo.match(/Rp\s*\(?MPa\)?[^0-9\n]{0,20}(1?[456789]\d{2})\b/i);
             if (mRp) rpVal = sanitizarMPa3Digitos(mRp[1]);
 
-            const textoSemMassa = limpo.replace(/MASSA\s*\d+[\.,]?\d*/gi, '');
-            const todosMPa = [...textoSemMassa.matchAll(/\b(1?[56789]\d{2})\b/g)]
+            const todosMPa = [...limpo.matchAll(/\b(1?[56789]\d{2})\b/g)]
                 .map(m => sanitizarMPa3Digitos(m[1]))
                 .filter(n => n !== null && ![900, 810, 800, 720, 640, 630, 560, 540, 450].includes(n));
 
@@ -1209,29 +856,17 @@
                 if (!rmVal) rmVal = Math.max(...todosMPa);
                 if (!rpVal) rpVal = Math.min(...todosMPa);
             }
-
-            if (rmVal && rpVal && rmVal < rpVal) {
-                const aux = rmVal;
-                rmVal = rpVal;
-                rpVal = aux;
-            }
-
+            if (rmVal && rpVal && rmVal < rpVal) { const aux = rmVal; rmVal = rpVal; rpVal = aux; }
             if (rmVal) { inputLR.value = rmVal; destacarCampo(inputLR); }
             if (rpVal) { inputLE.value = rpVal; destacarCampo(inputLE); }
 
-            if (/DOBRAMENTO\s*OK/i.test(limpo)) {
-                document.getElementById('dobramento').value = "OK";
-            }
-
+            if (/DOBRAMENTO\s*OK/i.test(limpo)) document.getElementById('dobramento').value = "OK";
             recalcularABNT();
-            destacarCampo(inputRelacao);
         }
 
         function selecionarBitolaNominal(val) {
             document.getElementById('bitola-nominal').value = val;
-            document.querySelectorAll('.bitola-btn').forEach(b => {
-                b.classList.toggle('active', b.getAttribute('data-val') === val);
-            });
+            document.querySelectorAll('.bitola-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === val));
         }
 
         document.querySelectorAll('.bitola-btn').forEach(btn => {
@@ -1247,136 +882,242 @@
         document.getElementById('btn-status-ok').addEventListener('click', () => definirStatus('aprovado'));
         document.getElementById('btn-status-fail').addEventListener('click', () => definirStatus('reprovado'));
 
-        // Alternância entre Abas de Bitola e a nova Aba de Ronda de Coleta
+        // ==========================================================================
+        // SISTEMA DE TIMER DE 1 EM 1 HORA + ALARME SONORO
+        // ==========================================================================
+        const INTERVALO_MS = 60 * 60 * 1000;
+        let timerAlvo = Number(localStorage.getItem('ga_timer_alvo')) || (Date.now() + INTERVALO_MS);
+        let isTimerPausado = localStorage.getItem('ga_timer_is_paused') === 'true';
+        let timerPausadoRestante = Number(localStorage.getItem('ga_timer_pausado')) || 0;
+        let alarmeInterval = null;
+
+        function tocarBipe() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                osc.type = 'square'; osc.frequency.setValueAtTime(880, ctx.currentTime);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+                osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.6);
+            } catch(e) {}
+        }
+
+        function dispararAlarme() {
+            const modal = document.getElementById('alarm-modal');
+            if (modal.style.display === 'flex') return;
+            modal.style.display = 'flex';
+            tocarBipe();
+            alarmeInterval = setInterval(tocarBipe, 2500);
+        }
+
+        function pararAlarme() {
+            document.getElementById('alarm-modal').style.display = 'none';
+            if (alarmeInterval) { clearInterval(alarmeInterval); alarmeInterval = null; }
+        }
+
+        function reiniciarTimer(minutos = 60) {
+            pararAlarme();
+            isTimerPausado = false;
+            localStorage.setItem('ga_timer_is_paused', 'false');
+            timerAlvo = Date.now() + (minutos * 60 * 1000);
+            localStorage.setItem('ga_timer_alvo', timerAlvo);
+
+            if (minutos === 60) {
+                const logs = JSON.parse(localStorage.getItem('ga_historico_rondas') || '[]');
+                const d = new Date();
+                logs.push({ horario: d.toLocaleTimeString('pt-BR') + ' (' + d.toLocaleDateString('pt-BR') + ')', operador: document.getElementById('operador').value || 'FLÁVIO' });
+                localStorage.setItem('ga_historico_rondas', JSON.stringify(logs));
+                renderizarRondas();
+                toast("✔ Coleta realizada! Próxima em 1 hora.");
+            }
+        }
+
+        function atualizarRelogio() {
+            const topDisp = document.getElementById('top-timer-display');
+            const bigDisp = document.getElementById('big-timer-display');
+            const widget = document.getElementById('topbar-timer-widget');
+            let ms = isTimerPausado ? timerPausadoRestante : (timerAlvo - Date.now());
+
+            if (ms <= 0 && !isTimerPausado) {
+                ms = 0; topDisp.textContent = "00:00"; bigDisp.textContent = "00:00";
+                widget.classList.add('timer-alarm'); dispararAlarme(); return;
+            }
+            const tSeg = Math.ceil(ms / 1000);
+            const m = Math.floor(tSeg / 60), s = tSeg % 60;
+            const txt = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            topDisp.textContent = isTimerPausado ? `⏸ ${txt}` : txt;
+            bigDisp.textContent = txt;
+            widget.classList.remove('timer-alarm');
+            if (m < 10) widget.classList.add('timer-warning'); else widget.classList.remove('timer-warning');
+        }
+        setInterval(atualizarRelogio, 1000);
+
+        function renderizarRondas() {
+            const tb = document.getElementById('tabela-rondas-corpo');
+            const logs = JSON.parse(localStorage.getItem('ga_historico_rondas') || '[]');
+            if (logs.length === 0) { tb.innerHTML = '<tr><td colspan="4" style="padding:20px; color:var(--text-muted);">Nenhuma coleta hoje.</td></tr>'; return; }
+            tb.innerHTML = '';
+            [...logs].reverse().forEach((item, idx) => {
+                tb.innerHTML += `<tr><td>#${logs.length - idx}</td><td style="font-weight:700; color:var(--brand-blue);">${item.horario}</td><td>👷 ${item.operador}</td><td><span class="pill-ok">✔ CONCLUÍDA</span></td></tr>`;
+            });
+        }
+
+        // ==========================================================================
+        // 5. RESUMO AUTOMÁTICO PARA WHATSAPP
+        // ==========================================================================
+        document.getElementById('btn-whatsapp').addEventListener('click', () => {
+            const total = historicoTestes.length;
+            const aprov = historicoTestes.filter(t => t.status === 'aprovado' || t.aprovado === 'SIM').length;
+            const taxa = total > 0 ? Math.round((aprov/total)*100) : 0;
+            const texto = `📊 *RESUMO QUALIDADE CA-60 - GRANDE AÇO* 🏭\n📅 Data: ${new Date().toLocaleDateString('pt-BR')}\n✅ Total Ensaios: ${total}\n🎯 Conformidade: ${taxa}%\n⏱️ Status Ronda Coleta: Ativa (1h)\n\n_Gerado pelo SGCQ Enterprise_`;
+            navigator.clipboard.writeText(texto).then(() => toast("✔ Resumo copiado para a área de transferência!"));
+        });
+
+        // ==========================================================================
+        // 2. GERADOR DE CERTIFICADO DE QUALIDADE EM PDF / IMPRESSÃO
+        // ==========================================================================
+        document.getElementById('btn-gerar-certificado').addEventListener('click', () => {
+            const loteFiltro = prompt("Digite o Lote / OP para gerar o Certificado de Qualidade (Ex: OP150):");
+            if (!loteFiltro) return;
+            const filtrados = historicoTestes.filter(t => String(t.lote || '').toUpperCase().includes(loteFiltro.trim().toUpperCase()));
+            if (filtrados.length === 0) { alert(`Nenhum ensaio encontrado para o lote "${loteFiltro}".`); return; }
+
+            const mdLR = (filtrados.reduce((a, b) => a + Number(b.lr||0), 0) / filtrados.length).toFixed(1);
+            const mdLE = (filtrados.reduce((a, b) => a + Number(b.le||0), 0) / filtrados.length).toFixed(1);
+            const mdAlong = (filtrados.reduce((a, b) => a + Number(b.alongamento||0), 0) / filtrados.length).toFixed(1);
+            const bitolaNom = filtrados[0].bitolaNominal || filtrados[0].bitola || "4.2";
+
+            let html = `
+                <div style="font-family:'Inter',sans-serif; color:#000;">
+                    <div style="display:flex; justify-content:space-between; border-bottom:2px solid #309ce1; padding-bottom:15px; margin-bottom:20px;">
+                        <div>
+                            <h2 style="font-family:'Rajdhani'; font-size:24px; color:#0f1c24;">GRANDE AÇO - INDÚSTRIA DE AÇO</h2>
+                            <p style="font-size:12px; color:#555;">Laboratório de Controle de Qualidade — ABNT NBR 7480</p>
+                        </div>
+                        <div style="text-align:right;">
+                            <strong>CERTIFICADO DE CONFORMIDADE</strong>
+                            <p style="font-size:12px;">Emissão: ${new Date().toLocaleDateString('pt-BR')}</p>
+                        </div>
+                    </div>
+                    <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin-bottom:20px; font-size:13px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div><strong>Lote / OP:</strong> ${loteFiltro.toUpperCase()}</div>
+                        <div><strong>Bitola Nominal:</strong> Ø ${bitolaNom} mm</div>
+                        <div><strong>Total de Ensaios:</strong> ${filtrados.length} amostras</div>
+                        <div><strong>Norma Aplicada:</strong> ABNT NBR 7480 (Aço CA-60)</div>
+                    </div>
+                    <h3 style="font-size:14px; margin-bottom:8px; font-family:'Rajdhani';">MÉDIAS MECÂNICAS DO LOTE:</h3>
+                    <table style="width:100%; border-collapse:collapse; margin-bottom:20px; font-size:12px;">
+                        <tr style="background:#0f1c24; color:#fff;"><th style="padding:8px; border:1px solid #ccc;">Parâmetro</th><th style="padding:8px; border:1px solid #ccc;">Média Obtida</th><th style="padding:8px; border:1px solid #ccc;">Critério Mínimo ABNT</th></tr>
+                        <tr><td style="padding:8px; border:1px solid #ccc;">Limite de Escoamento (LE)</td><td style="padding:8px; border:1px solid #ccc; text-align:center;"><b>${mdLE} MPa</b></td><td style="padding:8px; border:1px solid #ccc; text-align:center;">≥ 600 MPa</td></tr>
+                        <tr><td style="padding:8px; border:1px solid #ccc;">Limite de Resistência (LR)</td><td style="padding:8px; border:1px solid #ccc; text-align:center;"><b>${mdLR} MPa</b></td><td style="padding:8px; border:1px solid #ccc; text-align:center;">-</td></tr>
+                        <tr><td style="padding:8px; border:1px solid #ccc;">Alongamento Total (A%)</td><td style="padding:8px; border:1px solid #ccc; text-align:center;"><b>${mdAlong}%</b></td><td style="padding:8px; border:1px solid #ccc; text-align:center;">≥ 5.0%</td></tr>
+                    </table>
+                    <div style="margin-top:40px; display:flex; justify-content:space-between; text-align:center;">
+                        <div style="border-top:1px solid #000; width:250px; padding-top:5px; font-size:12px;">Operador / Responsável</div>
+                        <div style="border-top:1px solid #000; width:250px; padding-top:5px; font-size:12px;">Supervisão de Qualidade</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('cert-conteudo').innerHTML = html;
+            document.getElementById('cert-modal').style.display = 'flex';
+        });
+
+        document.getElementById('btn-fechar-cert').addEventListener('click', () => { document.getElementById('cert-modal').style.display = 'none'; });
+
+        // ==========================================================================
+        // 1. GRÁFICOS CEP (CHART.JS)
+        // ==========================================================================
+        function renderizarGraficosCEP() {
+            const datas = historicoTestes.map(t => t.dataFormatada);
+            const leVals = historicoTestes.map(t => Number(t.le || 0));
+            const lrVals = historicoTestes.map(t => Number(t.lr || 0));
+
+            if (chartLEInstance) chartLEInstance.destroy();
+            if (chartLRInstance) chartLRInstance.destroy();
+
+            const ctxLE = document.getElementById('chartLE').getContext('2d');
+            chartLEInstance = new Chart(ctxLE, {
+                type: 'line',
+                data: {
+                    labels: datas,
+                    datasets: [
+                        { label: 'LE Obtido (MPa)', data: leVals, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', tension: 0.2 },
+                        { label: 'Mínimo ABNT (600 MPa)', data: datas.map(() => 600), borderColor: '#ef4444', borderDash: [5,5], pointRadius: 0 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff' } } }, scales: { y: { grid: { color: '#233446' }, ticks: { color: '#fff' } }, x: { grid: { color: '#233446' }, ticks: { color: '#fff' } } } }
+            });
+
+            const ctxLR = document.getElementById('chartLR').getContext('2d');
+            chartLRInstance = new Chart(ctxLR, {
+                type: 'line',
+                data: {
+                    labels: datas,
+                    datasets: [{ label: 'LR Obtido (MPa)', data: lrVals, borderColor: '#309ce1', backgroundColor: 'rgba(48,156,225,0.1)', tension: 0.2 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff' } } }, scales: { y: { grid: { color: '#233446' }, ticks: { color: '#fff' } }, x: { grid: { color: '#233446' }, ticks: { color: '#fff' } } } }
+            });
+        }
+
+        // Navegação de Abas
         document.querySelectorAll('.sheet-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.sheet-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                const selecionada = tab.getAttribute('data-aba');
-                const viewAbnt = document.getElementById(' container-tabela-abnt');
-                const viewRonda = document.getElementById('container-ronda-view');
+                const sel = tab.getAttribute('data-aba');
+                const vAbnt = document.getElementById('container-tabela-abnt');
+                const vGraf = document.getElementById('container-graficos-view');
+                const vRonda = document.getElementById('container-ronda-view');
+                const panelTitle = document.getElementById('panel-main-title');
 
-                if (selecionada === 'RONDA') {
-                    viewAbnt.style.display = 'none';
-                    viewRonda.style.display = 'grid';
-                    renderizarHistoricoRondas();
+                vAbnt.style.display = 'none'; vGraf.style.display = 'none'; vRonda.style.display = 'none';
+
+                if (sel === 'RONDA') {
+                    vRonda.style.display = 'grid'; renderizarRondas(); panelTitle.textContent = "⏱️ Gerenciamento de Ronda de Coleta (1h)";
+                } else if (sel === 'GRAFICOS') {
+                    vGraf.style.display = 'grid'; renderizarGraficosCEP(); panelTitle.textContent = "📈 Controle Estatístico de Processo (CEP)";
                 } else {
-                    viewAbnt.style.display = 'flex';
-                    viewRonda.style.display = 'none';
-                    abaAtiva = selecionada;
-                    atualizarTabela();
+                    vAbnt.style.display = 'flex'; abaAtiva = sel; atualizarTabela(); panelTitle.textContent = "Espelho da Planilha ABNT (Grande Aço)";
                 }
             });
         });
 
-        function abrirModalPDF(titulo, urlEmbed, urlExterna) {
-            document.getElementById('modal-titulo').textContent = `📄 ${titulo}`;
-            document.getElementById('btn-abrir-drive-externo').href = urlExterna || urlEmbed;
-            document.getElementById('modal-conteudo').innerHTML = `<iframe src="${urlEmbed}" allow="autoplay"></iframe>`;
-            document.getElementById('pdf-modal').style.display = 'flex';
-        }
-
-        document.getElementById('btn-preview-form').addEventListener('click', () => {
-            if (pdfAtualBase64) {
-                const partes = pdfAtualBase64.split(',');
-                const bstr = atob(partes[1]);
-                const u8 = new Uint8Array(bstr.length);
-                for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
-                const blobUrl = URL.createObjectURL(new Blob([u8], { type: pdfAtualMime }));
-                abrirModalPDF(pdfAtualNome, blobUrl, blobUrl);
-            }
-        });
-
-        document.getElementById('btn-fechar-modal').addEventListener('click', () => {
-            document.getElementById('pdf-modal').style.display = 'none';
-            document.getElementById('modal-conteudo').innerHTML = '';
-        });
-
-        function verPDFTabela(valorSalvo) {
-            if (!valorSalvo || valorSalvo === "Nenhum anexo") return;
-
-            if (valorSalvo.startsWith("ERRO_DRIVE:")) {
-                alert("O Google Drive bloqueou o salvamento deste PDF porque faltou autorizar a permissão no Apps Script:\n\n" + valorSalvo);
-                return;
-            }
-
-            if (valorSalvo.startsWith('http://') || valorSalvo.startsWith('https://')) {
-                let urlPreview = valorSalvo;
-                const matchId = valorSalvo.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || valorSalvo.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-                if (matchId && matchId[1]) {
-                    urlPreview = `https://drive.google.com/file/d/${matchId[1]}/preview`;
-                }
-                abrirModalPDF("Laudo Técnico (Google Drive)", urlPreview, valorSalvo);
-            } else {
-                alert(`Este registro ("${valorSalvo}") foi salvo antes da ativação do Google Drive.\n\nFaça um novo lançamento com o PDF anexado para gerar o link na nuvem.`);
-            }
-        }
-
         function toast(msg) {
             const box = document.getElementById('toast-box');
-            const el = document.createElement('div');
-            el.className = 'toast-item';
-            el.textContent = msg;
-            box.appendChild(el);
-            setTimeout(() => el.remove(), 4000);
+            const el = document.createElement('div'); el.className = 'toast-item'; el.textContent = msg;
+            box.appendChild(el); setTimeout(() => el.remove(), 4000);
         }
 
         function carregarDadosDaPlanilha() {
             fetch(LINK_PLANILHA)
                 .then(r => r.json())
-                .then(dados => {
-                    historicoTestes = Array.isArray(dados) ? dados : [];
-                    atualizarTabela();
-                })
-                .catch(() => {
-                    document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="15" style="padding:30px;">⚠️ Erro ao carregar planilha. Verifique se o acesso na implantação está como "Qualquer pessoa".</td></tr>';
-                });
+                .then(dados => { historicoTestes = Array.isArray(dados) ? dados : []; atualizarTabela(); })
+                .catch(() => { document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="15" style="padding:30px;">⚠️ Erro ao carregar planilha.</td></tr>'; });
         }
 
         function atualizarTabela() {
-            const tbody = document.getElementById('tabela-corpo');
-            tbody.innerHTML = '';
-
+            const tbody = document.getElementById('tabela-corpo'); tbody.innerHTML = '';
             let lista = [...historicoTestes];
-
-            if (abaAtiva !== "TODAS") {
-                lista = lista.filter(t => String(t.bitolaNominal || t.bitola) === abaAtiva);
-            }
+            if (abaAtiva !== "TODAS") lista = lista.filter(t => String(t.bitolaNominal || t.bitola) === abaAtiva);
 
             const fData = document.getElementById('filtro-data').value;
-            if (fData) {
-                const df = fData.split('-').reverse().join('/');
-                lista = lista.filter(t => t.dataFormatada === df);
-            }
-
+            if (fData) { const df = fData.split('-').reverse().join('/'); lista = lista.filter(t => t.dataFormatada === df); }
             const fLote = document.getElementById('filtro-lote').value.trim().toUpperCase();
-            if (fLote) {
-                lista = lista.filter(t => String(t.lote || '').toUpperCase().includes(fLote));
-            }
+            if (fLote) lista = lista.filter(t => String(t.lote || '').toUpperCase().includes(fLote));
 
             const total = lista.length;
             const aprov = lista.filter(t => t.status === 'aprovado' || t.aprovado === 'SIM').length;
             document.getElementById('kpi-total').textContent = total;
             document.getElementById('kpi-aprovados').textContent = aprov;
             document.getElementById('kpi-reprovados').textContent = total - aprov;
-            document.getElementById('kpi-taxa').textContent = (total > 0 ? Math.round((aprov / total) * 100) : 0) + '%';
+            document.getElementById('kpi-taxa').textContent = (total > 0 ? Math.round((aprov/total)*100) : 0) + '%';
 
-            if (lista.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="15" style="padding:40px; color:var(--text-muted);">Nenhum registro nesta aba.</td></tr>';
-                return;
-            }
+            if (lista.length === 0) { tbody.innerHTML = '<tr><td colspan="15" style="padding:40px; color:var(--text-muted);">Nenhum registro nesta aba.</td></tr>'; return; }
 
             [...lista].reverse().forEach((t, idx) => {
                 const isOk = t.status === 'aprovado' || t.aprovado === 'SIM';
                 const tr = document.createElement('tr');
                 const arq = String(t.nomeArquivo || "Nenhum anexo");
-                
-                let btnPdf = `-`;
-                if (arq !== "Nenhum anexo" && arq !== "Nenhum") {
-                    const argSeguro = arq.replace(/'/g, "\\'");
-                    const isCloud = arq.startsWith('http');
-                    btnPdf = `<button class="btn-view-pdf" onclick="verPDFTabela('${argSeguro}')">${isCloud ? '☁️ Abrir PDF' : '⚠️ Sem Link'}</button>`;
-                }
+                let btnPdf = arq !== "Nenhum anexo" ? `<button class="btn-view-pdf" onclick="verPDFTabela('${arq.replace(/'/g, "\\'")}')">☁️ PDF</button>` : `-`;
 
                 tr.innerHTML = `
                     <td>${t.amostra || (lista.length - idx)}</td>
@@ -1389,7 +1130,7 @@
                     <td style="font-weight:700;">${t.le || '-'}</td>
                     <td>${t.alongamento ? t.alongamento + '%' : '-'}</td>
                     <td>${t.relacao ? Number(t.relacao).toFixed(2) : '-'}</td>
-                    <td>${t.dobramento || 'OK'}</td>
+                    <td>${t.maquina || 'MAQ-01'}</td>
                     <td><span class="${isOk ? 'pill-ok' : 'pill-fail'}">${isOk ? 'SIM' : 'NÃO'}</span></td>
                     <td>${t.operador}</td>
                     <td>${btnPdf}</td>
@@ -1401,19 +1142,13 @@
 
         document.getElementById('filtro-data').addEventListener('change', atualizarTabela);
         document.getElementById('filtro-lote').addEventListener('input', atualizarTabela);
-        document.getElementById('btn-limpar-filtro').addEventListener('click', () => {
-            document.getElementById('filtro-data').value = '';
-            document.getElementById('filtro-lote').value = '';
-            atualizarTabela();
-        });
+        document.getElementById('btn-limpar-filtro').addEventListener('click', () => { document.getElementById('filtro-data').value = ''; document.getElementById('filtro-lote').value = ''; atualizarTabela(); });
         document.getElementById('btn-recarregar').addEventListener('click', carregarDadosDaPlanilha);
 
+        // Submissão de Ensaio
         document.getElementById('form-teste').addEventListener('submit', function(e) {
             e.preventDefault();
-            const btn = document.getElementById('btn-submit');
-            btn.disabled = true;
-            btn.textContent = "⏳ ENVIANDO PDF PARA O GOOGLE DRIVE...";
-
+            const btn = document.getElementById('btn-submit'); btn.disabled = true; btn.textContent = "⏳ SALVANDO NA NUVEM...";
             const op = document.getElementById('operador').value.trim().toUpperCase();
             localStorage.setItem('ga_operador', op);
 
@@ -1426,78 +1161,76 @@
                 dataFormatada: inputData.value.split('-').reverse().join('/'),
                 bitolaReal: inputBitolaReal.value,
                 massaLinear: inputMassaLinear.value,
-                lr: inputLR.value,
-                le: inputLE.value,
-                alongamento: inputAlong.value,
-                relacao: inputRelacao.value,
-                dobramento: document.getElementById('dobramento').value || "OK",
-                status: document.getElementById('status').value,
-                textoMotivo: document.getElementById('dobramento').value,
-                operador: op,
+                lr: inputLR.value, le: inputLE.value, alongamento: inputAlong.value, relacao: inputRelacao.value,
+                dobramento: "OK", status: document.getElementById('status').value,
+                operador: op, maquina: selectMaquina.value,
                 nomeArquivo: pdfAtualNome || "Nenhum anexo",
                 arquivoBase64: pdfAtualBase64 ? pdfAtualBase64.split(',')[1] : "",
                 mimeType: pdfAtualMime || "application/pdf"
             };
 
-            fetch(LINK_PLANILHA, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
-            }).then(() => {
+            fetch(LINK_PLANILHA, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+            .then(() => {
                 toast("✔ Amostra e PDF salvos no Google Drive!");
-                btn.disabled = false;
-                btn.textContent = "LANÇAR NA PLANILHA ABNT + SALVAR PDF NA NUVEM";
-                document.getElementById('anexo').value = "";
-                pdfAtualBase64 = null;
-                pdfAtualNome = null;
+                btn.disabled = false; btn.textContent = "LANÇAR NA PLANILHA ABNT + SALVAR PDF NA NUVEM";
+                document.getElementById('anexo').value = ""; pdfAtualBase64 = null; pdfAtualNome = null;
                 document.getElementById('btn-preview-form').style.display = 'none';
-                document.getElementById('status-leitura-pdf').innerHTML = "Selecione o PDF (Prova / Contra Prova) para extrair Rm, Rp, Size, A(%) e Massa Linear.";
                 setTimeout(carregarDadosDaPlanilha, 1500);
-            }).catch(() => {
-                toast("⚠️ Erro de conexão ao enviar.");
-                btn.disabled = false;
-                btn.textContent = "LANÇAR NA PLANILHA ABNT + SALVAR PDF NA NUVEM";
             });
         });
 
         function deletarTeste(linha, aba) {
-            if (!confirm("Excluir esta amostra da planilha?")) return;
-            fetch(LINK_PLANILHA, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ acao: "deletar", linha: linha, aba: aba })
-            }).then(() => {
-                toast("✔ Amostra excluída!");
-                setTimeout(carregarDadosDaPlanilha, 600);
-            });
+            if (!confirm("Excluir esta amostra?")) return;
+            fetch(LINK_PLANILHA, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ acao: "deletar", linha: linha, aba: aba }) })
+            .then(() => { toast("✔ Excluído!"); setTimeout(carregarDadosDaPlanilha, 600); });
         }
 
         document.getElementById('btn-exportar').addEventListener('click', () => {
-            let csv = "data:text/csv;charset=utf-8,\uFEFFAMOSTRAS;prova;LOTE;Data;Bitola Real (mm);Massa linear (g/mm);LR (MPa);LE (MPa);Along. (%);Relacao (LR/LE);dobramento;aprovado;responsavel;Link PDF\n";
-            historicoTestes.forEach((t, i) => {
-                csv += `${t.amostra || (i+1)};${t.tipoProva || 'PROVA'};${t.lote || '-'};${t.dataFormatada};${t.bitolaReal || t.bitola};${t.massaLinear || ''};${t.lr || ''};${t.le || ''};${t.alongamento || ''};${t.relacao || ''};${t.dobramento || 'OK'};${t.status === 'aprovado' ? 'SIM' : 'NÃO'};${t.operador};${t.nomeArquivo || ''}\n`;
-            });
-            const a = document.createElement('a');
-            a.href = encodeURI(csv);
-            a.download = `Grande_Aco_ABNT_${new Date().toISOString().slice(0,10)}.csv`;
-            a.click();
+            let csv = "data:text/csv;charset=utf-8,\uFEFFAMOSTRAS;prova;LOTE;Data;Bitola Real;Massa;LR;LE;Along;Relacao;Maquina;Aprovado;Responsavel\n";
+            historicoTestes.forEach((t, i) => { csv += `${t.amostra || (i+1)};${t.tipoProva};${t.lote};${t.dataFormatada};${t.bitolaReal};${t.massaLinear};${t.lr};${t.le};${t.alongamento};${t.relacao};${t.maquina || 'MAQ-01'};${t.status === 'aprovado' ? 'SIM' : 'NÃO'};${t.operador}\n`; });
+            const a = document.createElement('a'); a.href = encodeURI(csv); a.download = `Grande_Aco_ABNT.csv`; a.click();
         });
+
+        document.getElementById('btn-top-coletar').onclick = () => reiniciarTimer(60);
+        document.getElementById('btn-top-pausar').onclick = () => { isTimerPausado = !isTimerPausado; localStorage.setItem('ga_timer_is_paused', isTimerPausado); };
+        document.getElementById('btn-ronda-coletar').onclick = () => reiniciarTimer(60);
+        document.getElementById('btn-ronda-pausar').onclick = () => { isTimerPausado = !isTimerPausado; localStorage.setItem('ga_timer_is_paused', isTimerPausado); };
+        document.getElementById('btn-ronda-testar').onclick = dispararAlarme;
+        document.getElementById('btn-modal-confirmar-coleta').onclick = () => reiniciarTimer(60);
+        document.getElementById('btn-modal-adiar').onclick = () => reiniciarTimer(10);
+        document.getElementById('btn-limpar-rondas').onclick = () => { localStorage.removeItem('ga_historico_rondas'); renderizarRondas(); };
+
+        function abrirModalPDF(titulo, url) {
+            document.getElementById('modal-titulo').textContent = `📄 ${titulo}`;
+            document.getElementById('modal-conteudo').innerHTML = `<iframe src="${url}"></iframe>`;
+            document.getElementById('pdf-modal').style.display = 'flex';
+        }
+        document.getElementById('btn-preview-form').onclick = () => {
+            if (pdfAtualBase64) {
+                const partes = pdfAtualBase64.split(',');
+                const bstr = atob(partes[1]); const u8 = new Uint8Array(bstr.length);
+                for(let i=0; i<bstr.length; i++) u8[i] = bstr.charCodeAt(i);
+                abrirModalPDF(pdfAtualNome, URL.createObjectURL(new Blob([u8], {type: pdfAtualMime})));
+            }
+        };
+        document.getElementById('btn-fechar-modal').onclick = () => { document.getElementById('pdf-modal').style.display = 'none'; document.getElementById('modal-conteudo').innerHTML = ''; };
+        function verPDFTabela(url) {
+            if (url.startsWith('http')) {
+                let u = url; const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                if (m && m[1]) u = `https://drive.google.com/file/d/${m[1]}/preview`;
+                abrirModalPDF("Laudo Google Drive", u);
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             inputData.value = new Date().toISOString().split('T')[0];
             document.getElementById('operador').value = localStorage.getItem('ga_operador') || 'FLÁVIO';
-            const tema = localStorage.getItem('ga_tema') || 'dark';
-            document.documentElement.setAttribute('data-theme', tema);
+            document.documentElement.setAttribute('data-theme', localStorage.getItem('ga_tema') || 'dark');
             document.getElementById('btn-theme').onclick = () => {
-                const novo = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', novo);
-                localStorage.setItem('ga_tema', novo);
+                const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', n); localStorage.setItem('ga_tema', n);
             };
-            atualizarRelogioColeta();
-            renderizarHistoricoRondas();
-            carregarDadosDaPlanilha();
+            renderizarRondas(); carregarDadosDaPlanilha();
         });
     </script>
 </body>
