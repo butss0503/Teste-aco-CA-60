@@ -1,65 +1,93 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGCQ Enterprise ABNT | Grande Aço - Controle CA-60</title>
+    <title>SGCQ BMW Edition | Grande Aço — Controle ABNT CA-60</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Substituto oficial aberto do BMW Type Next Latin: Inter nos pesos 300, 400 e 700 (sem 500) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     
     <style>
-        :root[data-theme="dark"] {
-            --bg-app: #0a1017;
-            --bg-header: #0f1822;
-            --bg-panel: #131e2a;
-            --bg-card: #182635;
-            --bg-input: #0c141c;
-            --bg-hover: #1f3042;
-            --text-main: #f1f5f9;
-            --text-sec: #94a3b8;
-            --text-muted: #64748b;
-            --border: #233446;
-            --brand-blue: #309ce1;
-            --brand-blue-dark: #1f7ab5;
-            --ok-color: #10b981;
-            --ok-bg: rgba(16, 185, 129, 0.12);
-            --fail-color: #ef4444;
-            --fail-bg: rgba(239, 68, 68, 0.12);
-            --warn-color: #f59e0b;
-            --warn-bg: rgba(245, 158, 11, 0.15);
-            --shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-
+        /* ==========================================================================
+           DESIGN SYSTEM: BMW CORPORATE AUTOMOTIVE (DESIGN (1).md)
+           - Superfície padrão clara (#ffffff), Hero Band em Dark Navy (#1a2129)
+           - Ação primária: BMW Corporate Blue (#1c69d4 -> active #0653b6)
+           - Geometria: 0px border-radius (rounded.none) em botões, inputs e cards
+           - Tipografia: Contraste estrito 700 (Display/Labels/Buttons) vs 300 (Body)
+           - Elevação: Flat (Zero drop-shadow, separação por hairlines #e6e6e6 de 1px)
+           ========================================================================== */
         :root[data-theme="light"] {
-            --bg-app: #e2e8f0;
-            --bg-header: #0f1c24;
-            --bg-panel: #ffffff;
-            --bg-card: #f8fafc;
-            --bg-input: #ffffff;
-            --bg-hover: #f1f5f9;
-            --text-main: #0f1c24;
-            --text-sec: #475569;
-            --text-muted: #64748b;
-            --border: #cbd5e1;
-            --brand-blue: #309ce1;
-            --brand-blue-dark: #1e82c4;
-            --ok-color: #059669;
-            --ok-bg: rgba(16, 185, 129, 0.12);
-            --fail-color: #dc2626;
-            --fail-bg: rgba(239, 68, 68, 0.1);
-            --warn-color: #d97706;
-            --warn-bg: rgba(245, 158, 11, 0.15);
-            --shadow: 0 4px 12px rgba(15, 28, 36, 0.08);
+            --primary: #1c69d4;
+            --primary-active: #0653b6;
+            --primary-disabled: #d6d6d6;
+            --ink: #262626;
+            --body: #3c3c3c;
+            --body-strong: #1a1a1a;
+            --muted: #6b6b6b;
+            --muted-soft: #9a9a9a;
+            --hairline: #e6e6e6;
+            --hairline-strong: #cccccc;
+            --canvas: #ffffff;
+            --surface-soft: #f7f7f7;
+            --surface-card: #fafafa;
+            --surface-strong: #ebebeb;
+            --surface-dark: #1a2129;
+            --surface-dark-elevated: #262e38;
+            --on-primary: #ffffff;
+            --on-dark: #ffffff;
+            --on-dark-soft: #bbbbbb;
+            --m-blue-light: #0066b1;
+            --m-blue-dark: #1c69d4;
+            --m-red: #e22718;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #dc2626;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        :root[data-theme="dark"] {
+            --primary: #1c69d4;
+            --primary-active: #0653b6;
+            --primary-disabled: #3a424d;
+            --ink: #ffffff;
+            --body: #cccccc;
+            --body-strong: #ffffff;
+            --muted: #9a9a9a;
+            --muted-soft: #6b6b6b;
+            --hairline: #2d3743;
+            --hairline-strong: #404d5c;
+            --canvas: #12171d;
+            --surface-soft: #161c23;
+            --surface-card: #1a2129;
+            --surface-strong: #262e38;
+            --surface-dark: #0d1116;
+            --surface-dark-elevated: #1a2129;
+            --on-primary: #ffffff;
+            --on-dark: #ffffff;
+            --on-dark-soft: #bbbbbb;
+            --m-blue-light: #0066b1;
+            --m-blue-dark: #1c69d4;
+            --m-red: #e22718;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #dc2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            border-radius: 0px; /* {rounded.none} dominante em todo o sistema */
+        }
 
         body {
-            background-color: var(--bg-app);
-            color: var(--text-main);
+            background-color: var(--canvas);
+            color: var(--body);
+            font-weight: 300; /* BMW Light 300 body signature */
             height: 100vh;
             width: 100vw;
             overflow: hidden;
@@ -67,303 +95,630 @@
             flex-direction: column;
         }
 
-        .topbar {
-            height: 68px;
-            background-color: var(--bg-header);
-            border-bottom: 3px solid var(--brand-blue);
+        /* ==========================================================================
+           1. TOP NAVIGATION (BMW White Sticky Nav Bar — 64px)
+           ========================================================================== */
+        .top-nav {
+            height: 64px;
+            background-color: var(--canvas);
+            color: var(--ink);
+            border-bottom: 1px solid var(--hairline);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 0 24px;
             flex-shrink: 0;
-            color: #fff;
-            gap: 12px;
         }
 
-        .brand-section { display: flex; align-items: center; gap: 12px; }
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Único elemento circular permitido pelo guia ({rounded.full}) */
         .logo-box {
-            width: 44px; height: 44px; border-radius: 50%; background: #fff; padding: 2px;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 9999px;
+            background: #ffffff;
+            border: 1px solid var(--hairline-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
-        .logo-box svg { width: 100%; height: 100%; }
-        .sys-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--brand-blue); letter-spacing: 1px; font-weight: 700; }
-        .brand-titles h1 { font-family: 'Rajdhani', sans-serif; font-size: 19px; font-weight: 700; color: #fff; white-space: nowrap; }
+        .logo-box svg { width: 100%; height: 100%; border-radius: 9999px; }
 
-        .topbar-kpis { display: flex; gap: 8px; align-items: center; }
-        .mini-kpi {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            border-left: 3px solid var(--brand-blue); padding: 4px 10px; border-radius: 4px; min-width: 95px;
+        .brand-titles {
+            display: flex;
+            flex-direction: column;
         }
-        .mini-kpi.kpi-ok { border-left-color: #10b981; }
-        .mini-kpi.kpi-fail { border-left-color: #ef4444; }
-        .mini-kpi.kpi-rate { border-left-color: #f59e0b; }
-        .mini-kpi-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #94a3b8; display: block; }
-        .mini-kpi-val { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; color: #fff; }
-
-        /* WIDGET DO TIMER DE COLETA LEVE */
-        .timer-widget {
-            display: flex; align-items: center; gap: 10px;
-            background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; border-left: 4px solid #10b981;
-            padding: 4px 12px; border-radius: 6px;
+        .sys-tag {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--primary);
         }
-        .timer-widget.timer-warning { background: rgba(245, 158, 11, 0.18); border-color: #f59e0b; }
-        .timer-widget.timer-alarm { background: rgba(239, 68, 68, 0.35); border-color: #ef4444; }
-        .timer-info { display: flex; flex-direction: column; cursor: pointer; }
-        .timer-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; color: #cbd5e1; }
-        .timer-display { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: #10b981; line-height: 1.1; }
-        .timer-widget.timer-warning .timer-display { color: #fbbf24; }
-        .timer-widget.timer-alarm .timer-display { color: #f87171; }
-
-        .timer-quick-btns { display: flex; gap: 4px; }
-        .btn-timer-mini {
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;
-            padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;
+        .brand-titles h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
+            letter-spacing: 0;
         }
-        .btn-timer-mini:hover { background: var(--brand-blue); border-color: var(--brand-blue); }
 
-        .topbar-actions { display: flex; gap: 6px; align-items: center; }
-        .btn-top {
-            background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.18);
-            padding: 7px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;
-            text-decoration: none; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+        .top-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .btn-top:hover { background: var(--brand-blue); border-color: var(--brand-blue); }
 
+        /* Botões BMW: 0px corner radius, 700 weight, 14px, 0.5px letter-spacing */
+        .btn-bmw-primary {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            border: none;
+            height: 44px;
+            padding: 0 24px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-bmw-primary:hover, .btn-bmw-primary:active {
+            background-color: var(--primary-active);
+        }
+        .btn-bmw-primary:disabled {
+            background-color: var(--primary-disabled);
+            color: var(--muted);
+            cursor: not-allowed;
+        }
+
+        .btn-bmw-secondary {
+            background-color: var(--canvas);
+            color: var(--ink);
+            border: 1px solid var(--hairline-strong);
+            height: 40px;
+            padding: 0 18px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-bmw-secondary:hover {
+            border-color: var(--ink);
+            background-color: var(--surface-soft);
+        }
+
+        /* ==========================================================================
+           2. M-STRIPE DIVIDER (4px Tricolor Stripe) + DARK NAVY HERO KPI BAND
+           ========================================================================== */
+        .m-stripe-divider {
+            height: 4px;
+            width: 100%;
+            background: linear-gradient(90deg, var(--m-blue-light) 0%, var(--m-blue-light) 33.3%, var(--m-blue-dark) 33.3%, var(--m-blue-dark) 66.6%, var(--m-red) 66.6%, var(--m-red) 100%);
+            flex-shrink: 0;
+        }
+
+        .hero-band-dark {
+            background-color: var(--surface-dark);
+            color: var(--on-dark);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .hero-kpis {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(130px, 1fr));
+            gap: 12px;
+            flex: 1;
+            max-width: 780px;
+        }
+
+        /* Spec Cell BMW inside Dark Hero */
+        .spec-cell-dark {
+            background-color: var(--surface-dark-elevated);
+            border-left: 3px solid var(--primary);
+            padding: 8px 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        .spec-cell-dark.spec-ok { border-left-color: var(--success); }
+        .spec-cell-dark.spec-fail { border-left-color: var(--error); }
+        .spec-cell-dark.spec-rate { border-left-color: var(--m-blue-light); }
+
+        .spec-val {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--on-dark);
+        }
+        .spec-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--on-dark-soft);
+            margin-top: 2px;
+        }
+
+        /* Timer Widget on Dark Hero Band */
+        .hero-timer-box {
+            background-color: var(--surface-dark-elevated);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .hero-timer-Box-alarm {
+            border-color: var(--error);
+            background-color: rgba(220, 38, 38, 0.25);
+        }
+        .timer-clock-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--on-dark);
+        }
+        .btn-secondary-on-dark {
+            background-color: transparent;
+            color: var(--on-dark);
+            border: 1px solid var(--on-dark);
+            height: 34px;
+            padding: 0 14px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        .btn-secondary-on-dark:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* ==========================================================================
+           3. WORKSPACE PRINCIPAL (LIGHT CANVAS #FFFFFF + HAIRLINE DIVIDERS)
+           ========================================================================== */
         .workspace {
-            flex: 1; display: grid; grid-template-columns: 420px 1fr; gap: 16px; padding: 14px 20px; overflow: hidden;
+            flex: 1;
+            display: grid;
+            grid-template-columns: 440px 1fr;
+            gap: 24px;
+            padding: 20px 24px;
+            overflow: hidden;
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
         }
 
-        .panel {
-            background-color: var(--bg-panel); border: 1px solid var(--border); border-radius: 6px;
-            box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden;
+        .bmw-card {
+            background-color: var(--canvas);
+            border: 1px solid var(--hairline);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .panel-header {
-            background-color: var(--bg-card); border-bottom: 1px solid var(--border); padding: 10px 16px;
-            display: flex; justify-content: space-between; align-items: center; gap: 10px;
+        .bmw-card-header {
+            background-color: var(--surface-card);
+            border-bottom: 1px solid var(--hairline);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .panel-title {
-            font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; text-transform: uppercase;
-            display: flex; align-items: center; gap: 8px;
+        .bmw-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .panel-title::before { content: ''; width: 4px; height: 14px; background: var(--brand-blue); border-radius: 2px; }
 
-        .form-body { padding: 14px 16px; overflow-y: auto; flex: 1; }
-
-        .pdf-smart-box {
-            background: rgba(48, 156, 225, 0.08); border: 2px dashed var(--brand-blue); border-radius: 6px;
-            padding: 10px; margin-bottom: 12px; text-align: center;
+        .form-body {
+            padding: 18px 20px;
+            overflow-y: auto;
+            flex: 1;
         }
-        .pdf-smart-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: var(--brand-blue); margin-bottom: 6px; display: block; }
 
-        .ocr-progress { width: 100%; height: 4px; background: var(--bg-input); border-radius: 2px; margin-top: 6px; overflow: hidden; display: none; }
-        .ocr-progress-bar { height: 100%; width: 0%; background: var(--brand-blue); transition: width 0.2s; }
+        /* Upload PDF Plate (Surface Card #fafafa) */
+        .upload-plate {
+            background-color: var(--surface-card);
+            border: 1px solid var(--hairline-strong);
+            border-left: 4px solid var(--primary);
+            padding: 14px;
+            margin-bottom: 16px;
+        }
+        .upload-plate-title {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .upload-plate-desc {
+            font-size: 13px;
+            font-weight: 300;
+            color: var(--muted);
+            margin-top: 6px;
+        }
 
-        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .ocr-progress {
+            width: 100%;
+            height: 4px;
+            background: var(--surface-strong);
+            margin-top: 8px;
+            display: none;
+        }
+        .ocr-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            transition: width 0.2s;
+        }
 
-        .field-group { margin-bottom: 10px; }
+        /* Configurator Option Tiles (Seletor de Bitola 0px radius, 2px primary border quando ativo) */
+        .bitola-selector {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+        }
+        .configurator-tile {
+            background-color: var(--canvas);
+            border: 1px solid var(--hairline-strong);
+            color: var(--ink);
+            height: 40px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .configurator-tile.selected {
+            border: 2px solid var(--primary);
+            background-color: var(--surface-card);
+            color: var(--primary);
+        }
+
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+        .field-group { margin-bottom: 12px; }
         .field-group label {
-            display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-sec); margin-bottom: 3px;
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--ink);
+            margin-bottom: 4px;
         }
 
+        /* Text Input BMW: 0px radius, 1px hairline border, focus thickens to ink */
         input[type="date"], input[type="text"], input[type="number"], select {
-            width: 100%; height: 34px; padding: 0 8px; background: var(--bg-input);
-            border: 1px solid var(--border); border-radius: 4px; color: var(--text-main); font-size: 12px; font-weight: 600; outline: none;
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            background-color: var(--canvas);
+            border: 1px solid var(--hairline-strong);
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 400;
+            outline: none;
         }
-        input:focus, select:focus { border-color: var(--brand-blue); }
-        .auto-filled { border-color: var(--ok-color) !important; }
+        input:focus, select:focus {
+            border: 2px solid var(--ink);
+        }
+        .auto-filled {
+            border: 2px solid var(--primary) !important;
+        }
 
-        .bitola-selector { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
-        .bitola-btn {
-            background: var(--bg-input); border: 1px solid var(--border); color: var(--text-sec);
-            padding: 7px 0; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; cursor: pointer;
+        .status-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .status-tile {
+            background-color: var(--canvas);
+            border: 1px solid var(--hairline-strong);
+            color: var(--muted);
+            height: 42px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
         }
-        .bitola-btn.active { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
+        .status-tile.active-ok {
+            border: 2px solid var(--success);
+            color: var(--ink);
+            background-color: rgba(34, 197, 94, 0.08);
+        }
+        .status-tile.active-fail {
+            border: 2px solid var(--error);
+            color: var(--error);
+            background-color: rgba(220, 38, 38, 0.08);
+        }
 
-        .status-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .status-btn {
-            background: var(--bg-input); border: 1px solid var(--border); color: var(--text-sec);
-            padding: 8px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer;
+        /* ==========================================================================
+           4. CATEGORY TABS BMW (UPPERCASE 13px / 700 / 1.5px tracking + 2px ink underline)
+           ========================================================================== */
+        .category-tabs-bar {
+            display: flex;
+            background-color: var(--surface-soft);
+            border-bottom: 1px solid var(--hairline);
+            padding: 0 20px;
+            gap: 20px;
+            overflow-x: auto;
+            flex-shrink: 0;
         }
-        .status-btn.active-ok { background: var(--ok-bg); border-color: var(--ok-color); color: var(--ok-color); }
-        .status-btn.active-fail { background: var(--fail-bg); border-color: var(--fail-color); color: var(--fail-color); }
 
-        .btn-submit {
-            width: 100%; height: 40px; background: var(--brand-blue); color: #fff; border: none;
-            border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.8px; cursor: pointer; margin-top: 4px;
+        .category-tab {
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--muted);
+            padding: 14px 4px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            white-space: nowrap;
         }
-        .btn-submit:hover { background: var(--brand-blue-dark); }
-        .btn-submit:disabled { opacity: 0.6; cursor: wait; }
+        .category-tab:hover {
+            color: var(--ink);
+        }
+        .category-tab.active {
+            color: var(--ink);
+            border-bottom: 3px solid var(--primary);
+        }
+        .category-tab.tab-right {
+            margin-left: auto;
+            color: var(--primary);
+        }
 
-        .sheet-tabs-bar {
-            display: flex; background: var(--bg-input); border-bottom: 2px solid var(--brand-blue);
-            padding: 6px 14px 0 14px; gap: 5px; flex-wrap: wrap;
-        }
-        .sheet-tab {
-            background: var(--bg-card); color: var(--text-sec); border: 1px solid var(--border); border-bottom: none;
-            padding: 7px 11px; border-radius: 5px 5px 0 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; cursor: pointer;
-        }
-        .sheet-tab.active { background: var(--brand-blue); color: #fff; border-color: var(--brand-blue); }
-        .sheet-tab.tab-graficos { color: #f59e0b; border-top: 2px solid #f59e0b; margin-left: auto; }
-        .sheet-tab.tab-graficos.active { background: #f59e0b; color: #000; border-color: #f59e0b; }
-        .sheet-tab.tab-ronda { color: #10b981; border-top: 2px solid #10b981; }
-        .sheet-tab.tab-ronda.active { background: #10b981; color: #fff; border-color: #10b981; }
-
+        /* Filter Chips Bar */
         .toolbar-filtros {
-            padding: 8px 16px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            padding: 12px 20px;
+            background-color: var(--canvas);
+            border-bottom: 1px solid var(--hairline);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
-        .filter-group { display: flex; align-items: center; gap: 6px; }
-        .filter-group label { font-size: 11px; font-weight: 700; color: var(--text-sec); }
-        .filter-group input, .filter-group select { height: 30px; font-size: 12px; width: auto; }
-
-        .btn-action {
-            height: 30px; padding: 0 10px; background: var(--bg-card); color: var(--text-sec);
-            border: 1px solid var(--border); border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;
+        .filter-group { display: flex; align-items: center; gap: 8px; }
+        .filter-group label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
         }
-        .btn-action:hover { color: var(--text-main); border-color: var(--brand-blue); }
+        .filter-group input, .filter-group select { height: 36px; width: auto; font-size: 13px; }
 
-        .table-container { flex: 1; overflow: auto; }
+        /* ==========================================================================
+           5. TABELA DE DADOS PADRÃO ABNT (CLEAN HAIRLINE GRID)
+           ========================================================================== */
+        .table-container { flex: 1; overflow: auto; background-color: var(--canvas); }
         table.data-table { width: 100%; border-collapse: collapse; text-align: center; }
         table.data-table thead th {
-            position: sticky; top: 0; background: var(--bg-card); color: var(--text-sec);
-            font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 9px 6px; border-bottom: 2px solid var(--border); z-index: 2;
+            position: sticky;
+            top: 0;
+            background-color: var(--surface-soft);
+            color: var(--ink);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 12px 8px;
+            border-bottom: 1px solid var(--hairline-strong);
+            z-index: 2;
         }
-        table.data-table tbody tr { border-bottom: 1px solid var(--border); }
-        table.data-table tbody tr:hover { background: var(--bg-hover); }
-        table.data-table td { padding: 8px 6px; font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+        table.data-table tbody tr {
+            border-bottom: 1px solid var(--hairline);
+        }
+        table.data-table tbody tr:hover {
+            background-color: var(--surface-card);
+        }
+        table.data-table td {
+            padding: 10px 8px;
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--body-strong);
+        }
 
-        .pill-ok { background: var(--ok-bg); color: var(--ok-color); border: 1px solid var(--ok-color); padding: 2px 7px; border-radius: 4px; font-weight: 700; font-size: 10px; }
-        .pill-fail { background: var(--fail-bg); color: var(--fail-color); border: 1px solid var(--fail-color); padding: 2px 7px; border-radius: 4px; font-weight: 700; font-size: 10px; }
+        .badge-aba {
+            background-color: var(--surface-strong);
+            color: var(--ink);
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
 
-        .btn-view-pdf {
-            background: rgba(48,156,225,0.15); color: var(--brand-blue); border: 1px solid var(--brand-blue);
-            padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;
+        .badge-sim {
+            background-color: rgba(34, 197, 94, 0.12);
+            color: #15803d;
+            border: 1px solid var(--success);
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
-        .btn-view-pdf:hover { background: var(--brand-blue); color: #fff; }
+        .badge-nao {
+            background-color: rgba(220, 38, 38, 0.12);
+            color: var(--error);
+            border: 1px solid var(--error);
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
 
-        /* PAINEL DE GRÁFICOS CEP EM SVG LEVE */
-        .graficos-view {
-            display: none; flex: 1; padding: 18px; overflow-y: auto; gap: 18px; flex-direction: column;
+        /* Inline Uppercase Link ("LEARN MORE ›" BMW Style) */
+        .btn-link-bmw {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
         }
-        .cep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .chart-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 14px;
+        .btn-link-bmw:hover {
+            background-color: var(--primary);
+            color: var(--on-primary);
         }
-        .chart-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 15px; margin-bottom: 10px; color: var(--text-main); }
 
-        /* PAINEL DA RONDA */
-        .ronda-view {
-            display: none; flex: 1; padding: 20px; overflow-y: auto; gap: 20px; grid-template-columns: 350px 1fr;
-        }
-        .ronda-card-main {
-            background: var(--bg-card); border: 2px solid var(--brand-blue); border-radius: 8px; padding: 20px; text-align: center;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .ronda-big-clock { font-family: 'JetBrains Mono', monospace; font-size: 48px; font-weight: 700; color: var(--ok-color); margin: 12px 0; }
-        .ronda-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-top: 12px; }
+        /* Painel Gráficos CEP & Rondas */
+        .graficos-view { display: none; flex: 1; padding: 24px; overflow-y: auto; gap: 24px; flex-direction: column; }
+        .cep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .chart-card { background: var(--surface-card); border: 1px solid var(--hairline); padding: 20px; }
+        .chart-card h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ink); margin-bottom: 12px; }
 
-        /* MODAIS */
+        .ronda-view { display: none; flex: 1; padding: 24px; overflow-y: auto; gap: 24px; grid-template-columns: 380px 1fr; }
+        .ronda-card-main { background: var(--surface-dark); color: var(--on-dark); padding: 32px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ronda-big-clock { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 700; color: var(--on-dark); margin: 16px 0; }
+
+        /* Modais */
         .pdf-modal-overlay, .alarm-modal-overlay {
-            position: fixed; inset: 0; background: rgba(5,10,15,0.85); z-index: 9990;
-            display: none; align-items: center; justify-content: center; padding: 20px;
+            position: fixed; inset: 0; background: rgba(26, 33, 41, 0.85); z-index: 9990;
+            display: none; align-items: center; justify-content: center; padding: 24px;
         }
         .pdf-modal-box {
-            background: var(--bg-panel); border: 2px solid var(--brand-blue); border-radius: 6px;
-            width: 90vw; max-width: 1150px; height: 86vh; display: flex; flex-direction: column;
+            background: var(--canvas); border: 2px solid var(--primary);
+            width: 90vw; max-width: 1200px; height: 86vh; display: flex; flex-direction: column;
         }
-        .pdf-modal-header { background: var(--bg-header); color: #fff; padding: 10px 18px; display: flex; justify-content: space-between; align-items: center; }
-        .pdf-modal-body { flex: 1; background: #1e293b; }
+        .pdf-modal-header { background: var(--surface-dark); color: #fff; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .pdf-modal-body { flex: 1; background: #1a2129; }
         .pdf-modal-body iframe { width: 100%; height: 100%; border: none; }
 
         .alarm-box {
-            background: var(--bg-panel); border: 3px solid #ef4444; border-radius: 10px; max-width: 480px; width: 100%; padding: 28px; text-align: center;
+            background: var(--canvas); border-top: 6px solid var(--m-red); border: 1px solid var(--hairline-strong);
+            max-width: 500px; width: 100%; padding: 32px; text-align: center;
         }
-        .alarm-title { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; color: #ef4444; margin: 8px 0; }
-        .alarm-desc { font-size: 14px; color: var(--text-main); margin-bottom: 20px; line-height: 1.4; }
-        .alarm-actions { display: flex; gap: 10px; justify-content: center; }
 
-        #toast-box { position: fixed; bottom: 18px; right: 18px; z-index: 9999; display: flex; flex-direction: column; gap: 6px; }
-        .toast-item { background: var(--bg-header); color: #fff; border-left: 4px solid var(--brand-blue); padding: 10px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        #toast-box { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+        .toast-item { background: var(--surface-dark); color: #fff; border-left: 4px solid var(--primary); padding: 14px 20px; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
 
-    <header class="topbar">
+    <!-- 1. TOP NAVIGATION (BMW White Bar 64px) -->
+    <header class="top-nav">
         <div class="brand-section">
             <div class="logo-box">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#309ce1" stroke-width="8"/>
-                    <text x="34" y="80" font-family="'Rajdhani', sans-serif" font-weight="700" font-size="50" fill="#309ce1" letter-spacing="-4">GA</text>
-                    <text x="34" y="112" font-family="'Inter', sans-serif" font-weight="900" font-size="30" fill="#0f1c24">GRANDE</text>
-                    <text x="36" y="144" font-family="'Inter', sans-serif" font-weight="900" font-size="32" fill="#0f1c24">AÇO</text>
-                    <text x="112" y="131" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="9.5" fill="#0f1c24">INDÚSTRIA</text>
-                    <text x="112" y="143" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="9.5" fill="#0f1c24">DE AÇO</text>
+                    <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#1c69d4" stroke-width="8"/>
+                    <text x="34" y="80" font-family="'Inter', sans-serif" font-weight="700" font-size="48" fill="#1c69d4" letter-spacing="-3">GA</text>
+                    <text x="34" y="112" font-family="'Inter', sans-serif" font-weight="700" font-size="28" fill="#1a2129">GRANDE</text>
+                    <text x="36" y="144" font-family="'Inter', sans-serif" font-weight="700" font-size="30" fill="#1a2129">AÇO</text>
+                    <text x="112" y="131" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="9" fill="#1a2129">INDÚSTRIA</text>
+                    <text x="112" y="143" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="9" fill="#1a2129">DE AÇO</text>
                 </svg>
             </div>
             <div class="brand-titles">
-                <span class="sys-tag">PADRÃO ABNT NBR 7480 // GRANDE AÇO</span>
-                <h1>CONTROLE DE TRAÇÃO CA-60</h1>
+                <span class="sys-tag">ABNT NBR 7480 // LABORATÓRIO DE ENSAIO DE TRAÇÃO</span>
+                <h1>CONTROLE DE QUALIDADE CA-60</h1>
             </div>
         </div>
 
-        <!-- TIMER DE 1 EM 1 HORA -->
-        <div class="timer-widget" id="topbar-timer-widget">
-            <div class="timer-info" id="btn-abrir-aba-ronda" title="Abrir Painel de Rondas">
-                <span class="timer-label">⏱️ PRÓXIMA COLETA (1H)</span>
-                <span class="timer-display" id="top-timer-display">60:00</span>
-            </div>
-            <div class="timer-quick-btns">
-                <button type="button" class="btn-timer-mini" id="btn-top-coletar" title="Confirmar Coleta e Reiniciar 1h">✔ Coletado</button>
-                <button type="button" class="btn-timer-mini" id="btn-top-pausar" title="Pausar/Retomar">⏸</button>
-            </div>
-        </div>
-
-        <div class="topbar-kpis">
-            <div class="mini-kpi"><span class="mini-kpi-label">AMOSTRAS</span><strong class="mini-kpi-val" id="kpi-total">0</strong></div>
-            <div class="mini-kpi kpi-ok"><span class="mini-kpi-label">APROVADOS</span><strong class="mini-kpi-val" id="kpi-aprovados">0</strong></div>
-            <div class="mini-kpi kpi-fail"><span class="mini-kpi-label">REPROVADOS</span><strong class="mini-kpi-val" id="kpi-reprovados">0</strong></div>
-            <div class="mini-kpi kpi-rate"><span class="mini-kpi-label">CONFORMIDADE</span><strong class="mini-kpi-val" id="kpi-taxa">0%</strong></div>
-        </div>
-
-        <div class="topbar-actions">
-            <button type="button" class="btn-top" id="btn-whatsapp" title="Copiar Resumo p/ WhatsApp">📲 WhatsApp</button>
-            <button type="button" class="btn-top" id="btn-exportar">📥 CSV</button>
-            <button type="button" class="btn-top" id="btn-theme">☀️</button>
+        <div class="top-nav-actions">
+            <button type="button" class="btn-bmw-secondary" id="btn-gerar-certificado">📜 CERTIFICADO OP</button>
+            <button type="button" class="btn-bmw-secondary" id="btn-whatsapp">📲 RESUMO WHATSAPP</button>
+            <button type="button" class="btn-bmw-secondary" id="btn-exportar">📥 EXPORTAR CSV</button>
+            <button type="button" class="btn-bmw-secondary" id="btn-theme">🌙 TEMA</button>
         </div>
     </header>
 
+    <!-- DIVISOR TRICOLOR M (4px) -->
+    <div class="m-stripe-divider"></div>
+
+    <!-- 2. HERO BAND DARK NAVY (#1a2129) COM KPIS E TIMER DE RONDA -->
+    <section class="hero-band-dark">
+        <div class="hero-kpis">
+            <div class="spec-cell-dark">
+                <span class="spec-val" id="kpi-total">0</span>
+                <span class="spec-label">AMOSTRAS EXIBIDAS</span>
+            </div>
+            <div class="spec-cell-dark spec-ok">
+                <span class="spec-val" id="kpi-aprovados">0</span>
+                <span class="spec-label">APROVADOS (SIM)</span>
+            </div>
+            <div class="spec-cell-dark spec-fail">
+                <span class="spec-val" id="kpi-reprovados">0</span>
+                <span class="spec-label">REPROVADOS (NÃO)</span>
+            </div>
+            <div class="spec-cell-dark spec-rate">
+                <span class="spec-val" id="kpi-taxa">0%</span>
+                <span class="spec-label">ÍNDICE CONFORMIDADE</span>
+            </div>
+        </div>
+
+        <div class="hero-timer-box" id="topbar-timer-widget">
+            <div style="cursor:pointer;" id="btn-abrir-aba-ronda">
+                <span class="spec-label" style="display:block;">⏱️ PRÓXIMA RONDA DE COLETA (1H)</span>
+                <span class="timer-clock-val" id="top-timer-display">60:00</span>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button type="button" class="btn-secondary-on-dark" id="btn-top-coletar">✔ COLETADO</button>
+                <button type="button" class="btn-secondary-on-dark" id="btn-top-pausar">⏸</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. WORKSPACE PRINCIPAL -->
     <main class="workspace">
-        <section class="panel">
-            <div class="panel-header">
-                <span class="panel-title">Lançamento Padrão ABNT</span>
-                <button type="button" class="btn-action" id="btn-gerar-certificado" style="background:var(--brand-blue); color:#fff; font-weight:700;">📜 Certificado OP</button>
+        
+        <!-- COLUNA ESQUERDA: CONFIGURADOR DE LANÇAMENTO ABNT -->
+        <section class="bmw-card">
+            <div class="bmw-card-header">
+                <span class="bmw-card-title">Lançamento de Ensaio CA-60</span>
+                <span style="font-size:11px; font-weight:700; letter-spacing:1px; color:var(--primary);">OCR + CLOUD</span>
             </div>
 
             <div class="form-body">
                 <form id="form-teste">
-                    <div class="pdf-smart-box">
-                        <span class="pdf-smart-title">⚡ 1. ANEXE O PDF ESCANEADO (OCR AUTOMÁTICO)</span>
-                        <input type="file" id="anexo" accept=".pdf,image/*" style="width:100%; font-size:11px;">
+                    <div class="upload-plate">
+                        <span class="upload-plate-title">1. LEITURA AUTOMÁTICA DE LAUDO PDF</span>
+                        <input type="file" id="anexo" accept=".pdf,image/*" style="width:100%; font-size:12px; height:auto; padding:6px;">
                         <div class="ocr-progress" id="ocr-progress"><div class="ocr-progress-bar" id="ocr-bar"></div></div>
-                        <div id="status-leitura-pdf" style="font-size:11px; color:var(--text-sec); margin-top:5px;">
-                            Selecione o PDF para extrair Rm, Rp, Size, A(%) e Massa Linear.
-                        </div>
-                        <button type="button" id="btn-preview-form" class="btn-view-pdf" style="display:none; margin-top:5px;">👁️ Visualizar PDF Anexado</button>
+                        <p class="upload-plate-desc" id="status-leitura-pdf">
+                            Anexe o PDF escaneado para extrair Lote, Bitola, Rm, Rp, Alongamento e Massa Linear.
+                        </p>
+                        <button type="button" id="btn-preview-form" class="btn-link-bmw" style="display:none; margin-top:8px;">VISUALIZAR PDF ANEXADO ›</button>
                     </div>
 
                     <div class="field-group">
-                        <label>Bitola Nominal (Aba da Planilha):</label>
+                        <label>Bitola Nominal (Aba de Destino na Planilha):</label>
                         <input type="hidden" id="bitola-nominal" value="4.2" required>
                         <div class="bitola-selector">
-                            <button type="button" class="bitola-btn" data-val="3.4">3,4</button>
-                            <button type="button" class="bitola-btn" data-val="3.8">3,8</button>
-                            <button type="button" class="bitola-btn active" data-val="4.2">4,2</button>
-                            <button type="button" class="bitola-btn" data-val="4.6">4,6</button>
-                            <button type="button" class="bitola-btn" data-val="5.0">5,0</button>
-                            <button type="button" class="bitola-btn" data-val="6.0">6,0</button>
+                            <button type="button" class="configurator-tile" data-val="3.4">3,4</button>
+                            <button type="button" class="configurator-tile" data-val="3.8">3,8</button>
+                            <button type="button" class="configurator-tile selected" data-val="4.2">4,2</button>
+                            <button type="button" class="configurator-tile" data-val="4.6">4,6</button>
+                            <button type="button" class="configurator-tile" data-val="5.0">5,0</button>
+                            <button type="button" class="configurator-tile" data-val="6.0">6,0</button>
                         </div>
                     </div>
 
@@ -388,12 +743,12 @@
 
                     <div class="form-grid-3">
                         <div class="field-group">
-                            <label for="bitola-real">Bitola Real (mm):</label>
-                            <input type="number" step="0.01" id="bitola-real" placeholder="Ex: 4.10" required>
+                            <label for="bitola-real">Size / Bitola (mm):</label>
+                            <input type="number" step="0.01" id="bitola-real" placeholder="Ex: 3.76" required>
                         </div>
                         <div class="field-group">
-                            <label for="massa-linear">Massa Lin. (g/mm):</label>
-                            <input type="number" step="0.001" id="massa-linear" placeholder="Ex: 0.104" required>
+                            <label for="massa-linear">Massa (g/mm):</label>
+                            <input type="number" step="0.001" id="massa-linear" placeholder="Ex: 0.088" required>
                         </div>
                         <div class="field-group">
                             <label for="alongamento">A(%) Along.:</label>
@@ -401,7 +756,7 @@
                         </div>
                     </div>
 
-                    <div id="massa-feedback" style="font-size:10px; margin-bottom:8px; font-family:'JetBrains Mono';"></div>
+                    <div id="massa-feedback" style="font-size:11px; margin-bottom:10px; font-weight:700;"></div>
 
                     <div class="form-grid-3">
                         <div class="field-group">
@@ -413,14 +768,14 @@
                             <input type="number" step="1" id="le" placeholder="Ex: 704" required>
                         </div>
                         <div class="field-group">
-                            <label for="relacao">Relação (LR/LE):</label>
-                            <input type="number" step="0.0001" id="relacao" placeholder="Auto" readonly style="color:var(--brand-blue);">
+                            <label for="relacao">Relação LR/LE:</label>
+                            <input type="number" step="0.0001" id="relacao" placeholder="Auto" readonly style="color:var(--primary); font-weight:700;">
                         </div>
                     </div>
 
                     <div class="form-grid-3">
                         <div class="field-group">
-                            <label for="maquina">Máquina / Trefila:</label>
+                            <label for="maquina">Máquina:</label>
                             <select id="maquina">
                                 <option value="MAQ-01">Máquina 01</option>
                                 <option value="MAQ-02">Máquina 02</option>
@@ -440,123 +795,130 @@
                     </div>
 
                     <div class="field-group">
-                        <label>Aprovado (ABNT: LE ≥ 600 MPa | LR/LE ≥ 1.05 | Along ≥ 5%):</label>
+                        <label>Laudo ABNT (LE ≥ 600 MPa | LR/LE ≥ 1.05 | Along ≥ 5%):</label>
                         <input type="hidden" id="status" value="aprovado" required>
                         <div class="status-selector">
-                            <button type="button" class="status-btn active-ok" id="btn-status-ok">✔ SIM (APROVADO)</button>
-                            <button type="button" class="status-btn" id="btn-status-fail">✖ NÃO (REPROVADO)</button>
+                            <button type="button" class="status-tile active-ok" id="btn-status-ok">✔ SIM (APROVADO)</button>
+                            <button type="button" class="status-tile" id="btn-status-fail">✖ NÃO (REPROVADO)</button>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-submit" id="btn-submit">
-                        LANÇAR NA PLANILHA ABNT + SALVAR PDF NA NUVEM
+                    <button type="submit" class="btn-bmw-primary" id="btn-submit" style="width:100%; margin-top:6px;">
+                        REGISTRAR ENSAIO NA PLANILHA ABNT ›
                     </button>
                 </form>
             </div>
         </section>
 
-        <section class="panel">
-            <div class="panel-header">
-                <span class="panel-title" id="panel-main-title">Espelho da Planilha ABNT (Grande Aço)</span>
-                <button type="button" class="btn-action" id="btn-recarregar">🔄 Sincronizar Nuvem</button>
+        <!-- COLUNA DIREITA: ESPELHO DA PLANILHA + GRÁFICOS CEP + RONDAS -->
+        <section class="bmw-card">
+            <div class="bmw-card-header">
+                <span class="bmw-card-title" id="panel-main-title">Base de Dados ABNT NBR 7480 — Grande Aço</span>
+                <button type="button" class="btn-bmw-secondary" id="btn-recarregar" style="height:34px;">🔄 SINCRONIZAR PLANILHA</button>
             </div>
 
-            <div class="sheet-tabs-bar" id="abas-bitola">
-                <button type="button" class="sheet-tab active" data-aba="TODAS">TODAS</button>
-                <button type="button" class="sheet-tab" data-aba="3.4">Aba 3,4</button>
-                <button type="button" class="sheet-tab" data-aba="3.8">Aba 3,8</button>
-                <button type="button" class="sheet-tab" data-aba="4.2">Aba 4,2</button>
-                <button type="button" class="sheet-tab" data-aba="4.6">Aba 4,6</button>
-                <button type="button" class="sheet-tab" data-aba="5.0">Aba 5,0</button>
-                <button type="button" class="sheet-tab" data-aba="6.0">Aba 6,0</button>
-                <button type="button" class="sheet-tab tab-graficos" data-aba="GRAFICOS" id="tab-btn-graficos">📊 Gráficos CEP</button>
-                <button type="button" class="sheet-tab tab-ronda" data-aba="RONDA" id="tab-btn-ronda">⏱️ Ronda (1h)</button>
+            <!-- CATEGORY TABS BMW -->
+            <div class="category-tabs-bar" id="abas-bitola">
+                <button type="button" class="category-tab active" data-aba="TODAS">TODAS AS BITOLAS</button>
+                <button type="button" class="category-tab" data-aba="3.4">BITOLA 3,4</button>
+                <button type="button" class="category-tab" data-aba="3.8">BITOLA 3,8</button>
+                <button type="button" class="category-tab" data-aba="4.2">BITOLA 4,2</button>
+                <button type="button" class="category-tab" data-aba="4.6">BITOLA 4,6</button>
+                <button type="button" class="category-tab" data-aba="5.0">BITOLA 5,0</button>
+                <button type="button" class="category-tab" data-aba="6.0">BITOLA 6,0</button>
+                <button type="button" class="category-tab tab-right" data-aba="GRAFICOS" id="tab-btn-graficos">📊 GRÁFICOS CEP</button>
+                <button type="button" class="category-tab" data-aba="RONDA" id="tab-btn-ronda">⏱️ RONDA 1H</button>
             </div>
 
-            <!-- VISÃO 1: TABELA ABNT -->
+            <!-- VISÃO 1: TABELA DE ENSAIOS -->
             <div id="container-tabela-abnt" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
                 <div class="toolbar-filtros">
                     <div class="filter-group">
-                        <label>Data:</label>
+                        <label>DATA:</label>
                         <input type="date" id="filtro-data">
                     </div>
                     <div class="filter-group">
-                        <label>Lote/OP:</label>
-                        <input type="text" id="filtro-lote" placeholder="Filtrar lote...">
+                        <label>LOTE / OP:</label>
+                        <input type="text" id="filtro-lote" placeholder="Pesquisar OP...">
                     </div>
-                    <button type="button" class="btn-action" id="btn-limpar-filtro">Limpar Filtros</button>
+                    <button type="button" class="btn-bmw-secondary" id="btn-limpar-filtro" style="height:36px;">LIMPAR FILTROS</button>
                 </div>
 
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
                             <tr>
+                                <th>Aba</th>
                                 <th>Amostra</th>
-                                <th>Prova / C.P.</th>
+                                <th>Tipo</th>
                                 <th>LOTE</th>
                                 <th>Data</th>
-                                <th>Bitola (mm)</th>
-                                <th>Massa (g/mm)</th>
+                                <th>Bitola Real</th>
+                                <th>Massa Lin.</th>
                                 <th>LR (MPa)</th>
                                 <th>LE (MPa)</th>
                                 <th>Along.</th>
-                                <th>Relação</th>
-                                <th>Dobram.</th>
+                                <th>LR/LE</th>
+                                <th>Obs / Máq.</th>
                                 <th>Aprov.</th>
                                 <th>Resp.</th>
-                                <th>PDF</th>
-                                <th>Ação</th>
+                                <th>Laudo PDF</th>
+                                <th>Excluir</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-corpo">
-                            <tr><td colspan="15" style="padding:40px; color:var(--text-muted);">Carregando planilha ABNT...</td></tr>
+                            <tr><td colspan="16" style="padding:48px; color:var(--muted);">Sincronizando registros com a Planilha Google...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- VISÃO 2: GRÁFICOS CEP EM SVG NATIVO (ULTRA LEVE) -->
+            <!-- VISÃO 2: GRÁFICOS CEP EM SVG -->
             <div class="graficos-view" id="container-graficos-view">
                 <div class="cep-grid">
                     <div class="chart-card">
-                        <h4>📈 Evolução do Limite de Escoamento — LE (Linha Vermelha = Mínimo 600 MPa ABNT)</h4>
+                        <h4>Evolução LE — Limite de Escoamento (Mínimo ABNT: 600 MPa)</h4>
                         <div id="svg-chart-le" style="width:100%; height:220px;"></div>
                     </div>
                     <div class="chart-card">
-                        <h4>📉 Evolução do Limite de Resistência — LR (MPa)</h4>
+                        <h4>Evolução LR — Limite de Resistência (MPa)</h4>
                         <div id="svg-chart-lr" style="width:100%; height:220px;"></div>
                     </div>
                 </div>
                 <div class="chart-card">
-                    <h4>📊 Resumo Estatístico por Bitola Nominal (Médias Mecânicas)</h4>
-                    <div id="cep-resumo-bitolas" style="font-size:12px; font-family:'JetBrains Mono',monospace; margin-top:8px;"></div>
+                    <h4>Médias Mecânicas por Bitola Nominal</h4>
+                    <div id="cep-resumo-bitolas" style="margin-top:12px;"></div>
                 </div>
             </div>
 
-            <!-- VISÃO 3: RONDA DE COLETA (1 EM 1 HORA) -->
+            <!-- VISÃO 3: PAINEL DE RONDA DE COLETA (1 EM 1 HORA) -->
             <div class="ronda-view" id="container-ronda-view">
                 <div class="ronda-card-main">
-                    <span class="sys-tag">CRONÔMETRO DE PRODUÇÃO // CA-60</span>
-                    <h3 style="font-family:'Rajdhani',sans-serif; font-size:20px; margin-top:4px;">TEMPO PARA PRÓXIMA COLETA</h3>
+                    <span class="sys-tag" style="color:var(--on-dark-soft);">TEMPORIZADOR DE LABORATÓRIO</span>
+                    <h3 style="font-size:20px; font-weight:700; margin-top:6px;">PRÓXIMA COLETA NA PRODUÇÃO</h3>
                     <div class="ronda-big-clock" id="big-timer-display">60:00</div>
-                    <p style="font-size:12px; color:var(--text-sec); margin-bottom:10px;">O alarme avisa a cada 1 hora para buscar amostras na produção.</p>
-                    <button type="button" class="btn-submit" id="btn-ronda-coletar" style="background:#10b981;">✔ SUBI E COLETEI AMOSTRAS (REINICIAR 1H)</button>
-                    <div class="ronda-btn-grid">
-                        <button type="button" class="btn-action" id="btn-ronda-pausar" style="height:36px;">⏸ Pausar / Retomar</button>
-                        <button type="button" class="btn-action" id="btn-ronda-testar" style="height:36px;">🔔 Testar Alarme</button>
-                        <button type="button" class="btn-action" id="btn-ronda-15m" style="height:36px;">⏱️ Ajustar 15 min</button>
-                        <button type="button" class="btn-action" id="btn-ronda-60m" style="height:36px;">⏱️ Ajustar 60 min</button>
+                    <p style="font-size:13px; font-weight:300; color:var(--on-dark-soft); margin-bottom:20px;">
+                        O sistema emite aviso sonoro e visual a cada 60 minutos para coleta de amostras CA-60.
+                    </p>
+                    <button type="button" class="btn-bmw-primary" id="btn-ronda-coletar" style="width:100%;">
+                        ✔ CONFIRMAR COLETA & REINICIAR 1H ›
+                    </button>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; margin-top:12px;">
+                        <button type="button" class="btn-secondary-on-dark" id="btn-ronda-pausar">⏸ PAUSAR / RETOMAR</button>
+                        <button type="button" class="btn-secondary-on-dark" id="btn-ronda-testar">🔔 TESTAR ALARME</button>
+                        <button type="button" class="btn-secondary-on-dark" id="btn-ronda-15m">⏱️ 15 MIN</button>
+                        <button type="button" class="btn-secondary-on-dark" id="btn-ronda-60m">⏱️ 60 MIN</button>
                     </div>
                 </div>
-                <div style="display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--border); border-radius:8px;">
-                    <div class="panel-header">
-                        <span class="panel-title">Histórico de Coletas Realizadas Hoje</span>
-                        <button type="button" class="btn-action" id="btn-limpar-rondas">🗑️ Limpar</button>
+                <div class="bmw-card">
+                    <div class="bmw-card-header">
+                        <span class="bmw-card-title">Registro de Coletas do Turno</span>
+                        <button type="button" class="btn-bmw-secondary" id="btn-limpar-rondas" style="height:32px;">LIMPAR HISTÓRICO</button>
                     </div>
                     <div class="table-container">
                         <table class="data-table">
                             <thead>
-                                <tr><th>Nº Ronda</th><th>Horário</th><th>Operador</th><th>Status</th></tr>
+                                <tr><th>Nº Ronda</th><th>Horário</th><th>Responsável</th><th>Status</th></tr>
                             </thead>
                             <tbody id="tabela-rondas-corpo"></tbody>
                         </table>
@@ -566,30 +928,32 @@
         </section>
     </main>
 
-    <!-- MODAL DE ALARME DE COLETA -->
+    <!-- MODAL DE ALARME DE COLETA (1 EM 1 HORA) -->
     <div class="alarm-modal-overlay" id="alarm-modal">
         <div class="alarm-box">
-            <div style="font-size:44px;">🚨</div>
-            <div class="alarm-title">HORA DE COLETAR AMOSTRAS!</div>
-            <p class="alarm-desc">Passou <strong>1 hora</strong> desde a última ronda. Suba na produção para recolher amostras de <strong>Aço CA-60</strong>.</p>
-            <div class="alarm-actions">
-                <button type="button" class="btn-submit" id="btn-modal-confirmar-coleta" style="background:#10b981; width:auto; padding:0 20px;">✔ JÁ COLETEI (REINICIAR 1H)</button>
-                <button type="button" class="btn-action" id="btn-modal-adiar" style="height:40px; padding:0 16px;">⏳ +10 min</button>
+            <div style="font-size:42px; margin-bottom:8px;">🚨</div>
+            <h2 style="font-size:24px; font-weight:700; color:var(--ink); text-transform:uppercase;">Hora da Ronda de Coleta CA-60</h2>
+            <p style="font-size:15px; font-weight:300; color:var(--body); margin:12px 0 24px 0;">
+                Completou-se o ciclo de <strong>1 hora</strong>. Suba ao setor produtivo para recolher amostras para ensaio de tração.
+            </p>
+            <div style="display:flex; gap:12px; justify-content:center;">
+                <button type="button" class="btn-bmw-primary" id="btn-modal-confirmar-coleta">✔ AMOSTRA COLETADA (REINICIAR 1H)</button>
+                <button type="button" class="btn-bmw-secondary" id="btn-modal-adiar" style="height:44px;">ADIAR +10 MIN</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL DE CERTIFICADO DE QUALIDADE -->
     <div class="pdf-modal-overlay" id="cert-modal">
-        <div class="pdf-modal-box" style="max-width:820px; background:#fff; color:#000;">
-            <div class="pdf-modal-header" style="background:#0f1c24;">
-                <span style="font-family:'Rajdhani'; font-size:18px; font-weight:700; color:#fff;">📜 Certificado de Qualidade de Lote - Grande Aço</span>
+        <div class="pdf-modal-box" style="max-width:840px; background:#fff; color:#000;">
+            <div class="pdf-modal-header">
+                <span style="font-size:15px; font-weight:700; letter-spacing:1px; text-transform:uppercase;">Certificado de Conformidade ABNT NBR 7480</span>
                 <div style="display:flex; gap:10px;">
-                    <button type="button" class="btn-top" onclick="window.print()" style="background:#309ce1;">🖨️ Imprimir / Salvar PDF</button>
-                    <button type="button" class="btn-top" id="btn-fechar-cert" style="background:#ef4444;">✖ Fechar</button>
+                    <button type="button" class="btn-bmw-primary" onclick="window.print()" style="height:36px; padding:0 18px;">🖨️ IMPRIMIR / PDF</button>
+                    <button type="button" class="btn-secondary-on-dark" id="btn-fechar-cert">✖ FECHAR</button>
                 </div>
             </div>
-            <div class="pdf-modal-body" id="cert-conteudo" style="background:#fff; padding:28px; overflow-y:auto; color:#000;"></div>
+            <div class="pdf-modal-body" id="cert-conteudo" style="background:#fff; padding:32px; overflow-y:auto; color:#000;"></div>
         </div>
     </div>
 
@@ -597,10 +961,10 @@
     <div class="pdf-modal-overlay" id="pdf-modal">
         <div class="pdf-modal-box">
             <div class="pdf-modal-header">
-                <span id="modal-titulo" style="font-family:'JetBrains Mono'; font-weight:700; color:var(--brand-blue);">📄 Laudo PDF</span>
+                <span id="modal-titulo" style="font-size:14px; font-weight:700; letter-spacing:1px;">📄 VISUALIZADOR DE LAUDO</span>
                 <div style="display:flex; gap:10px;">
-                    <a id="btn-abrir-drive-externo" href="#" target="_blank" class="btn-top">↗ Nova Guia</a>
-                    <button type="button" class="btn-top" id="btn-fechar-modal">✖ Fechar</button>
+                    <a id="btn-abrir-drive-externo" href="#" target="_blank" class="btn-secondary-on-dark" style="text-decoration:none; display:inline-flex; align-items:center;">↗ ABRIR EM NOVA GUIA</a>
+                    <button type="button" class="btn-secondary-on-dark" id="btn-fechar-modal">✖ FECHAR</button>
                 </div>
             </div>
             <div class="pdf-modal-body" id="modal-conteudo"></div>
@@ -628,23 +992,41 @@
         const inputRelacao = document.getElementById('relacao');
         const selectMaquina = document.getElementById('maquina');
 
+        // ==========================================================================
+        // CORREÇÃO DEFINITIVA DO PROBLEMA DA BITOLA 3,80 / 4,20 / 5,00 / 6,00
+        // Converte qualquer entrada ("3,80", "3.80", "3,8", "4,5") para as 6 abas oficiais!
+        // ==========================================================================
+        function normalizarBitolaNominal(valor) {
+            if (!valor) return "4.2";
+            const limpo = String(valor).replace(',', '.').trim();
+            const n = parseFloat(limpo);
+            if (isNaN(n)) return "4.2";
+            if (Math.abs(n - 3.4) < 0.18) return "3.4";
+            if (Math.abs(n - 3.8) < 0.18) return "3.8";
+            if (Math.abs(n - 4.2) < 0.18) return "4.2";
+            if (Math.abs(n - 4.6) < 0.22) return "4.6"; // Cobre 4.5 e 4.6
+            if (Math.abs(n - 5.0) < 0.25) return "5.0";
+            if (Math.abs(n - 6.0) < 0.35) return "6.0";
+            return n.toFixed(1);
+        }
+
         function destacarCampo(el) {
             el.classList.add('auto-filled');
             setTimeout(() => el.classList.remove('auto-filled'), 2500);
         }
 
-        // TOLERÂNCIA DE MASSA LINEAR (±6% ABNT NBR 7480)
         const MASSAS_TEORICAS_CA60 = { "3.4": 0.071, "3.8": 0.089, "4.2": 0.109, "4.6": 0.130, "5.0": 0.154, "6.0": 0.222 };
 
         function validarMassaLinearABNT(massaLida, bitolaNom) {
             const feedback = document.getElementById('massa-feedback');
-            const teorica = MASSAS_TEORICAS_CA60[String(bitolaNom)] || 0.109;
+            const bKey = normalizarBitolaNominal(bitolaNom);
+            const teorica = MASSAS_TEORICAS_CA60[bKey] || 0.109;
             const minTol = teorica * 0.94;
             const maxTol = teorica * 1.06;
             if (massaLida >= minTol && massaLida <= maxTol) {
-                feedback.innerHTML = `<span style="color:var(--ok-color)">✔ Massa Linear OK (Ideal: ${teorica.toFixed(3)} g/mm ±6%)</span>`;
+                feedback.innerHTML = `<span style="color:var(--success)">✔ MASSA LINEAR CONFORME ABNT (IDEAL: ${teorica.toFixed(3)} g/mm ±6%)</span>`;
             } else {
-                feedback.innerHTML = `<span style="color:var(--warn-color)">⚠️ Massa fora de ±6% (Ideal: ${teorica.toFixed(3)} g/mm)</span>`;
+                feedback.innerHTML = `<span style="color:var(--warning)">⚠️ MASSA FORA DE ±6% ABNT (IDEAL PARA Ø ${bKey}: ${teorica.toFixed(3)} g/mm)</span>`;
             }
         }
 
@@ -653,7 +1035,6 @@
             if (m > 0) validarMassaLinearABNT(m, document.getElementById('bitola-nominal').value);
         });
 
-        // CORTA SEMPRE O "1" DA FRENTE DE MPa (1788 -> 788, 1704 -> 704)
         function sanitizarMPa3Digitos(val) {
             if (!val) return null;
             let n = parseInt(String(val).replace(/\D/g, ''), 10);
@@ -694,7 +1075,7 @@
         inputAlong.addEventListener('input', recalcularABNT);
 
         // ==========================================================================
-        // LEITOR OCR LEVE (SEM FILTRO DE PIXELS PESADO QUE TRAVAVA A PÁGINA)
+        // LEITOR OCR CALIBRADO (SUPORTA 3,40 / 3,80 / 4,20 / 4,60 / 5,00 / 6,00)
         // ==========================================================================
         document.getElementById('anexo').addEventListener('change', async function() {
             if (!this.files || this.files.length === 0) return;
@@ -719,22 +1100,23 @@
             const matchOpNome = file.name.match(/(?:OR\s*\d+\s*-\s*)?OP\s*(\d+)/i);
             if (matchOpNome) { inputLote.value = "OP" + matchOpNome[1]; destacarCampo(inputLote); }
 
-            let bitolaNominalDetectada = "4.2";
-            const matchBitolaNome = file.name.match(/(3[\.,]4|3[\.,]8|4[\.,]2|4[\.,]6|5[\.,]0|6[\.,]0)/);
+            let bitolaNominalDetectada = document.getElementById('bitola-nominal').value;
+            // Captura 3,80 / 3,8 / 4,20 / 5,00 etc. e normaliza para "3.8", "4.2", etc.
+            const matchBitolaNome = file.name.match(/(3[\.,]40?|3[\.,]80?|4[\.,]20?|4[\.,][56]0?|5[\.,]00?|6[\.,]00?)/);
             if (matchBitolaNome) {
-                bitolaNominalDetectada = matchBitolaNome[1].replace(',', '.');
+                bitolaNominalDetectada = normalizarBitolaNominal(matchBitolaNome[1]);
                 selecionarBitolaNominal(bitolaNominalDetectada);
             }
 
             if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
                 try {
-                    statusTxt.innerHTML = "⏳ Lendo PDF via OCR...";
+                    statusTxt.innerHTML = "⏳ Lendo dados do relatório PDF via OCR...";
                     progBox.style.display = 'block'; progBar.style.width = '30%';
 
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                     const page = await pdf.getPage(1);
-                    const viewport = page.getViewport({ scale: 2.0 }); // Escala 2.0 rápida e leve
+                    const viewport = page.getViewport({ scale: 2.0 });
                     const canvasFull = document.createElement('canvas');
                     canvasFull.width = viewport.width; canvasFull.height = viewport.height;
                     const ctxFull = canvasFull.getContext('2d');
@@ -758,7 +1140,7 @@
                     setTimeout(() => { progBox.style.display = 'none'; }, 400);
 
                     preencherCamposLaudoGrandeAco(result.data.text, bitolaNominalDetectada);
-                    statusTxt.innerHTML = `<span style="color:var(--ok-color)">✔ Dados extraídos com sucesso!</span>`;
+                    statusTxt.innerHTML = `<span style="color:var(--success); font-weight:700;">✔ DADOS EXTRAÍDOS COM SUCESSO!</span>`;
                 } catch (err) {
                     progBox.style.display = 'none';
                     statusTxt.innerHTML = `⚠️ PDF anexado. Confira os campos manualmente.`;
@@ -768,7 +1150,15 @@
 
         function preencherCamposLaudoGrandeAco(txt, bitolaNomPadrao) {
             const limpo = txt.replace(/\r/g, '');
-            const bNomNum = parseFloat(bitolaNomPadrao) || 4.2;
+            let bNomStr = normalizarBitolaNominal(bitolaNomPadrao);
+
+            // Verifica se no texto do PDF tem a bitola nominal (ex: "OP150 3,80")
+            const mBitTexto = limpo.match(/OP\s*\d+\s+(3[\.,]40?|3[\.,]80?|4[\.,]20?|4[\.,][56]0?|5[\.,]00?|6[\.,]00?)/i);
+            if (mBitTexto) {
+                bNomStr = normalizarBitolaNominal(mBitTexto[1]);
+                selecionarBitolaNominal(bNomStr);
+            }
+            const bNomNum = parseFloat(bNomStr) || 4.2;
 
             const mOp = limpo.match(/OP\s*(\d{2,5})/i);
             if (mOp) { inputLote.value = "OP" + mOp[1]; destacarCampo(inputLote); }
@@ -788,7 +1178,7 @@
                 massaLida = parseFloat("0." + mMassa[1]);
                 inputMassaLinear.value = massaLida.toFixed(3);
                 inputMassaLinear.dataset.ocr = "true";
-                validarMassaLinearABNT(massaLida, bNomNum);
+                validarMassaLinearABNT(massaLida, bNomStr);
                 destacarCampo(inputMassaLinear);
             }
 
@@ -848,11 +1238,14 @@
         }
 
         function selecionarBitolaNominal(val) {
-            document.getElementById('bitola-nominal').value = val;
-            document.querySelectorAll('.bitola-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-val') === val));
+            const norm = normalizarBitolaNominal(val);
+            document.getElementById('bitola-nominal').value = norm;
+            document.querySelectorAll('.configurator-tile').forEach(b => {
+                b.classList.toggle('selected', b.getAttribute('data-val') === norm);
+            });
         }
 
-        document.querySelectorAll('.bitola-btn').forEach(btn => {
+        document.querySelectorAll('.configurator-tile').forEach(btn => {
             btn.addEventListener('click', () => selecionarBitolaNominal(btn.getAttribute('data-val')));
         });
 
@@ -865,11 +1258,10 @@
         document.getElementById('btn-status-fail').onclick = () => definirStatus('reprovado');
 
         // ==========================================================================
-        // TIMER DE 1 EM 1 HORA BLINDADO (ZERO RISCO DE TRAVAR O NAVEGADOR)
+        // TIMER DE 1 EM 1 HORA BLINDADO
         // ==========================================================================
         const INTERVALO_1H = 60 * 60 * 1000;
         let timerAlvo = Number(localStorage.getItem('ga_timer_alvo')) || (Date.now() + INTERVALO_1H);
-        // Se o timer salvo no cache já estava vencido quando abriu a página, reinicia para 60 min para não travar na largada!
         if (timerAlvo <= Date.now()) {
             timerAlvo = Date.now() + INTERVALO_1H;
             localStorage.setItem('ga_timer_alvo', timerAlvo);
@@ -915,9 +1307,9 @@
                 logs.push({ horario: d.toLocaleTimeString('pt-BR') + ' (' + d.toLocaleDateString('pt-BR') + ')', operador: document.getElementById('operador').value || 'FLÁVIO' });
                 localStorage.setItem('ga_historico_rondas', JSON.stringify(logs));
                 renderizarRondas();
-                toast("✔ Coleta registrada! Próxima ronda em 60 minutos.");
+                toast("✔ COLETA REGISTRADA! PRÓXIMA EM 60 MIN.");
             } else {
-                toast(`⏱️ Timer ajustado para ${minutos} minutos.`);
+                toast(`⏱️ TIMER AJUSTADO PARA ${minutos} MIN.`);
             }
             atualizarRelogio();
         }
@@ -943,7 +1335,7 @@
             if (ms <= 0 && !isTimerPausado) {
                 topDisp.textContent = "00:00";
                 bigDisp.textContent = "00:00";
-                widget.classList.add('timer-alarm');
+                widget.classList.add('hero-timer-Box-alarm');
                 if (!alarmeJaDisparado) dispararAlarme();
                 return;
             }
@@ -953,17 +1345,16 @@
             topDisp.textContent = isTimerPausado ? `⏸ ${txt}` : txt;
             bigDisp.textContent = txt;
             document.getElementById('btn-top-pausar').textContent = isTimerPausado ? "▶" : "⏸";
-            widget.classList.remove('timer-alarm');
-            widget.classList.toggle('timer-warning', m < 10);
+            widget.classList.remove('hero-timer-Box-alarm');
         }
         setInterval(atualizarRelogio, 1000);
 
         function renderizarRondas() {
             const tb = document.getElementById('tabela-rondas-corpo');
             const logs = JSON.parse(localStorage.getItem('ga_historico_rondas') || '[]');
-            if (logs.length === 0) { tb.innerHTML = '<tr><td colspan="4" style="padding:20px; color:var(--text-muted);">Nenhuma coleta registrada hoje.</td></tr>'; return; }
+            if (logs.length === 0) { tb.innerHTML = '<tr><td colspan="4" style="padding:24px; color:var(--muted);">Nenhuma coleta registrada hoje.</td></tr>'; return; }
             tb.innerHTML = [...logs].reverse().map((item, idx) => `
-                <tr><td>#${logs.length - idx}</td><td style="font-weight:700; color:var(--brand-blue);">${item.horario}</td><td>👷 ${item.operador}</td><td><span class="pill-ok">✔ AMOSTRA COLETADA</span></td></tr>
+                <tr><td>#${logs.length - idx}</td><td style="font-weight:700; color:var(--primary);">${item.horario}</td><td>${item.operador}</td><td><span class="badge-sim">CONCLUÍDA</span></td></tr>
             `).join('');
         }
 
@@ -980,13 +1371,13 @@
         document.getElementById('btn-limpar-rondas').onclick = () => { localStorage.removeItem('ga_historico_rondas'); renderizarRondas(); };
 
         // ==========================================================================
-        // GRÁFICOS CEP EM SVG NATIVO (INSTANTÂNEO E NÃO TRAVA NUNCA)
+        // GRÁFICOS CEP EM SVG NATIVO
         // ==========================================================================
         function desenharGraficoSVG(containerId, valores, corLinha, limiteMinimo = null) {
             const box = document.getElementById(containerId);
             const nums = valores.filter(v => v > 0);
             if (nums.length === 0) {
-                box.innerHTML = `<div style="padding:40px; text-align:center; color:var(--text-muted); font-size:12px;">Sem dados numéricos suficientes para gerar o gráfico.</div>`;
+                box.innerHTML = `<div style="padding:40px; text-align:center; color:var(--muted); font-size:13px;">Sem dados numéricos suficientes.</div>`;
                 return;
             }
             const W = 520, H = 200, pad = 32;
@@ -999,17 +1390,17 @@
             let linhaMinHtml = '';
             if (limiteMinimo) {
                 const yMin = mapY(limiteMinimo).toFixed(1);
-                linhaMinHtml = `<line x1="${pad}" y1="${yMin}" x2="${W - pad}" y2="${yMin}" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5,4"/>
-                                <text x="${W - pad - 4}" y="${yMin - 5}" fill="#ef4444" font-size="10" text-anchor="end" font-family="JetBrains Mono">Mín: ${limiteMinimo} MPa</text>`;
+                linhaMinHtml = `<line x1="${pad}" y1="${yMin}" x2="${W - pad}" y2="${yMin}" stroke="#e22718" stroke-width="1.5" stroke-dasharray="5,4"/>
+                                <text x="${W - pad - 4}" y="${yMin - 5}" fill="#e22718" font-size="10" font-weight="700" text-anchor="end">MÍN ABNT: ${limiteMinimo} MPa</text>`;
             }
             const bolinhas = nums.map((v, i) => `
-                <circle cx="${mapX(i).toFixed(1)}" cy="${mapY(v).toFixed(1)}" r="4" fill="${corLinha}"/>
-                <text x="${mapX(i).toFixed(1)}" y="${mapY(v) - 8}" fill="#cbd5e1" font-size="10" text-anchor="middle" font-family="JetBrains Mono">${v}</text>
+                <rect x="${(mapX(i)-3.5).toFixed(1)}" y="${(mapY(v)-3.5).toFixed(1)}" width="7" height="7" fill="${corLinha}"/>
+                <text x="${mapX(i).toFixed(1)}" y="${mapY(v) - 8}" fill="var(--ink)" font-size="10" font-weight="700" text-anchor="middle">${v}</text>
             `).join('');
 
             box.innerHTML = `
                 <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:100%;">
-                    <line x1="${pad}" y1="${H - pad}" x2="${W - pad}" y2="${H - pad}" stroke="#334155" stroke-width="1"/>
+                    <line x1="${pad}" y1="${H - pad}" x2="${W - pad}" y2="${H - pad}" stroke="var(--hairline-strong)" stroke-width="1"/>
                     ${linhaMinHtml}
                     <polyline fill="none" stroke="${corLinha}" stroke-width="2.5" points="${pts}"/>
                     ${bolinhas}
@@ -1019,38 +1410,36 @@
 
         function renderizarGraficosCEP() {
             const ultimos = historicoTestes.slice(-15);
-            desenharGraficoSVG('svg-chart-le', ultimos.map(t => Number(t.le || 0)), '#10b981', 600);
-            desenharGraficoSVG('svg-chart-lr', ultimos.map(t => Number(t.lr || 0)), '#309ce1', null);
+            desenharGraficoSVG('svg-chart-le', ultimos.map(t => Number(t.le || 0)), '#1c69d4', 600);
+            desenharGraficoSVG('svg-chart-lr', ultimos.map(t => Number(t.lr || 0)), '#1a2129', null);
 
             const bitolas = ['3.4', '3.8', '4.2', '4.6', '5.0', '6.0'];
-            let htmlResumo = `<div style="display:grid; grid-template-columns:repeat(6,1fr); gap:8px;">`;
+            let htmlResumo = `<div style="display:grid; grid-template-columns:repeat(6,1fr); gap:12px;">`;
             bitolas.forEach(b => {
-                const daBitola = historicoTestes.filter(t => String(t.bitolaNominal || t.bitola) === b && Number(t.le) > 0);
+                const daBitola = historicoTestes.filter(t => normalizarBitolaNominal(t.bitolaNominal || t.bitola || t.aba) === b && Number(t.le) > 0);
                 const mediaLE = daBitola.length ? Math.round(daBitola.reduce((a, c) => a + Number(c.le), 0) / daBitola.length) : '-';
                 const mediaLR = daBitola.length ? Math.round(daBitola.reduce((a, c) => a + Number(c.lr), 0) / daBitola.length) : '-';
                 htmlResumo += `
-                    <div style="background:var(--bg-input); border:1px solid var(--border); padding:10px; border-radius:4px; text-align:center;">
-                        <strong style="color:var(--brand-blue);">Ø ${b} mm</strong><br>
-                        <span style="font-size:11px; color:var(--text-sec);">Amostras: ${daBitola.length}</span><br>
-                        <span>LE Médio: <b>${mediaLE}</b></span><br>
-                        <span>LR Médio: <b>${mediaLR}</b></span>
+                    <div style="background:var(--canvas); border:1px solid var(--hairline-strong); border-top:3px solid var(--primary); padding:12px; text-align:center;">
+                        <strong style="color:var(--primary); font-size:15px;">Ø ${b.replace('.', ',')} mm</strong><br>
+                        <span style="font-size:11px; color:var(--muted);">AMOSTRAS: ${daBitola.length}</span><br>
+                        <span style="font-size:12px;">LE MÉDIO: <b>${mediaLE}</b></span><br>
+                        <span style="font-size:12px;">LR MÉDIO: <b>${mediaLR}</b></span>
                     </div>`;
             });
             htmlResumo += `</div>`;
             document.getElementById('cep-resumo-bitolas').innerHTML = htmlResumo;
         }
 
-        // RESUMO WHATSAPP
         document.getElementById('btn-whatsapp').onclick = () => {
             const total = historicoTestes.length;
             const aprov = historicoTestes.filter(t => t.status === 'aprovado' || t.aprovado === 'SIM').length;
             const taxa = total > 0 ? Math.round((aprov / total) * 100) : 0;
             const rondas = JSON.parse(localStorage.getItem('ga_historico_rondas') || '[]').length;
-            const txt = `📊 *RESUMO QUALIDADE CA-60 - GRANDE AÇO*\n📅 Data: ${new Date().toLocaleDateString('pt-BR')}\n✅ Ensaios Registrados: ${total} (${taxa}% Aprovados)\n⏱️ Rondas de Coleta Hoje: ${rondas}\n⚙️ Norma: ABNT NBR 7480`;
-            navigator.clipboard.writeText(txt).then(() => toast("📲 Resumo copiado! Só colar no WhatsApp."));
+            const txt = `📊 *RESUMO QUALIDADE CA-60 — GRANDE AÇO*\n📅 Data: ${new Date().toLocaleDateString('pt-BR')}\n✅ Ensaios Registrados: ${total} (${taxa}% Aprovados)\n⏱️ Rondas de Coleta Hoje: ${rondas}\n⚙️ Norma: ABNT NBR 7480`;
+            navigator.clipboard.writeText(txt).then(() => toast("📲 RESUMO COPIADO PARA O WHATSAPP!"));
         };
 
-        // CERTIFICADO DE LOTE / OP
         document.getElementById('btn-gerar-certificado').onclick = () => {
             const opSug = inputLote.value || "OP150";
             const loteBusca = prompt("Digite o número do Lote / OP para emitir o Certificado:", opSug);
@@ -1063,42 +1452,42 @@
             const mdAl = (filtrados.reduce((a, b) => a + Number(b.alongamento || 0), 0) / filtrados.length).toFixed(1);
             const linhasHtml = filtrados.map((f, i) => `
                 <tr>
-                    <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">#${i + 1} (${f.tipoProva || 'PROVA'})</td>
-                    <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${f.bitolaReal || f.bitola} mm</td>
-                    <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${f.massaLinear || '-'} g/mm</td>
-                    <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;"><b>${f.lr} MPa</b></td>
-                    <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;"><b>${f.le} MPa</b></td>
-                    <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${f.alongamento}%</td>
-                    <td style="padding:6px; border:1px solid #cbd5e1; text-align:center;">${Number(f.relacao || (f.lr/f.le)).toFixed(2)}</td>
+                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;">#${i + 1} (${f.tipoProva || 'PROVA'})</td>
+                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;">${f.bitolaReal || f.bitola} mm</td>
+                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;">${f.massaLinear || '-'} g/mm</td>
+                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;"><b>${f.lr} MPa</b></td>
+                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;"><b>${f.le} MPa</b></td>
+                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;">${f.alongamento}%</td>
+                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;">${Number(f.relacao || (f.lr/f.le)).toFixed(2)}</td>
                 </tr>
             `).join('');
 
             document.getElementById('cert-conteudo').innerHTML = `
-                <div style="border:2px solid #0f1c24; padding:24px; border-radius:6px;">
-                    <div style="display:flex; justify-content:space-between; border-bottom:3px solid #309ce1; padding-bottom:12px; margin-bottom:16px;">
+                <div style="border:2px solid #1a2129; padding:28px;">
+                    <div style="display:flex; justify-content:space-between; border-bottom:4px solid #1c69d4; padding-bottom:14px; margin-bottom:20px;">
                         <div>
-                            <h2 style="font-family:'Rajdhani'; font-size:24px; color:#0f1c24;">GRANDE AÇO — INDÚSTRIA DE AÇO</h2>
-                            <p style="font-size:12px; color:#475569;">Certificado Oficial de Ensaio de Tração — ABNT NBR 7480 (CA-60)</p>
+                            <h2 style="font-size:24px; font-weight:700; color:#1a2129;">GRANDE AÇO — INDÚSTRIA DE AÇO</h2>
+                            <p style="font-size:13px; color:#6b6b6b;">Certificado Oficial de Ensaio de Tração — ABNT NBR 7480 (CA-60)</p>
                         </div>
-                        <div style="text-align:right; font-size:12px;">
+                        <div style="text-align:right; font-size:13px;">
                             <strong>LOTE / OP: ${loteBusca.toUpperCase()}</strong><br>
-                            Data de Emissão: ${new Date().toLocaleDateString('pt-BR')}
+                            Data: ${new Date().toLocaleDateString('pt-BR')}
                         </div>
                     </div>
-                    <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:18px;">
+                    <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:20px;">
                         <thead>
-                            <tr style="background:#0f1c24; color:#fff;">
-                                <th style="padding:8px;">Amostra</th><th>Bitola Real</th><th>Massa Lin.</th><th>LR (MPa)</th><th>LE (MPa)</th><th>Along.</th><th>LR/LE</th>
+                            <tr style="background:#1a2129; color:#fff;">
+                                <th style="padding:10px;">AMOSTRA</th><th>BITOLA REAL</th><th>MASSA LIN.</th><th>LR (MPa)</th><th>LE (MPa)</th><th>ALONG.</th><th>LR/LE</th>
                             </tr>
                         </thead>
                         <tbody>${linhasHtml}</tbody>
                     </table>
-                    <div style="background:#f1f5f9; padding:12px; border-radius:4px; font-size:13px; margin-bottom:30px;">
-                        <strong>Médias do Lote:</strong> LR Médio: <b>${mdLR} MPa</b> | LE Médio: <b>${mdLE} MPa</b> (Mín: 600 MPa) | Alongamento Médio: <b>${mdAl}%</b> (Mín: 5%) — <strong>LAUDO: APROVADO (CONFORME ABNT NBR 7480)</strong>
+                    <div style="background:#f7f7f7; border-left:4px solid #1c69d4; padding:14px; font-size:13px; margin-bottom:36px;">
+                        <strong>MÉDIAS DO LOTE:</strong> LR Médio: <b>${mdLR} MPa</b> | LE Médio: <b>${mdLE} MPa</b> (Mín: 600 MPa) | Alongamento Médio: <b>${mdAl}%</b> (Mín: 5%) — <strong>STATUS: APROVADO</strong>
                     </div>
-                    <div style="display:flex; justify-content:space-around; text-align:center; margin-top:40px; font-size:12px;">
-                        <div style="border-top:1px solid #000; width:220px; padding-top:6px;">Responsável pelo Ensaio (${document.getElementById('operador').value})</div>
-                        <div style="border-top:1px solid #000; width:220px; padding-top:6px;">Gestão da Qualidade — Grande Aço</div>
+                    <div style="display:flex; justify-content:space-around; text-align:center; margin-top:48px; font-size:12px;">
+                        <div style="border-top:1px solid #262626; width:240px; padding-top:8px;">Responsável Técnico (${document.getElementById('operador').value})</div>
+                        <div style="border-top:1px solid #262626; width:240px; padding-top:8px;">Controle de Qualidade — Grande Aço</div>
                     </div>
                 </div>
             `;
@@ -1107,9 +1496,9 @@
         document.getElementById('btn-fechar-cert').onclick = () => document.getElementById('cert-modal').style.display = 'none';
 
         // NAVEGAÇÃO ENTRE ABAS
-        document.querySelectorAll('.sheet-tab').forEach(tab => {
+        document.querySelectorAll('.category-tab').forEach(tab => {
             tab.addEventListener('click', () => {
-                document.querySelectorAll('.sheet-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 const sel = tab.getAttribute('data-aba');
                 const vAbnt = document.getElementById('container-tabela-abnt');
@@ -1137,19 +1526,39 @@
         function carregarDadosDaPlanilha() {
             fetch(LINK_PLANILHA)
                 .then(r => r.json())
-                .then(dados => { historicoTestes = Array.isArray(dados) ? dados : []; atualizarTabela(); })
-                .catch(() => { document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="15" style="padding:30px;">⚠️ Erro ao carregar planilha.</td></tr>'; });
+                .then(dados => {
+                    historicoTestes = Array.isArray(dados) ? dados : [];
+                    atualizarTabela();
+                })
+                .catch(() => {
+                    document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="16" style="padding:36px;">⚠️ Erro de conexão com a planilha.</td></tr>';
+                });
         }
 
+        // ==========================================================================
+        // ATUALIZAR TABELA — GARANTE QUE 3,80 / 3,8 APAREÇA EM "TODAS" E EM "3,8"
+        // ==========================================================================
         function atualizarTabela() {
             const tbody = document.getElementById('tabela-corpo');
             let lista = [...historicoTestes];
-            if (abaAtiva !== "TODAS") lista = lista.filter(t => String(t.bitolaNominal || t.bitola) === abaAtiva);
+
+            if (abaAtiva !== "TODAS") {
+                const alvoNorm = normalizarBitolaNominal(abaAtiva);
+                lista = lista.filter(t => {
+                    const bitolaRegistro = normalizarBitolaNominal(t.bitolaNominal || t.aba || t.bitola || t.bitolaReal);
+                    return bitolaRegistro === alvoNorm;
+                });
+            }
 
             const fData = document.getElementById('filtro-data').value;
-            if (fData) { const df = fData.split('-').reverse().join('/'); lista = lista.filter(t => t.dataFormatada === df); }
+            if (fData) {
+                const df = fData.split('-').reverse().join('/');
+                lista = lista.filter(t => t.dataFormatada === df);
+            }
             const fLote = document.getElementById('filtro-lote').value.trim().toUpperCase();
-            if (fLote) lista = lista.filter(t => String(t.lote || '').toUpperCase().includes(fLote));
+            if (fLote) {
+                lista = lista.filter(t => String(t.lote || '').toUpperCase().includes(fLote));
+            }
 
             const total = lista.length;
             const aprov = lista.filter(t => t.status === 'aprovado' || t.aprovado === 'SIM').length;
@@ -1159,7 +1568,7 @@
             document.getElementById('kpi-taxa').textContent = (total > 0 ? Math.round((aprov / total) * 100) : 0) + '%';
 
             if (lista.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="15" style="padding:40px; color:var(--text-muted);">Nenhum registro nesta aba.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="16" style="padding:48px; color:var(--muted);">Nenhum ensaio encontrado para a seleção atual.</td></tr>';
                 return;
             }
 
@@ -1168,25 +1577,28 @@
                 const arq = String(t.nomeArquivo || "Nenhum anexo");
                 const isCloud = arq.startsWith('http');
                 const btnPdf = (arq !== "Nenhum anexo" && arq !== "Nenhum")
-                    ? `<button class="btn-view-pdf" onclick="verPDFTabela('${arq.replace(/'/g, "\\'")}')">${isCloud ? '☁️ PDF' : '⚠️ Local'}</button>`
+                    ? `<button type="button" class="btn-link-bmw" onclick="verPDFTabela('${arq.replace(/'/g, "\\'")}')">${isCloud ? 'ABRIR PDF ›' : 'LOCAL ›'}</button>`
                     : `-`;
+                const abaExibicao = normalizarBitolaNominal(t.bitolaNominal || t.aba || t.bitola).replace('.', ',');
+
                 return `
                     <tr>
-                        <td>${t.amostra || (lista.length - idx)}</td>
+                        <td><span class="badge-aba">Ø ${abaExibicao}</span></td>
+                        <td style="font-weight:700;">#${t.amostra || (lista.length - idx)}</td>
                         <td>${t.tipoProva || 'PROVA'}</td>
-                        <td style="font-weight:700; color:var(--brand-blue);">${t.lote || '-'}</td>
+                        <td style="font-weight:700; color:var(--primary);">${t.lote || '-'}</td>
                         <td>${t.dataFormatada}</td>
-                        <td>${t.bitolaReal || t.bitola}</td>
+                        <td style="font-weight:700;">${t.bitolaReal || t.bitola} mm</td>
                         <td>${t.massaLinear || '-'}</td>
                         <td style="font-weight:700;">${t.lr || '-'}</td>
                         <td style="font-weight:700;">${t.le || '-'}</td>
                         <td>${t.alongamento ? t.alongamento + '%' : '-'}</td>
                         <td>${t.relacao ? Number(t.relacao).toFixed(2) : '-'}</td>
                         <td>${t.dobramento || 'OK'}</td>
-                        <td><span class="${isOk ? 'pill-ok' : 'pill-fail'}">${isOk ? 'SIM' : 'NÃO'}</span></td>
+                        <td><span class="${isOk ? 'badge-sim' : 'badge-nao'}">${isOk ? 'SIM' : 'NÃO'}</span></td>
                         <td>${t.operador}</td>
                         <td>${btnPdf}</td>
-                        <td><button class="btn-action" onclick="deletarTeste(${t.linha}, '${t.aba || ''}')">🗑️</button></td>
+                        <td><button type="button" class="btn-bmw-secondary" style="height:28px; padding:0 8px;" onclick="deletarTeste(${t.linha}, '${t.aba || ''}')">✕</button></td>
                     </tr>`;
             }).join('');
         }
@@ -1196,25 +1608,35 @@
         document.getElementById('btn-limpar-filtro').onclick = () => { document.getElementById('filtro-data').value = ''; document.getElementById('filtro-lote').value = ''; atualizarTabela(); };
         document.getElementById('btn-recarregar').onclick = carregarDadosDaPlanilha;
 
+        // ==========================================================================
+        // SALVAR ENSAIO (NORMALIZA BITOLA "3.80" -> "3.8" PARA CAIR NA ABA "3,8")
+        // ==========================================================================
         document.getElementById('form-teste').addEventListener('submit', function(e) {
             e.preventDefault();
-            const btn = document.getElementById('btn-submit'); btn.disabled = true; btn.textContent = "⏳ SALVANDO NA NUVEM...";
+            const btn = document.getElementById('btn-submit');
+            btn.disabled = true;
+            btn.textContent = "⏳ GRAVANDO NA PLANILHA E GOOGLE DRIVE...";
             const op = document.getElementById('operador').value.trim().toUpperCase();
             localStorage.setItem('ga_operador', op);
 
+            const bitolaNomNormalizada = normalizarBitolaNominal(document.getElementById('bitola-nominal').value);
             const obsCompleta = `${document.getElementById('dobramento').value || 'OK'} (${selectMaquina.value})`;
 
             const payload = {
                 acao: "inserir",
-                bitolaNominal: document.getElementById('bitola-nominal').value,
-                bitola: document.getElementById('bitola-nominal').value,
+                bitolaNominal: bitolaNomNormalizada,
+                bitola: bitolaNomNormalizada,
                 tipoProva: selectTipoProva.value,
                 lote: inputLote.value.trim().toUpperCase(),
                 dataFormatada: inputData.value.split('-').reverse().join('/'),
                 bitolaReal: inputBitolaReal.value,
                 massaLinear: inputMassaLinear.value,
-                lr: inputLR.value, le: inputLE.value, alongamento: inputAlong.value, relacao: inputRelacao.value,
-                dobramento: obsCompleta, status: document.getElementById('status').value,
+                lr: inputLR.value,
+                le: inputLE.value,
+                alongamento: inputAlong.value,
+                relacao: inputRelacao.value,
+                dobramento: obsCompleta,
+                status: document.getElementById('status').value,
                 operador: op,
                 nomeArquivo: pdfAtualNome || "Nenhum anexo",
                 arquivoBase64: pdfAtualBase64 ? pdfAtualBase64.split(',')[1] : "",
@@ -1223,25 +1645,29 @@
 
             fetch(LINK_PLANILHA, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
             .then(() => {
-                toast("✔ Lançamento e PDF gravados no Google Drive!");
-                btn.disabled = false; btn.textContent = "LANÇAR NA PLANILHA ABNT + SALVAR PDF NA NUVEM";
-                document.getElementById('anexo').value = ""; pdfAtualBase64 = null; pdfAtualNome = null;
+                toast(`✔ AMOSTRA Ø ${bitolaNomNormalizada.replace('.', ',')} SALVA COM SUCESSO!`);
+                btn.disabled = false;
+                btn.textContent = "REGISTRAR ENSAIO NA PLANILHA ABNT ›";
+                document.getElementById('anexo').value = "";
+                pdfAtualBase64 = null;
+                pdfAtualNome = null;
                 document.getElementById('btn-preview-form').style.display = 'none';
                 setTimeout(carregarDadosDaPlanilha, 1400);
             }).catch(() => {
-                btn.disabled = false; btn.textContent = "LANÇAR NA PLANILHA ABNT + SALVAR PDF NA NUVEM";
+                btn.disabled = false;
+                btn.textContent = "REGISTRAR ENSAIO NA PLANILHA ABNT ›";
             });
         });
 
         function deletarTeste(linha, aba) {
-            if (!confirm("Excluir esta amostra da planilha?")) return;
+            if (!confirm("Deseja realmente excluir esta amostra da planilha?")) return;
             fetch(LINK_PLANILHA, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ acao: "deletar", linha: linha, aba: aba }) })
-            .then(() => { toast("✔ Amostra excluída!"); setTimeout(carregarDadosDaPlanilha, 600); });
+            .then(() => { toast("✔ AMOSTRA EXCLUÍDA!"); setTimeout(carregarDadosDaPlanilha, 600); });
         }
 
         document.getElementById('btn-exportar').onclick = () => {
-            let csv = "data:text/csv;charset=utf-8,\uFEFFAMOSTRAS;prova;LOTE;Data;Bitola Real;Massa;LR;LE;Along;Relacao;Dobramento;Aprovado;Responsavel\n";
-            historicoTestes.forEach((t, i) => { csv += `${t.amostra || (i+1)};${t.tipoProva};${t.lote};${t.dataFormatada};${t.bitolaReal};${t.massaLinear};${t.lr};${t.le};${t.alongamento};${t.relacao};${t.dobramento};${t.status === 'aprovado' ? 'SIM' : 'NÃO'};${t.operador}\n`; });
+            let csv = "data:text/csv;charset=utf-8,\uFEFFABA;AMOSTRAS;prova;LOTE;Data;Bitola Real;Massa;LR;LE;Along;Relacao;Dobramento;Aprovado;Responsavel\n";
+            historicoTestes.forEach((t, i) => { csv += `${t.aba || t.bitolaNominal};${t.amostra || (i+1)};${t.tipoProva};${t.lote};${t.dataFormatada};${t.bitolaReal};${t.massaLinear};${t.lr};${t.le};${t.alongamento};${t.relacao};${t.dobramento};${t.status === 'aprovado' ? 'SIM' : 'NÃO'};${t.operador}\n`; });
             const a = document.createElement('a'); a.href = encodeURI(csv); a.download = `Grande_Aco_ABNT.csv`; a.click();
         };
 
@@ -1265,7 +1691,7 @@
             if (url.startsWith('http')) {
                 let u = url; const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
                 if (m && m[1]) u = `https://drive.google.com/file/d/${m[1]}/preview`;
-                abrirModalPDF("Laudo Google Drive", u, url);
+                abrirModalPDF("Laudo Técnico (Google Drive)", u, url);
             } else {
                 alert("Este registro antigo não possui link na nuvem.");
             }
@@ -1274,10 +1700,12 @@
         document.addEventListener('DOMContentLoaded', () => {
             inputData.value = new Date().toISOString().split('T')[0];
             document.getElementById('operador').value = localStorage.getItem('ga_operador') || 'FLÁVIO';
-            document.documentElement.setAttribute('data-theme', localStorage.getItem('ga_tema') || 'dark');
+            const temaSalvo = localStorage.getItem('ga_tema_bmw') || 'light'; // BMW padrão é Light Canvas
+            document.documentElement.setAttribute('data-theme', temaSalvo);
             document.getElementById('btn-theme').onclick = () => {
-                const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', n); localStorage.setItem('ga_tema', n);
+                const n = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', n);
+                localStorage.setItem('ga_tema_bmw', n);
             };
             atualizarRelogio();
             renderizarRondas();
