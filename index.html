@@ -1,93 +1,81 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGCQ BMW Edition | Grande Aço — Controle ABNT CA-60</title>
+    <title>SGCQ — Grande Aço | Controle de Qualidade CA-60</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Substituto oficial aberto do BMW Type Next Latin: Inter nos pesos 300, 400 e 700 (sem 500) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Substituto aberto documentado para SF Pro: Inter nos pesos 300, 400, 600 e 700 (sem 500) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     
     <style>
         /* ==========================================================================
-           DESIGN SYSTEM: BMW CORPORATE AUTOMOTIVE (DESIGN (1).md)
-           - Superfície padrão clara (#ffffff), Hero Band em Dark Navy (#1a2129)
-           - Ação primária: BMW Corporate Blue (#1c69d4 -> active #0653b6)
-           - Geometria: 0px border-radius (rounded.none) em botões, inputs e cards
-           - Tipografia: Contraste estrito 700 (Display/Labels/Buttons) vs 300 (Body)
-           - Elevação: Flat (Zero drop-shadow, separação por hairlines #e6e6e6 de 1px)
+           DESIGN SYSTEM: APPLE DESIGN ANALYSIS (DESIGN (2)_2.md)
+           - Superfícies: Pure White (#ffffff) + Parchment (#f5f5f7) + Dark Tile (#272729)
+           - Acento único: Action Blue (#0066cc), Focus (#0071e3), On-Dark (#2997ff)
+           - Geometria: Pill (9999px) para CTAs/Chips, LG (18px) para Cards, SM (8px) para Utility
+           - Tipografia: SF Pro / Inter (600 display com tracking negativo, 400 body, sem 500)
+           - Elevação: Flat chrome, sem gradientes decorativos
            ========================================================================== */
-        :root[data-theme="light"] {
-            --primary: #1c69d4;
-            --primary-active: #0653b6;
-            --primary-disabled: #d6d6d6;
-            --ink: #262626;
-            --body: #3c3c3c;
-            --body-strong: #1a1a1a;
-            --muted: #6b6b6b;
-            --muted-soft: #9a9a9a;
-            --hairline: #e6e6e6;
-            --hairline-strong: #cccccc;
+        :root {
+            --primary: #0066cc;
+            --primary-focus: #0071e3;
+            --primary-on-dark: #2997ff;
+            --ink: #1d1d1f;
+            --body: #1d1d1f;
+            --body-on-dark: #ffffff;
+            --body-muted: #cccccc;
+            --ink-muted-80: #333333;
+            --ink-muted-48: #7a7a7a;
+            --divider-soft: #f0f0f0;
+            --hairline: #e0e0e0;
             --canvas: #ffffff;
-            --surface-soft: #f7f7f7;
-            --surface-card: #fafafa;
-            --surface-strong: #ebebeb;
-            --surface-dark: #1a2129;
-            --surface-dark-elevated: #262e38;
+            --canvas-parchment: #f5f5f7;
+            --surface-pearl: #fafafc;
+            --surface-tile-1: #272729;
+            --surface-tile-2: #2a2a2c;
+            --surface-tile-3: #252527;
+            --surface-black: #000000;
+            --surface-chip-translucent: rgba(210, 210, 215, 0.64);
             --on-primary: #ffffff;
             --on-dark: #ffffff;
-            --on-dark-soft: #bbbbbb;
-            --m-blue-light: #0066b1;
-            --m-blue-dark: #1c69d4;
-            --m-red: #e22718;
-            --success: #22c55e;
-            --warning: #f59e0b;
+            --success: #16a34a;
+            --warning: #d97706;
             --error: #dc2626;
         }
 
-        :root[data-theme="dark"] {
-            --primary: #1c69d4;
-            --primary-active: #0653b6;
-            --primary-disabled: #3a424d;
-            --ink: #ffffff;
-            --body: #cccccc;
-            --body-strong: #ffffff;
-            --muted: #9a9a9a;
-            --muted-soft: #6b6b6b;
-            --hairline: #2d3743;
-            --hairline-strong: #404d5c;
-            --canvas: #12171d;
-            --surface-soft: #161c23;
-            --surface-card: #1a2129;
-            --surface-strong: #262e38;
-            --surface-dark: #0d1116;
-            --surface-dark-elevated: #1a2129;
-            --on-primary: #ffffff;
-            --on-dark: #ffffff;
-            --on-dark-soft: #bbbbbb;
-            --m-blue-light: #0066b1;
-            --m-blue-dark: #1c69d4;
-            --m-red: #e22718;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --error: #dc2626;
+        /* Modo Escuro opcional mantendo as superfícies Near-Black Tile 1/2/3 da Apple */
+        [data-theme="dark"] {
+            --canvas: #1d1d1f;
+            --canvas-parchment: #141416;
+            --surface-pearl: #272729;
+            --ink: #f5f5f7;
+            --body: #f5f5f7;
+            --ink-muted-80: #cccccc;
+            --ink-muted-48: #86868b;
+            --hairline: #333336;
+            --divider-soft: #2a2a2c;
+            --primary: #2997ff;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            border-radius: 0px; /* {rounded.none} dominante em todo o sistema */
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
+            font-feature-settings: "ss03";
         }
 
         body {
-            background-color: var(--canvas);
+            background-color: var(--canvas-parchment);
             color: var(--body);
-            font-weight: 300; /* BMW Light 300 body signature */
+            font-size: 17px;
+            font-weight: 400;
+            line-height: 1.44;
+            letter-spacing: -0.374px;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
@@ -96,123 +84,182 @@
         }
 
         /* ==========================================================================
-           1. TOP NAVIGATION (BMW White Sticky Nav Bar — 64px)
+           1. GLOBAL NAV (44px Pure Black #000000)
            ========================================================================== */
-        .top-nav {
-            height: 64px;
-            background-color: var(--canvas);
-            color: var(--ink);
-            border-bottom: 1px solid var(--hairline);
+        .global-nav {
+            height: 44px;
+            background-color: var(--surface-black);
+            color: var(--on-dark);
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 24px;
             flex-shrink: 0;
-        }
-
-        .brand-section {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        /* Único elemento circular permitido pelo guia ({rounded.full}) */
-        .logo-box {
-            width: 44px;
-            height: 44px;
-            border-radius: 9999px;
-            background: #ffffff;
-            border: 1px solid var(--hairline-strong);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .logo-box svg { width: 100%; height: 100%; border-radius: 9999px; }
-
-        .brand-titles {
-            display: flex;
-            flex-direction: column;
-        }
-        .sys-tag {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--primary);
-        }
-        .brand-titles h1 {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--ink);
-            line-height: 1.2;
-            letter-spacing: 0;
-        }
-
-        .top-nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Botões BMW: 0px corner radius, 700 weight, 14px, 0.5px letter-spacing */
-        .btn-bmw-primary {
-            background-color: var(--primary);
-            color: var(--on-primary);
-            border: none;
-            height: 44px;
-            padding: 0 24px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-bmw-primary:hover, .btn-bmw-primary:active {
-            background-color: var(--primary-active);
-        }
-        .btn-bmw-primary:disabled {
-            background-color: var(--primary-disabled);
-            color: var(--muted);
-            cursor: not-allowed;
-        }
-
-        .btn-bmw-secondary {
-            background-color: var(--canvas);
-            color: var(--ink);
-            border: 1px solid var(--hairline-strong);
-            height: 40px;
-            padding: 0 18px;
             font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            cursor: pointer;
+            font-weight: 400;
+            line-height: 1.0;
+            letter-spacing: -0.12px;
+        }
+
+        .global-nav-left, .global-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-brand-pill {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            color: var(--on-dark);
+            font-weight: 600;
         }
-        .btn-bmw-secondary:hover {
-            border-color: var(--ink);
-            background-color: var(--surface-soft);
+
+        .nav-item-quiet {
+            color: var(--body-muted);
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-size: 12px;
+            letter-spacing: -0.12px;
+            transition: color 0.15s;
+        }
+        .nav-item-quiet:hover {
+            color: var(--on-dark);
         }
 
         /* ==========================================================================
-           2. M-STRIPE DIVIDER (4px Tricolor Stripe) + DARK NAVY HERO KPI BAND
+           2. SUB-NAV FROSTED (52px Parchment 80% + Backdrop Blur)
            ========================================================================== */
-        .m-stripe-divider {
-            height: 4px;
-            width: 100%;
-            background: linear-gradient(90deg, var(--m-blue-light) 0%, var(--m-blue-light) 33.3%, var(--m-blue-dark) 33.3%, var(--m-blue-dark) 66.6%, var(--m-red) 66.6%, var(--m-red) 100%);
+        .sub-nav-frosted {
+            height: 52px;
+            background-color: rgba(245, 245, 247, 0.82);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
             flex-shrink: 0;
+            z-index: 10;
+        }
+        [data-theme="dark"] .sub-nav-frosted {
+            background-color: rgba(29, 29, 31, 0.82);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .hero-band-dark {
-            background-color: var(--surface-dark);
+        .sub-nav-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 9999px;
+            background: #ffffff;
+            border: 1px solid var(--hairline);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .logo-circle svg { width: 100%; height: 100%; border-radius: 9999px; }
+
+        .sub-nav-title h1 {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+            font-size: 21px;
+            font-weight: 600;
+            line-height: 1.19;
+            letter-spacing: 0.231px;
+            color: var(--ink);
+        }
+
+        .sub-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* ==========================================================================
+           BOTÕES APPLE ({rounded.pill}, {rounded.sm}, {rounded.md}, scale(0.95) active)
+           ========================================================================== */
+        .btn-primary-pill {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            border: none;
+            border-radius: 9999px;
+            padding: 11px 22px;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -0.224px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: transform 0.12s ease, opacity 0.15s;
+        }
+        .btn-primary-pill:hover { opacity: 0.92; }
+        .btn-primary-pill:active { transform: scale(0.95); }
+        .btn-primary-pill:focus-visible { outline: 2px solid var(--primary-focus); outline-offset: 2px; }
+        .btn-primary-pill:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-secondary-pill {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 9999px;
+            padding: 7px 16px;
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: -0.224px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: transform 0.12s ease, background-color 0.15s;
+        }
+        .btn-secondary-pill:hover { background-color: rgba(0, 102, 204, 0.06); }
+        .btn-secondary-pill:active { transform: scale(0.95); }
+
+        .btn-dark-utility {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.29;
+            letter-spacing: -0.224px;
+            cursor: pointer;
+            transition: transform 0.12s ease;
+        }
+        .btn-dark-utility:active { transform: scale(0.95); }
+
+        .btn-pearl-capsule {
+            background-color: var(--surface-pearl);
+            color: var(--ink-muted-80);
+            border: 2px solid var(--divider-soft);
+            border-radius: 11px;
+            padding: 7px 14px;
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: -0.224px;
+            cursor: pointer;
+            transition: transform 0.12s ease;
+        }
+        .btn-pearl-capsule:active { transform: scale(0.95); }
+
+        /* ==========================================================================
+           3. DARK PRODUCT TILE STRIP (#272729 — Métricas & Timer de Ronda 1h)
+           ========================================================================== */
+        .dark-tile-strip {
+            background-color: var(--surface-tile-1);
             color: var(--on-dark);
             padding: 12px 24px;
             display: flex;
@@ -222,152 +269,136 @@
             flex-shrink: 0;
         }
 
-        .hero-kpis {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(130px, 1fr));
-            gap: 12px;
-            flex: 1;
-            max-width: 780px;
+        .kpi-strip-group {
+            display: flex;
+            align-items: center;
+            gap: 28px;
         }
 
-        /* Spec Cell BMW inside Dark Hero */
-        .spec-cell-dark {
-            background-color: var(--surface-dark-elevated);
-            border-left: 3px solid var(--primary);
-            padding: 8px 16px;
+        .apple-metric {
             display: flex;
             flex-direction: column;
         }
-        .spec-cell-dark.spec-ok { border-left-color: var(--success); }
-        .spec-cell-dark.spec-fail { border-left-color: var(--error); }
-        .spec-cell-dark.spec-rate { border-left-color: var(--m-blue-light); }
-
-        .spec-val {
+        .apple-metric-val {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 600;
             line-height: 1.1;
+            letter-spacing: -0.28px;
             color: var(--on-dark);
         }
-        .spec-label {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--on-dark-soft);
-            margin-top: 2px;
+        .apple-metric-label {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--body-muted);
+            letter-spacing: -0.12px;
         }
 
-        /* Timer Widget on Dark Hero Band */
-        .hero-timer-box {
-            background-color: var(--surface-dark-elevated);
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 8px 16px;
+        /* Timer Pill on Dark Tile (#2a2a2c) */
+        .timer-tile-pill {
+            background-color: var(--surface-tile-2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            padding: 6px 8px 6px 18px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
-        .hero-timer-Box-alarm {
-            border-color: var(--error);
-            background-color: rgba(220, 38, 38, 0.25);
+        .timer-tile-pill.alarm-active {
+            border-color: #ff453a;
+            background-color: rgba(255, 69, 58, 0.2);
         }
-        .timer-clock-val {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 22px;
-            font-weight: 700;
+        .timer-clock-mono {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 18px;
+            font-weight: 600;
             color: var(--on-dark);
         }
-        .btn-secondary-on-dark {
-            background-color: transparent;
-            color: var(--on-dark);
-            border: 1px solid var(--on-dark);
-            height: 34px;
-            padding: 0 14px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+        .link-on-dark {
+            color: var(--primary-on-dark);
+            background: transparent;
+            border: none;
+            font-size: 13px;
+            font-weight: 400;
             cursor: pointer;
         }
-        .btn-secondary-on-dark:hover {
-            background-color: var(--primary);
-            border-color: var(--primary);
-        }
+        .link-on-dark:hover { text-decoration: underline; }
 
         /* ==========================================================================
-           3. WORKSPACE PRINCIPAL (LIGHT CANVAS #FFFFFF + HAIRLINE DIVIDERS)
+           4. WORKSPACE (STORE UTILITY CARDS — {rounded.lg} 18px, 1px #e0e0e0)
            ========================================================================== */
         .workspace {
             flex: 1;
             display: grid;
-            grid-template-columns: 440px 1fr;
-            gap: 24px;
-            padding: 20px 24px;
+            grid-template-columns: 420px 1fr;
+            gap: 20px;
+            padding: 18px 24px;
             overflow: hidden;
-            max-width: 1600px;
+            max-width: 1560px;
             width: 100%;
             margin: 0 auto;
         }
 
-        .bmw-card {
+        .store-utility-card {
             background-color: var(--canvas);
             border: 1px solid var(--hairline);
+            border-radius: 18px; /* {rounded.lg} */
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        .bmw-card-header {
-            background-color: var(--surface-card);
-            border-bottom: 1px solid var(--hairline);
-            padding: 14px 20px;
+        .card-header-apple {
+            padding: 16px 24px 12px 24px;
+            border-bottom: 1px solid var(--divider-soft);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .bmw-card-title {
-            font-size: 16px;
-            font-weight: 700;
+        .card-header-apple h2 {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: -0.24px;
             color: var(--ink);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .form-body {
-            padding: 18px 20px;
+            padding: 16px 24px 24px 24px;
             overflow-y: auto;
             flex: 1;
         }
 
-        /* Upload PDF Plate (Surface Card #fafafa) */
-        .upload-plate {
-            background-color: var(--surface-card);
-            border: 1px solid var(--hairline-strong);
-            border-left: 4px solid var(--primary);
-            padding: 14px;
+        /* Upload Box */
+        .upload-zone-apple {
+            background-color: var(--canvas-parchment);
+            border-radius: 14px;
+            padding: 14px 16px;
             margin-bottom: 16px;
         }
-        .upload-plate-title {
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--primary);
+        .upload-zone-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink);
             display: block;
             margin-bottom: 6px;
         }
-        .upload-plate-desc {
-            font-size: 13px;
-            font-weight: 300;
-            color: var(--muted);
+        .upload-zone-caption {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--ink-muted-48);
             margin-top: 6px;
+            line-height: 1.35;
         }
 
         .ocr-progress {
             width: 100%;
             height: 4px;
-            background: var(--surface-strong);
+            background: var(--hairline);
+            border-radius: 9999px;
             margin-top: 8px;
+            overflow: hidden;
             display: none;
         }
         .ocr-progress-bar {
@@ -377,354 +408,362 @@
             transition: width 0.2s;
         }
 
-        /* Configurator Option Tiles (Seletor de Bitola 0px radius, 2px primary border quando ativo) */
-        .bitola-selector {
+        /* Configurator Option Chips ({rounded.pill}, 2px #0071e3 quando selecionado) */
+        .bitola-chips-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             gap: 6px;
         }
-        .configurator-tile {
+        .configurator-option-chip {
             background-color: var(--canvas);
-            border: 1px solid var(--hairline-strong);
             color: var(--ink);
-            height: 40px;
+            border: 1px solid var(--hairline);
+            border-radius: 9999px;
+            padding: 8px 4px;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 400;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            text-align: center;
+            transition: border-color 0.15s;
         }
-        .configurator-tile.selected {
-            border: 2px solid var(--primary);
-            background-color: var(--surface-card);
+        .configurator-option-chip.selected {
+            border: 2px solid var(--primary-focus);
+            font-weight: 600;
             color: var(--primary);
         }
 
-        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
         .field-group { margin-bottom: 12px; }
         .field-group label {
             display: block;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--ink);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: -0.12px;
+            color: var(--ink-muted-80);
             margin-bottom: 4px;
         }
 
-        /* Text Input BMW: 0px radius, 1px hairline border, focus thickens to ink */
         input[type="date"], input[type="text"], input[type="number"], select {
             width: 100%;
-            height: 40px;
+            height: 38px;
             padding: 0 12px;
             background-color: var(--canvas);
-            border: 1px solid var(--hairline-strong);
+            border: 1px solid var(--hairline);
+            border-radius: 10px;
             color: var(--ink);
             font-size: 14px;
             font-weight: 400;
             outline: none;
         }
         input:focus, select:focus {
-            border: 2px solid var(--ink);
+            border: 2px solid var(--primary-focus);
         }
         .auto-filled {
-            border: 2px solid var(--primary) !important;
+            border: 2px solid var(--primary-focus) !important;
         }
 
-        .status-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .status-tile {
+        .status-pills { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .status-chip {
             background-color: var(--canvas);
-            border: 1px solid var(--hairline-strong);
-            color: var(--muted);
-            height: 42px;
+            border: 1px solid var(--hairline);
+            border-radius: 9999px;
+            height: 38px;
             font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--ink-muted-48);
             cursor: pointer;
         }
-        .status-tile.active-ok {
+        .status-chip.active-ok {
             border: 2px solid var(--success);
-            color: var(--ink);
-            background-color: rgba(34, 197, 94, 0.08);
+            color: var(--success);
         }
-        .status-tile.active-fail {
+        .status-chip.active-fail {
             border: 2px solid var(--error);
             color: var(--error);
-            background-color: rgba(220, 38, 38, 0.08);
         }
 
         /* ==========================================================================
-           4. CATEGORY TABS BMW (UPPERCASE 13px / 700 / 1.5px tracking + 2px ink underline)
+           5. CHIPS DE NAVEGAÇÃO & TABELA LIMPA
            ========================================================================== */
-        .category-tabs-bar {
+        .tabs-row-apple {
             display: flex;
-            background-color: var(--surface-soft);
-            border-bottom: 1px solid var(--hairline);
-            padding: 0 20px;
-            gap: 20px;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--divider-soft);
             overflow-x: auto;
             flex-shrink: 0;
         }
 
-        .category-tab {
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            color: var(--muted);
-            padding: 14px 4px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
+        .tab-pill {
+            background-color: var(--canvas-parchment);
+            color: var(--ink-muted-80);
+            border: 1px solid transparent;
+            border-radius: 9999px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: -0.224px;
             cursor: pointer;
             white-space: nowrap;
         }
-        .category-tab:hover {
-            color: var(--ink);
+        .tab-pill:hover {
+            border-color: var(--hairline);
         }
-        .category-tab.active {
-            color: var(--ink);
-            border-bottom: 3px solid var(--primary);
+        .tab-pill.active {
+            background-color: var(--ink);
+            color: var(--canvas);
+            font-weight: 600;
         }
-        .category-tab.tab-right {
-            margin-left: auto;
+        .tab-pill.tab-accent {
             color: var(--primary);
+            background-color: rgba(0, 102, 204, 0.08);
+        }
+        .tab-pill.tab-accent.active {
+            background-color: var(--primary);
+            color: #ffffff;
         }
 
-        /* Filter Chips Bar */
-        .toolbar-filtros {
-            padding: 12px 20px;
-            background-color: var(--canvas);
-            border-bottom: 1px solid var(--hairline);
+        .filter-bar-apple {
+            padding: 10px 24px;
+            border-bottom: 1px solid var(--divider-soft);
             display: flex;
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
         }
-        .filter-group { display: flex; align-items: center; gap: 8px; }
-        .filter-group label {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
-        .filter-group input, .filter-group select { height: 36px; width: auto; font-size: 13px; }
 
-        /* ==========================================================================
-           5. TABELA DE DADOS PADRÃO ABNT (CLEAN HAIRLINE GRID)
-           ========================================================================== */
-        .table-container { flex: 1; overflow: auto; background-color: var(--canvas); }
+        .search-pill-input {
+            height: 36px !important;
+            border-radius: 9999px !important;
+            padding: 0 16px !important;
+            width: 190px !important;
+            font-size: 13px !important;
+        }
+
+        .table-container { flex: 1; overflow: auto; }
         table.data-table { width: 100%; border-collapse: collapse; text-align: center; }
         table.data-table thead th {
             position: sticky;
             top: 0;
-            background-color: var(--surface-soft);
-            color: var(--ink);
+            background-color: var(--canvas);
+            color: var(--ink-muted-48);
             font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 12px 8px;
-            border-bottom: 1px solid var(--hairline-strong);
+            font-weight: 600;
+            letter-spacing: -0.08px;
+            padding: 10px 8px;
+            border-bottom: 1px solid var(--hairline);
             z-index: 2;
         }
         table.data-table tbody tr {
-            border-bottom: 1px solid var(--hairline);
+            border-bottom: 1px solid var(--divider-soft);
         }
         table.data-table tbody tr:hover {
-            background-color: var(--surface-card);
+            background-color: var(--canvas-parchment);
         }
         table.data-table td {
             padding: 10px 8px;
             font-size: 13px;
             font-weight: 400;
-            color: var(--body-strong);
-        }
-
-        .badge-aba {
-            background-color: var(--surface-strong);
             color: var(--ink);
-            padding: 3px 8px;
-            font-size: 11px;
-            font-weight: 700;
+            font-variant-numeric: tabular-nums;
         }
 
-        .badge-sim {
-            background-color: rgba(34, 197, 94, 0.12);
-            color: #15803d;
-            border: 1px solid var(--success);
-            padding: 3px 8px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+        .badge-bitola-soft {
+            background-color: var(--canvas-parchment);
+            color: var(--ink);
+            border-radius: 9999px;
+            padding: 3px 10px;
+            font-size: 12px;
+            font-weight: 600;
         }
-        .badge-nao {
-            background-color: rgba(220, 38, 38, 0.12);
+
+        .status-dot-ok {
+            color: var(--success);
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .status-dot-fail {
             color: var(--error);
-            border: 1px solid var(--error);
-            padding: 3px 8px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            font-weight: 600;
+            font-size: 12px;
         }
 
-        /* Inline Uppercase Link ("LEARN MORE ›" BMW Style) */
-        .btn-link-bmw {
+        .text-link-action {
             background: transparent;
-            border: 1px solid var(--primary);
+            border: none;
             color: var(--primary);
-            padding: 4px 10px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 400;
             cursor: pointer;
         }
-        .btn-link-bmw:hover {
-            background-color: var(--primary);
-            color: var(--on-primary);
+        .text-link-action:hover { text-decoration: underline; }
+
+        /* Visão Gráficos CEP & Rondas */
+        .graficos-view { display: none; flex: 1; padding: 24px; overflow-y: auto; gap: 20px; flex-direction: column; }
+        .cep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .cep-card { background: var(--canvas-parchment); border-radius: 14px; padding: 18px; }
+        .cep-card h4 { font-size: 15px; font-weight: 600; letter-spacing: -0.224px; color: var(--ink); margin-bottom: 12px; }
+
+        .ronda-view { display: none; flex: 1; padding: 24px; overflow-y: auto; gap: 20px; grid-template-columns: 340px 1fr; }
+        .ronda-dark-card {
+            background-color: var(--surface-tile-1);
+            color: var(--on-dark);
+            border-radius: 18px;
+            padding: 28px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-
-        /* Painel Gráficos CEP & Rondas */
-        .graficos-view { display: none; flex: 1; padding: 24px; overflow-y: auto; gap: 24px; flex-direction: column; }
-        .cep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .chart-card { background: var(--surface-card); border: 1px solid var(--hairline); padding: 20px; }
-        .chart-card h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ink); margin-bottom: 12px; }
-
-        .ronda-view { display: none; flex: 1; padding: 24px; overflow-y: auto; gap: 24px; grid-template-columns: 380px 1fr; }
-        .ronda-card-main { background: var(--surface-dark); color: var(--on-dark); padding: 32px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .ronda-big-clock { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 700; color: var(--on-dark); margin: 16px 0; }
+        .ronda-big-clock {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 52px;
+            font-weight: 600;
+            margin: 14px 0;
+            color: var(--on-dark);
+        }
 
         /* Modais */
-        .pdf-modal-overlay, .alarm-modal-overlay {
-            position: fixed; inset: 0; background: rgba(26, 33, 41, 0.85); z-index: 9990;
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px); z-index: 9990;
             display: none; align-items: center; justify-content: center; padding: 24px;
         }
-        .pdf-modal-box {
-            background: var(--canvas); border: 2px solid var(--primary);
-            width: 90vw; max-width: 1200px; height: 86vh; display: flex; flex-direction: column;
+        .modal-card {
+            background: var(--canvas); border-radius: 18px; border: 1px solid var(--hairline);
+            width: 90vw; max-width: 1150px; height: 86vh; display: flex; flex-direction: column; overflow: hidden;
         }
-        .pdf-modal-header { background: var(--surface-dark); color: #fff; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
-        .pdf-modal-body { flex: 1; background: #1a2129; }
-        .pdf-modal-body iframe { width: 100%; height: 100%; border: none; }
+        .modal-header {
+            padding: 14px 24px; border-bottom: 1px solid var(--hairline);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .modal-body { flex: 1; background: var(--surface-tile-3); }
+        .modal-body iframe { width: 100%; height: 100%; border: none; }
 
-        .alarm-box {
-            background: var(--canvas); border-top: 6px solid var(--m-red); border: 1px solid var(--hairline-strong);
-            max-width: 500px; width: 100%; padding: 32px; text-align: center;
+        .alarm-card {
+            background: var(--canvas); border-radius: 18px; max-width: 460px; width: 100%; padding: 32px; text-align: center;
         }
 
-        #toast-box { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-        .toast-item { background: var(--surface-dark); color: #fff; border-left: 4px solid var(--primary); padding: 14px 20px; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; }
+        #toast-box { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+        .toast-pill {
+            background: var(--surface-tile-1); color: var(--on-dark);
+            border-radius: 9999px; padding: 10px 20px; font-size: 13px; font-weight: 400;
+        }
     </style>
 </head>
 <body>
 
-    <!-- 1. TOP NAVIGATION (BMW White Bar 64px) -->
-    <header class="top-nav">
-        <div class="brand-section">
-            <div class="logo-box">
+    <!-- 1. GLOBAL NAV (44px Pure Black) -->
+    <nav class="global-nav">
+        <div class="global-nav-left">
+            <span class="nav-brand-pill">Grande Aço · Laboratório CA-60</span>
+            <button type="button" class="nav-item-quiet" onclick="ativarAba('TODAS')">Ensaios</button>
+            <button type="button" class="nav-item-quiet" onclick="ativarAba('GRAFICOS')">Análise CEP</button>
+            <button type="button" class="nav-item-quiet" onclick="ativarAba('RONDA')">Ronda 1h</button>
+            <button type="button" class="nav-item-quiet" id="btn-gerar-certificado">Certificado OP</button>
+        </div>
+        <div class="global-nav-right">
+            <button type="button" class="nav-item-quiet" id="btn-whatsapp">Copiar Resumo WhatsApp</button>
+            <button type="button" class="nav-item-quiet" id="btn-exportar">Exportar CSV</button>
+            <button type="button" class="nav-item-quiet" id="btn-theme">Alternar Tema</button>
+        </div>
+    </nav>
+
+    <!-- 2. SUB-NAV FROSTED (52px Parchment 80% + Blur) -->
+    <header class="sub-nav-frosted">
+        <div class="sub-nav-title">
+            <div class="logo-circle">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#1c69d4" stroke-width="8"/>
-                    <text x="34" y="80" font-family="'Inter', sans-serif" font-weight="700" font-size="48" fill="#1c69d4" letter-spacing="-3">GA</text>
-                    <text x="34" y="112" font-family="'Inter', sans-serif" font-weight="700" font-size="28" fill="#1a2129">GRANDE</text>
-                    <text x="36" y="144" font-family="'Inter', sans-serif" font-weight="700" font-size="30" fill="#1a2129">AÇO</text>
-                    <text x="112" y="131" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="9" fill="#1a2129">INDÚSTRIA</text>
-                    <text x="112" y="143" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="9" fill="#1a2129">DE AÇO</text>
+                    <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#0066cc" stroke-width="8"/>
+                    <text x="34" y="80" font-family="Inter, sans-serif" font-weight="700" font-size="48" fill="#0066cc" letter-spacing="-3">GA</text>
+                    <text x="34" y="112" font-family="Inter, sans-serif" font-weight="700" font-size="28" fill="#1d1d1f">GRANDE</text>
+                    <text x="36" y="144" font-family="Inter, sans-serif" font-weight="700" font-size="30" fill="#1d1d1f">AÇO</text>
+                    <text x="112" y="131" font-family="JetBrains Mono, monospace" font-weight="600" font-size="9" fill="#1d1d1f">INDÚSTRIA</text>
+                    <text x="112" y="143" font-family="JetBrains Mono, monospace" font-weight="600" font-size="9" fill="#1d1d1f">DE AÇO</text>
                 </svg>
             </div>
-            <div class="brand-titles">
-                <span class="sys-tag">ABNT NBR 7480 // LABORATÓRIO DE ENSAIO DE TRAÇÃO</span>
-                <h1>CONTROLE DE QUALIDADE CA-60</h1>
-            </div>
+            <h1>Controle de Tração CA-60</h1>
         </div>
 
-        <div class="top-nav-actions">
-            <button type="button" class="btn-bmw-secondary" id="btn-gerar-certificado">📜 CERTIFICADO OP</button>
-            <button type="button" class="btn-bmw-secondary" id="btn-whatsapp">📲 RESUMO WHATSAPP</button>
-            <button type="button" class="btn-bmw-secondary" id="btn-exportar">📥 EXPORTAR CSV</button>
-            <button type="button" class="btn-bmw-secondary" id="btn-theme">🌙 TEMA</button>
+        <div class="sub-nav-actions">
+            <button type="button" class="btn-secondary-pill" id="btn-recarregar">Sincronizar Planilha</button>
+            <button type="button" class="btn-primary-pill" onclick="document.getElementById('anexo').click()">Anexar Laudo PDF</button>
         </div>
     </header>
 
-    <!-- DIVISOR TRICOLOR M (4px) -->
-    <div class="m-stripe-divider"></div>
-
-    <!-- 2. HERO BAND DARK NAVY (#1a2129) COM KPIS E TIMER DE RONDA -->
-    <section class="hero-band-dark">
-        <div class="hero-kpis">
-            <div class="spec-cell-dark">
-                <span class="spec-val" id="kpi-total">0</span>
-                <span class="spec-label">AMOSTRAS EXIBIDAS</span>
+    <!-- 3. DARK TILE STRIP (#272729 — Indicadores & Timer de Ronda) -->
+    <section class="dark-tile-strip">
+        <div class="kpi-strip-group">
+            <div class="apple-metric">
+                <span class="apple-metric-val" id="kpi-total">0</span>
+                <span class="apple-metric-label">Amostras Exibidas</span>
             </div>
-            <div class="spec-cell-dark spec-ok">
-                <span class="spec-val" id="kpi-aprovados">0</span>
-                <span class="spec-label">APROVADOS (SIM)</span>
+            <div class="apple-metric">
+                <span class="apple-metric-val" id="kpi-aprovados" style="color:#30d158;">0</span>
+                <span class="apple-metric-label">Aprovados (Sim)</span>
             </div>
-            <div class="spec-cell-dark spec-fail">
-                <span class="spec-val" id="kpi-reprovados">0</span>
-                <span class="spec-label">REPROVADOS (NÃO)</span>
+            <div class="apple-metric">
+                <span class="apple-metric-val" id="kpi-reprovados" style="color:#ff453a;">0</span>
+                <span class="apple-metric-label">Reprovados (Não)</span>
             </div>
-            <div class="spec-cell-dark spec-rate">
-                <span class="spec-val" id="kpi-taxa">0%</span>
-                <span class="spec-label">ÍNDICE CONFORMIDADE</span>
+            <div class="apple-metric">
+                <span class="apple-metric-val" id="kpi-taxa" style="color:#2997ff;">0%</span>
+                <span class="apple-metric-label">Conformidade ABNT</span>
             </div>
         </div>
 
-        <div class="hero-timer-box" id="topbar-timer-widget">
-            <div style="cursor:pointer;" id="btn-abrir-aba-ronda">
-                <span class="spec-label" style="display:block;">⏱️ PRÓXIMA RONDA DE COLETA (1H)</span>
-                <span class="timer-clock-val" id="top-timer-display">60:00</span>
+        <div class="timer-tile-pill" id="topbar-timer-widget">
+            <div style="cursor:pointer;" onclick="ativarAba('RONDA')">
+                <span class="apple-metric-label" style="display:block;">Próxima Coleta (1h)</span>
+                <span class="timer-clock-mono" id="top-timer-display">60:00</span>
             </div>
-            <div style="display:flex; gap:8px;">
-                <button type="button" class="btn-secondary-on-dark" id="btn-top-coletar">✔ COLETADO</button>
-                <button type="button" class="btn-secondary-on-dark" id="btn-top-pausar">⏸</button>
-            </div>
+            <button type="button" class="btn-primary-pill" id="btn-top-coletar" style="padding:7px 16px; font-size:13px;">Coletado</button>
+            <button type="button" class="link-on-dark" id="btn-top-pausar" title="Pausar/Retomar">Pausar</button>
         </div>
     </section>
 
-    <!-- 3. WORKSPACE PRINCIPAL -->
+    <!-- 4. WORKSPACE (STORE UTILITY CARDS) -->
     <main class="workspace">
         
-        <!-- COLUNA ESQUERDA: CONFIGURADOR DE LANÇAMENTO ABNT -->
-        <section class="bmw-card">
-            <div class="bmw-card-header">
-                <span class="bmw-card-title">Lançamento de Ensaio CA-60</span>
-                <span style="font-size:11px; font-weight:700; letter-spacing:1px; color:var(--primary);">OCR + CLOUD</span>
+        <!-- CARTÃO ESQUERDO: LANÇAMENTO ABNT -->
+        <section class="store-utility-card">
+            <div class="card-header-apple">
+                <h2>Novo Ensaio ABNT</h2>
+                <span style="font-size:12px; color:var(--ink-muted-48);">NBR 7480</span>
             </div>
 
             <div class="form-body">
                 <form id="form-teste">
-                    <div class="upload-plate">
-                        <span class="upload-plate-title">1. LEITURA AUTOMÁTICA DE LAUDO PDF</span>
-                        <input type="file" id="anexo" accept=".pdf,image/*" style="width:100%; font-size:12px; height:auto; padding:6px;">
+                    <div class="upload-zone-apple">
+                        <span class="upload-zone-title">Leitura Automática de Relatório PDF</span>
+                        <input type="file" id="anexo" accept=".pdf,image/*" style="width:100%; font-size:12px; height:auto; border:none; background:transparent; padding:0;">
                         <div class="ocr-progress" id="ocr-progress"><div class="ocr-progress-bar" id="ocr-bar"></div></div>
-                        <p class="upload-plate-desc" id="status-leitura-pdf">
-                            Anexe o PDF escaneado para extrair Lote, Bitola, Rm, Rp, Alongamento e Massa Linear.
+                        <p class="upload-zone-caption" id="status-leitura-pdf">
+                            Selecione o PDF escaneado para preencher Lote, Bitola, Rm, Rp, Alongamento e Massa Linear.
                         </p>
-                        <button type="button" id="btn-preview-form" class="btn-link-bmw" style="display:none; margin-top:8px;">VISUALIZAR PDF ANEXADO ›</button>
+                        <button type="button" id="btn-preview-form" class="text-link-action" style="display:none; margin-top:6px;">Visualizar PDF anexado ›</button>
                     </div>
 
                     <div class="field-group">
-                        <label>Bitola Nominal (Aba de Destino na Planilha):</label>
+                        <label>Bitola Nominal (Aba da Planilha)</label>
                         <input type="hidden" id="bitola-nominal" value="4.2" required>
-                        <div class="bitola-selector">
-                            <button type="button" class="configurator-tile" data-val="3.4">3,4</button>
-                            <button type="button" class="configurator-tile" data-val="3.8">3,8</button>
-                            <button type="button" class="configurator-tile selected" data-val="4.2">4,2</button>
-                            <button type="button" class="configurator-tile" data-val="4.6">4,6</button>
-                            <button type="button" class="configurator-tile" data-val="5.0">5,0</button>
-                            <button type="button" class="configurator-tile" data-val="6.0">6,0</button>
+                        <div class="bitola-chips-grid">
+                            <button type="button" class="configurator-option-chip" data-val="3.4">3,4</button>
+                            <button type="button" class="configurator-option-chip" data-val="3.8">3,8</button>
+                            <button type="button" class="configurator-option-chip selected" data-val="4.2">4,2</button>
+                            <button type="button" class="configurator-option-chip" data-val="4.6">4,6</button>
+                            <button type="button" class="configurator-option-chip" data-val="5.0">5,0</button>
+                            <button type="button" class="configurator-option-chip" data-val="6.0">6,0</button>
                         </div>
                     </div>
 
                     <div class="form-grid-3">
                         <div class="field-group">
-                            <label for="tipo-prova">Tipo de Ensaio:</label>
+                            <label for="tipo-prova">Tipo</label>
                             <select id="tipo-prova">
                                 <option value="PROVA">PROVA</option>
                                 <option value="CONTRA PROVA">CONTRA PROVA</option>
@@ -732,50 +771,50 @@
                             </select>
                         </div>
                         <div class="field-group">
-                            <label for="lote">Lote / OP:</label>
-                            <input type="text" id="lote" placeholder="Ex: OP150" required>
+                            <label for="lote">Lote / OP</label>
+                            <input type="text" id="lote" placeholder="OP150" required>
                         </div>
                         <div class="field-group">
-                            <label for="data">Data:</label>
+                            <label for="data">Data</label>
                             <input type="date" id="data" required>
                         </div>
                     </div>
 
                     <div class="form-grid-3">
                         <div class="field-group">
-                            <label for="bitola-real">Size / Bitola (mm):</label>
-                            <input type="number" step="0.01" id="bitola-real" placeholder="Ex: 3.76" required>
+                            <label for="bitola-real">Bitola Real (mm)</label>
+                            <input type="number" step="0.01" id="bitola-real" placeholder="3.76" required>
                         </div>
                         <div class="field-group">
-                            <label for="massa-linear">Massa (g/mm):</label>
-                            <input type="number" step="0.001" id="massa-linear" placeholder="Ex: 0.088" required>
+                            <label for="massa-linear">Massa (g/mm)</label>
+                            <input type="number" step="0.001" id="massa-linear" placeholder="0.088" required>
                         </div>
                         <div class="field-group">
-                            <label for="alongamento">A(%) Along.:</label>
-                            <input type="number" step="0.1" id="alongamento" placeholder="Ex: 9.5" required>
-                        </div>
-                    </div>
-
-                    <div id="massa-feedback" style="font-size:11px; margin-bottom:10px; font-weight:700;"></div>
-
-                    <div class="form-grid-3">
-                        <div class="field-group">
-                            <label for="lr">Rm / LR (MPa):</label>
-                            <input type="number" step="1" id="lr" placeholder="Ex: 788" required>
-                        </div>
-                        <div class="field-group">
-                            <label for="le">Rp / LE (MPa):</label>
-                            <input type="number" step="1" id="le" placeholder="Ex: 704" required>
-                        </div>
-                        <div class="field-group">
-                            <label for="relacao">Relação LR/LE:</label>
-                            <input type="number" step="0.0001" id="relacao" placeholder="Auto" readonly style="color:var(--primary); font-weight:700;">
+                            <label for="alongamento">Alongamento (%)</label>
+                            <input type="number" step="0.1" id="alongamento" placeholder="9.5" required>
                         </div>
                     </div>
 
+                    <div id="massa-feedback" style="font-size:12px; margin-bottom:10px;"></div>
+
                     <div class="form-grid-3">
                         <div class="field-group">
-                            <label for="maquina">Máquina:</label>
+                            <label for="lr">Rm / LR (MPa)</label>
+                            <input type="number" step="1" id="lr" placeholder="788" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="le">Rp / LE (MPa)</label>
+                            <input type="number" step="1" id="le" placeholder="704" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="relacao">Relação LR/LE</label>
+                            <input type="number" step="0.0001" id="relacao" placeholder="Auto" readonly style="color:var(--primary); font-weight:600;">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-3">
+                        <div class="field-group">
+                            <label for="maquina">Máquina</label>
                             <select id="maquina">
                                 <option value="MAQ-01">Máquina 01</option>
                                 <option value="MAQ-02">Máquina 02</option>
@@ -785,63 +824,57 @@
                             </select>
                         </div>
                         <div class="field-group">
-                            <label for="dobramento">Dobramento:</label>
+                            <label for="dobramento">Dobramento</label>
                             <input type="text" id="dobramento" value="OK">
                         </div>
                         <div class="field-group">
-                            <label for="operador">Responsável:</label>
-                            <input type="text" id="operador" placeholder="Ex: FLÁVIO" required>
+                            <label for="operador">Responsável</label>
+                            <input type="text" id="operador" placeholder="FLÁVIO" required>
                         </div>
                     </div>
 
                     <div class="field-group">
-                        <label>Laudo ABNT (LE ≥ 600 MPa | LR/LE ≥ 1.05 | Along ≥ 5%):</label>
+                        <label>Laudo ABNT (LE ≥ 600 MPa · LR/LE ≥ 1.05 · Along ≥ 5%)</label>
                         <input type="hidden" id="status" value="aprovado" required>
-                        <div class="status-selector">
-                            <button type="button" class="status-tile active-ok" id="btn-status-ok">✔ SIM (APROVADO)</button>
-                            <button type="button" class="status-tile" id="btn-status-fail">✖ NÃO (REPROVADO)</button>
+                        <div class="status-pills">
+                            <button type="button" class="status-chip active-ok" id="btn-status-ok">Aprovado (Sim)</button>
+                            <button type="button" class="status-chip" id="btn-status-fail">Reprovado (Não)</button>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-bmw-primary" id="btn-submit" style="width:100%; margin-top:6px;">
-                        REGISTRAR ENSAIO NA PLANILHA ABNT ›
+                    <button type="submit" class="btn-primary-pill" id="btn-submit" style="width:100%; margin-top:4px; padding:13px 22px; font-size:15px;">
+                        Lançar na Planilha e Salvar PDF
                     </button>
                 </form>
             </div>
         </section>
 
-        <!-- COLUNA DIREITA: ESPELHO DA PLANILHA + GRÁFICOS CEP + RONDAS -->
-        <section class="bmw-card">
-            <div class="bmw-card-header">
-                <span class="bmw-card-title" id="panel-main-title">Base de Dados ABNT NBR 7480 — Grande Aço</span>
-                <button type="button" class="btn-bmw-secondary" id="btn-recarregar" style="height:34px;">🔄 SINCRONIZAR PLANILHA</button>
+        <!-- CARTÃO DIREITO: REGISTROS, GRÁFICOS CEP E RONDA -->
+        <section class="store-utility-card">
+            <div class="card-header-apple">
+                <h2 id="panel-main-title">Registros de Ensaios — Todas as Bitolas</h2>
+                <span style="font-size:12px; color:var(--ink-muted-48);" id="contador-subtitulo">Sincronizado</span>
             </div>
 
-            <!-- CATEGORY TABS BMW -->
-            <div class="category-tabs-bar" id="abas-bitola">
-                <button type="button" class="category-tab active" data-aba="TODAS">TODAS AS BITOLAS</button>
-                <button type="button" class="category-tab" data-aba="3.4">BITOLA 3,4</button>
-                <button type="button" class="category-tab" data-aba="3.8">BITOLA 3,8</button>
-                <button type="button" class="category-tab" data-aba="4.2">BITOLA 4,2</button>
-                <button type="button" class="category-tab" data-aba="4.6">BITOLA 4,6</button>
-                <button type="button" class="category-tab" data-aba="5.0">BITOLA 5,0</button>
-                <button type="button" class="category-tab" data-aba="6.0">BITOLA 6,0</button>
-                <button type="button" class="category-tab tab-right" data-aba="GRAFICOS" id="tab-btn-graficos">📊 GRÁFICOS CEP</button>
-                <button type="button" class="category-tab" data-aba="RONDA" id="tab-btn-ronda">⏱️ RONDA 1H</button>
+            <!-- PÍLULAS DE FILTRO POR ABA -->
+            <div class="tabs-row-apple" id="abas-bitola">
+                <button type="button" class="tab-pill active" data-aba="TODAS">Todas</button>
+                <button type="button" class="tab-pill" data-aba="3.4">3,4 mm</button>
+                <button type="button" class="tab-pill" data-aba="3.8">3,8 mm</button>
+                <button type="button" class="tab-pill" data-aba="4.2">4,2 mm</button>
+                <button type="button" class="tab-pill" data-aba="4.6">4,6 mm</button>
+                <button type="button" class="tab-pill" data-aba="5.0">5,0 mm</button>
+                <button type="button" class="tab-pill" data-aba="6.0">6,0 mm</button>
+                <button type="button" class="tab-pill tab-accent" data-aba="GRAFICOS" style="margin-left:auto;">Gráficos CEP</button>
+                <button type="button" class="tab-pill tab-accent" data-aba="RONDA">Ronda 1h</button>
             </div>
 
             <!-- VISÃO 1: TABELA DE ENSAIOS -->
             <div id="container-tabela-abnt" style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
-                <div class="toolbar-filtros">
-                    <div class="filter-group">
-                        <label>DATA:</label>
-                        <input type="date" id="filtro-data">
-                    </div>
-                    <div class="filter-group">
-                        <label>LOTE / OP:</label>
-                        <input type="text" id="filtro-lote" placeholder="Pesquisar OP...">
-                    </div>
-                    <button type="button" class="btn-bmw-secondary" id="btn-limpar-filtro" style="height:36px;">LIMPAR FILTROS</button>
+                <div class="filter-bar-apple">
+                    <input type="date" id="filtro-data" class="search-pill-input" title="Filtrar por data">
+                    <input type="text" id="filtro-lote" class="search-pill-input" placeholder="Buscar Lote / OP...">
+                    <button type="button" class="btn-pearl-capsule" id="btn-limpar-filtro">Limpar</button>
                 </div>
 
                 <div class="table-container">
@@ -849,9 +882,9 @@
                         <thead>
                             <tr>
                                 <th>Aba</th>
-                                <th>Amostra</th>
+                                <th>Nº</th>
                                 <th>Tipo</th>
-                                <th>LOTE</th>
+                                <th>Lote / OP</th>
                                 <th>Data</th>
                                 <th>Bitola Real</th>
                                 <th>Massa Lin.</th>
@@ -860,14 +893,14 @@
                                 <th>Along.</th>
                                 <th>LR/LE</th>
                                 <th>Obs / Máq.</th>
-                                <th>Aprov.</th>
+                                <th>Laudo</th>
                                 <th>Resp.</th>
-                                <th>Laudo PDF</th>
-                                <th>Excluir</th>
+                                <th>PDF</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="tabela-corpo">
-                            <tr><td colspan="16" style="padding:48px; color:var(--muted);">Sincronizando registros com a Planilha Google...</td></tr>
+                            <tr><td colspan="16" style="padding:48px; color:var(--ink-muted-48);">A carregar dados da folha de cálculo...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -876,49 +909,48 @@
             <!-- VISÃO 2: GRÁFICOS CEP EM SVG -->
             <div class="graficos-view" id="container-graficos-view">
                 <div class="cep-grid">
-                    <div class="chart-card">
+                    <div class="cep-card">
                         <h4>Evolução LE — Limite de Escoamento (Mínimo ABNT: 600 MPa)</h4>
-                        <div id="svg-chart-le" style="width:100%; height:220px;"></div>
+                        <div id="svg-chart-le" style="width:100%; height:210px;"></div>
                     </div>
-                    <div class="chart-card">
+                    <div class="cep-card">
                         <h4>Evolução LR — Limite de Resistência (MPa)</h4>
-                        <div id="svg-chart-lr" style="width:100%; height:220px;"></div>
+                        <div id="svg-chart-lr" style="width:100%; height:210px;"></div>
                     </div>
                 </div>
-                <div class="chart-card">
+                <div class="cep-card">
                     <h4>Médias Mecânicas por Bitola Nominal</h4>
-                    <div id="cep-resumo-bitolas" style="margin-top:12px;"></div>
+                    <div id="cep-resumo-bitolas" style="margin-top:10px;"></div>
                 </div>
             </div>
 
             <!-- VISÃO 3: PAINEL DE RONDA DE COLETA (1 EM 1 HORA) -->
             <div class="ronda-view" id="container-ronda-view">
-                <div class="ronda-card-main">
-                    <span class="sys-tag" style="color:var(--on-dark-soft);">TEMPORIZADOR DE LABORATÓRIO</span>
-                    <h3 style="font-size:20px; font-weight:700; margin-top:6px;">PRÓXIMA COLETA NA PRODUÇÃO</h3>
+                <div class="ronda-dark-card">
+                    <span style="font-size:12px; color:var(--body-muted);">Temporizador de Produção</span>
+                    <h3 style="font-size:20px; font-weight:600; margin-top:4px;">Próxima Coleta CA-60</h3>
                     <div class="ronda-big-clock" id="big-timer-display">60:00</div>
-                    <p style="font-size:13px; font-weight:300; color:var(--on-dark-soft); margin-bottom:20px;">
-                        O sistema emite aviso sonoro e visual a cada 60 minutos para coleta de amostras CA-60.
+                    <p style="font-size:13px; color:var(--body-muted); margin-bottom:20px; line-height:1.4;">
+                        Aviso sonoro e visual a cada 60 minutos para recolha de amostras na produção.
                     </p>
-                    <button type="button" class="btn-bmw-primary" id="btn-ronda-coletar" style="width:100%;">
-                        ✔ CONFIRMAR COLETA & REINICIAR 1H ›
+                    <button type="button" class="btn-primary-pill" id="btn-ronda-coletar" style="width:100%;">
+                        Confirmar Coleta e Reiniciar 1h
                     </button>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; margin-top:12px;">
-                        <button type="button" class="btn-secondary-on-dark" id="btn-ronda-pausar">⏸ PAUSAR / RETOMAR</button>
-                        <button type="button" class="btn-secondary-on-dark" id="btn-ronda-testar">🔔 TESTAR ALARME</button>
-                        <button type="button" class="btn-secondary-on-dark" id="btn-ronda-15m">⏱️ 15 MIN</button>
-                        <button type="button" class="btn-secondary-on-dark" id="btn-ronda-60m">⏱️ 60 MIN</button>
+                    <div style="display:flex; gap:12px; margin-top:14px;">
+                        <button type="button" class="link-on-dark" id="btn-ronda-pausar">Pausar / Retomar</button>
+                        <button type="button" class="link-on-dark" id="btn-ronda-testar">Testar Alarme</button>
+                        <button type="button" class="link-on-dark" id="btn-ronda-15m">15 min</button>
                     </div>
                 </div>
-                <div class="bmw-card">
-                    <div class="bmw-card-header">
-                        <span class="bmw-card-title">Registro de Coletas do Turno</span>
-                        <button type="button" class="btn-bmw-secondary" id="btn-limpar-rondas" style="height:32px;">LIMPAR HISTÓRICO</button>
+                <div class="store-utility-card">
+                    <div class="card-header-apple">
+                        <h2>Registo de Rondas do Turno</h2>
+                        <button type="button" class="text-link-action" id="btn-limpar-rondas">Limpar</button>
                     </div>
                     <div class="table-container">
                         <table class="data-table">
                             <thead>
-                                <tr><th>Nº Ronda</th><th>Horário</th><th>Responsável</th><th>Status</th></tr>
+                                <tr><th>Ronda</th><th>Horário</th><th>Responsável</th><th>Estado</th></tr>
                             </thead>
                             <tbody id="tabela-rondas-corpo"></tbody>
                         </table>
@@ -928,46 +960,46 @@
         </section>
     </main>
 
-    <!-- MODAL DE ALARME DE COLETA (1 EM 1 HORA) -->
-    <div class="alarm-modal-overlay" id="alarm-modal">
-        <div class="alarm-box">
-            <div style="font-size:42px; margin-bottom:8px;">🚨</div>
-            <h2 style="font-size:24px; font-weight:700; color:var(--ink); text-transform:uppercase;">Hora da Ronda de Coleta CA-60</h2>
-            <p style="font-size:15px; font-weight:300; color:var(--body); margin:12px 0 24px 0;">
-                Completou-se o ciclo de <strong>1 hora</strong>. Suba ao setor produtivo para recolher amostras para ensaio de tração.
+    <!-- MODAL DE ALARME DE COLETA -->
+    <div class="modal-overlay" id="alarm-modal">
+        <div class="alarm-card">
+            <div style="font-size:40px; margin-bottom:8px;">🔔</div>
+            <h2 style="font-size:24px; font-weight:600; color:var(--ink); letter-spacing:-0.28px;">Hora da Coleta de Amostras</h2>
+            <p style="font-size:15px; color:var(--ink-muted-80); margin:10px 0 24px 0;">
+                Passou <strong>1 hora</strong> desde a última recolha. Suba à produção para recolher amostras de Aço CA-60.
             </p>
-            <div style="display:flex; gap:12px; justify-content:center;">
-                <button type="button" class="btn-bmw-primary" id="btn-modal-confirmar-coleta">✔ AMOSTRA COLETADA (REINICIAR 1H)</button>
-                <button type="button" class="btn-bmw-secondary" id="btn-modal-adiar" style="height:44px;">ADIAR +10 MIN</button>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button type="button" class="btn-primary-pill" id="btn-modal-confirmar-coleta">Já Coletei (Reiniciar 1h)</button>
+                <button type="button" class="btn-secondary-pill" id="btn-modal-adiar">Adiar +10 min</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL DE CERTIFICADO DE QUALIDADE -->
-    <div class="pdf-modal-overlay" id="cert-modal">
-        <div class="pdf-modal-box" style="max-width:840px; background:#fff; color:#000;">
-            <div class="pdf-modal-header">
-                <span style="font-size:15px; font-weight:700; letter-spacing:1px; text-transform:uppercase;">Certificado de Conformidade ABNT NBR 7480</span>
+    <div class="modal-overlay" id="cert-modal">
+        <div class="modal-card" style="max-width:820px;">
+            <div class="modal-header">
+                <span style="font-size:16px; font-weight:600; color:var(--ink);">Certificado de Conformidade ABNT NBR 7480</span>
                 <div style="display:flex; gap:10px;">
-                    <button type="button" class="btn-bmw-primary" onclick="window.print()" style="height:36px; padding:0 18px;">🖨️ IMPRIMIR / PDF</button>
-                    <button type="button" class="btn-secondary-on-dark" id="btn-fechar-cert">✖ FECHAR</button>
+                    <button type="button" class="btn-primary-pill" onclick="window.print()" style="padding:7px 16px; font-size:13px;">Imprimir / PDF</button>
+                    <button type="button" class="btn-pearl-capsule" id="btn-fechar-cert">Fechar</button>
                 </div>
             </div>
-            <div class="pdf-modal-body" id="cert-conteudo" style="background:#fff; padding:32px; overflow-y:auto; color:#000;"></div>
+            <div class="modal-body" id="cert-conteudo" style="background:#ffffff; padding:32px; overflow-y:auto; color:#1d1d1f;"></div>
         </div>
     </div>
 
     <!-- MODAL DE VISUALIZAÇÃO DO PDF -->
-    <div class="pdf-modal-overlay" id="pdf-modal">
-        <div class="pdf-modal-box">
-            <div class="pdf-modal-header">
-                <span id="modal-titulo" style="font-size:14px; font-weight:700; letter-spacing:1px;">📄 VISUALIZADOR DE LAUDO</span>
+    <div class="modal-overlay" id="pdf-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span id="modal-titulo" style="font-size:15px; font-weight:600; color:var(--ink);">Visualizador de Laudo</span>
                 <div style="display:flex; gap:10px;">
-                    <a id="btn-abrir-drive-externo" href="#" target="_blank" class="btn-secondary-on-dark" style="text-decoration:none; display:inline-flex; align-items:center;">↗ ABRIR EM NOVA GUIA</a>
-                    <button type="button" class="btn-secondary-on-dark" id="btn-fechar-modal">✖ FECHAR</button>
+                    <a id="btn-abrir-drive-externo" href="#" target="_blank" class="btn-secondary-pill" style="text-decoration:none;">Abrir num novo separador ›</a>
+                    <button type="button" class="btn-pearl-capsule" id="btn-fechar-modal">Fechar</button>
                 </div>
             </div>
-            <div class="pdf-modal-body" id="modal-conteudo"></div>
+            <div class="modal-body" id="modal-conteudo"></div>
         </div>
     </div>
 
@@ -979,7 +1011,10 @@
 
         let historicoTestes = [];
         let abaAtiva = "TODAS";
-        let pdfAtualBase64 = null, pdfAtualMime = null, pdfAtualNome = null;
+        let pdfAtualBase64 = null;
+        let pdfAtualMime = null;
+        let pdfAtualNome = null;
+        let ultimoBlobUrlCriado = null;
 
         const inputLote = document.getElementById('lote');
         const inputData = document.getElementById('data');
@@ -993,8 +1028,7 @@
         const selectMaquina = document.getElementById('maquina');
 
         // ==========================================================================
-        // CORREÇÃO DEFINITIVA DO PROBLEMA DA BITOLA 3,80 / 4,20 / 5,00 / 6,00
-        // Converte qualquer entrada ("3,80", "3.80", "3,8", "4,5") para as 6 abas oficiais!
+        // 1. NORMALIZAÇÃO DE BITOLAS (3,80 / 3,8 / 4,20 / 4,5 -> 6 ABAS OFICIAIS)
         // ==========================================================================
         function normalizarBitolaNominal(valor) {
             if (!valor) return "4.2";
@@ -1004,7 +1038,7 @@
             if (Math.abs(n - 3.4) < 0.18) return "3.4";
             if (Math.abs(n - 3.8) < 0.18) return "3.8";
             if (Math.abs(n - 4.2) < 0.18) return "4.2";
-            if (Math.abs(n - 4.6) < 0.22) return "4.6"; // Cobre 4.5 e 4.6
+            if (Math.abs(n - 4.6) < 0.22) return "4.6";
             if (Math.abs(n - 5.0) < 0.25) return "5.0";
             if (Math.abs(n - 6.0) < 0.35) return "6.0";
             return n.toFixed(1);
@@ -1015,18 +1049,19 @@
             setTimeout(() => el.classList.remove('auto-filled'), 2500);
         }
 
+        // ==========================================================================
+        // 2. TOLERÂNCIA DE MASSA LINEAR (±6% ABNT NBR 7480)
+        // ==========================================================================
         const MASSAS_TEORICAS_CA60 = { "3.4": 0.071, "3.8": 0.089, "4.2": 0.109, "4.6": 0.130, "5.0": 0.154, "6.0": 0.222 };
 
         function validarMassaLinearABNT(massaLida, bitolaNom) {
             const feedback = document.getElementById('massa-feedback');
             const bKey = normalizarBitolaNominal(bitolaNom);
             const teorica = MASSAS_TEORICAS_CA60[bKey] || 0.109;
-            const minTol = teorica * 0.94;
-            const maxTol = teorica * 1.06;
-            if (massaLida >= minTol && massaLida <= maxTol) {
-                feedback.innerHTML = `<span style="color:var(--success)">✔ MASSA LINEAR CONFORME ABNT (IDEAL: ${teorica.toFixed(3)} g/mm ±6%)</span>`;
+            if (massaLida >= teorica * 0.94 && massaLida <= teorica * 1.06) {
+                feedback.innerHTML = `<span style="color:var(--success);">✔ Massa linear conforme ABNT (Ideal: ${teorica.toFixed(3)} g/mm ±6%)</span>`;
             } else {
-                feedback.innerHTML = `<span style="color:var(--warning)">⚠️ MASSA FORA DE ±6% ABNT (IDEAL PARA Ø ${bKey}: ${teorica.toFixed(3)} g/mm)</span>`;
+                feedback.innerHTML = `<span style="color:var(--warning);">⚠ Massa fora de ±6% (Ideal p/ Ø ${bKey.replace('.', ',')}: ${teorica.toFixed(3)} g/mm)</span>`;
             }
         }
 
@@ -1075,7 +1110,7 @@
         inputAlong.addEventListener('input', recalcularABNT);
 
         // ==========================================================================
-        // LEITOR OCR CALIBRADO (SUPORTA 3,40 / 3,80 / 4,20 / 4,60 / 5,00 / 6,00)
+        // 3. LEITOR OCR DE PDF (COM FATIADO ESQUERDA / DIREITA)
         // ==========================================================================
         document.getElementById('anexo').addEventListener('change', async function() {
             if (!this.files || this.files.length === 0) return;
@@ -1090,7 +1125,10 @@
             inputBitolaReal.value = ''; inputMassaLinear.value = ''; inputAlong.value = ''; inputLR.value = ''; inputLE.value = ''; inputRelacao.value = '';
 
             const readerB64 = new FileReader();
-            readerB64.onload = (e) => { pdfAtualBase64 = e.target.result; document.getElementById('btn-preview-form').style.display = 'inline-block'; };
+            readerB64.onload = (e) => {
+                pdfAtualBase64 = e.target.result;
+                document.getElementById('btn-preview-form').style.display = 'inline-block';
+            };
             readerB64.readAsDataURL(file);
 
             if (/CONTRA\s*-?\s*PROVA/i.test(file.name)) selectTipoProva.value = "CONTRA PROVA";
@@ -1101,7 +1139,6 @@
             if (matchOpNome) { inputLote.value = "OP" + matchOpNome[1]; destacarCampo(inputLote); }
 
             let bitolaNominalDetectada = document.getElementById('bitola-nominal').value;
-            // Captura 3,80 / 3,8 / 4,20 / 5,00 etc. e normaliza para "3.8", "4.2", etc.
             const matchBitolaNome = file.name.match(/(3[\.,]40?|3[\.,]80?|4[\.,]20?|4[\.,][56]0?|5[\.,]00?|6[\.,]00?)/);
             if (matchBitolaNome) {
                 bitolaNominalDetectada = normalizarBitolaNominal(matchBitolaNome[1]);
@@ -1110,7 +1147,7 @@
 
             if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
                 try {
-                    statusTxt.innerHTML = "⏳ Lendo dados do relatório PDF via OCR...";
+                    statusTxt.textContent = "A ler dados do relatório PDF...";
                     progBox.style.display = 'block'; progBar.style.width = '30%';
 
                     const arrayBuffer = await file.arrayBuffer();
@@ -1140,10 +1177,10 @@
                     setTimeout(() => { progBox.style.display = 'none'; }, 400);
 
                     preencherCamposLaudoGrandeAco(result.data.text, bitolaNominalDetectada);
-                    statusTxt.innerHTML = `<span style="color:var(--success); font-weight:700;">✔ DADOS EXTRAÍDOS COM SUCESSO!</span>`;
+                    statusTxt.innerHTML = `<span style="color:var(--success); font-weight:600;">Dados extraídos com sucesso.</span>`;
                 } catch (err) {
                     progBox.style.display = 'none';
-                    statusTxt.innerHTML = `⚠️ PDF anexado. Confira os campos manualmente.`;
+                    statusTxt.textContent = "PDF anexado. Confira os valores antes de guardar.";
                 }
             }
         });
@@ -1152,7 +1189,6 @@
             const limpo = txt.replace(/\r/g, '');
             let bNomStr = normalizarBitolaNominal(bitolaNomPadrao);
 
-            // Verifica se no texto do PDF tem a bitola nominal (ex: "OP150 3,80")
             const mBitTexto = limpo.match(/OP\s*\d+\s+(3[\.,]40?|3[\.,]80?|4[\.,]20?|4[\.,][56]0?|5[\.,]00?|6[\.,]00?)/i);
             if (mBitTexto) {
                 bNomStr = normalizarBitolaNominal(mBitTexto[1]);
@@ -1240,12 +1276,12 @@
         function selecionarBitolaNominal(val) {
             const norm = normalizarBitolaNominal(val);
             document.getElementById('bitola-nominal').value = norm;
-            document.querySelectorAll('.configurator-tile').forEach(b => {
+            document.querySelectorAll('.configurator-option-chip').forEach(b => {
                 b.classList.toggle('selected', b.getAttribute('data-val') === norm);
             });
         }
 
-        document.querySelectorAll('.configurator-tile').forEach(btn => {
+        document.querySelectorAll('.configurator-option-chip').forEach(btn => {
             btn.addEventListener('click', () => selecionarBitolaNominal(btn.getAttribute('data-val')));
         });
 
@@ -1258,7 +1294,7 @@
         document.getElementById('btn-status-fail').onclick = () => definirStatus('reprovado');
 
         // ==========================================================================
-        // TIMER DE 1 EM 1 HORA BLINDADO
+        // 4. TIMER DE 1 EM 1 HORA BLINDADO
         // ==========================================================================
         const INTERVALO_1H = 60 * 60 * 1000;
         let timerAlvo = Number(localStorage.getItem('ga_timer_alvo')) || (Date.now() + INTERVALO_1H);
@@ -1277,14 +1313,14 @@
                 if (audioCtxGlobal.state === 'suspended') audioCtxGlobal.resume();
                 const osc = audioCtxGlobal.createOscillator();
                 const gain = audioCtxGlobal.createGain();
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(840, audioCtxGlobal.currentTime);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioCtxGlobal.currentTime);
                 gain.gain.setValueAtTime(0.15, audioCtxGlobal.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtxGlobal.currentTime + 0.4);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtxGlobal.currentTime + 0.45);
                 osc.connect(gain);
                 gain.connect(audioCtxGlobal.destination);
                 osc.start();
-                osc.stop(audioCtxGlobal.currentTime + 0.4);
+                osc.stop(audioCtxGlobal.currentTime + 0.45);
             } catch (e) {}
         }
 
@@ -1304,12 +1340,15 @@
             if (minutos === 60) {
                 const logs = JSON.parse(localStorage.getItem('ga_historico_rondas') || '[]');
                 const d = new Date();
-                logs.push({ horario: d.toLocaleTimeString('pt-BR') + ' (' + d.toLocaleDateString('pt-BR') + ')', operador: document.getElementById('operador').value || 'FLÁVIO' });
+                logs.push({
+                    horario: d.toLocaleTimeString('pt-BR') + ' (' + d.toLocaleDateString('pt-BR') + ')',
+                    operador: document.getElementById('operador').value || 'FLÁVIO'
+                });
                 localStorage.setItem('ga_historico_rondas', JSON.stringify(logs));
                 renderizarRondas();
-                toast("✔ COLETA REGISTRADA! PRÓXIMA EM 60 MIN.");
+                toast("Coleta registada. Próxima ronda em 60 minutos.");
             } else {
-                toast(`⏱️ TIMER AJUSTADO PARA ${minutos} MIN.`);
+                toast(`Temporizador ajustado para ${minutos} minutos.`);
             }
             atualizarRelogio();
         }
@@ -1335,7 +1374,7 @@
             if (ms <= 0 && !isTimerPausado) {
                 topDisp.textContent = "00:00";
                 bigDisp.textContent = "00:00";
-                widget.classList.add('hero-timer-Box-alarm');
+                widget.classList.add('alarm-active');
                 if (!alarmeJaDisparado) dispararAlarme();
                 return;
             }
@@ -1344,40 +1383,46 @@
             const txt = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
             topDisp.textContent = isTimerPausado ? `⏸ ${txt}` : txt;
             bigDisp.textContent = txt;
-            document.getElementById('btn-top-pausar').textContent = isTimerPausado ? "▶" : "⏸";
-            widget.classList.remove('hero-timer-Box-alarm');
+            document.getElementById('btn-top-pausar').textContent = isTimerPausado ? "Retomar" : "Pausar";
+            widget.classList.remove('alarm-active');
         }
         setInterval(atualizarRelogio, 1000);
 
         function renderizarRondas() {
             const tb = document.getElementById('tabela-rondas-corpo');
             const logs = JSON.parse(localStorage.getItem('ga_historico_rondas') || '[]');
-            if (logs.length === 0) { tb.innerHTML = '<tr><td colspan="4" style="padding:24px; color:var(--muted);">Nenhuma coleta registrada hoje.</td></tr>'; return; }
+            if (logs.length === 0) {
+                tb.innerHTML = '<tr><td colspan="4" style="padding:32px; color:var(--ink-muted-48);">Nenhuma coleta registada no turno atual.</td></tr>';
+                return;
+            }
             tb.innerHTML = [...logs].reverse().map((item, idx) => `
-                <tr><td>#${logs.length - idx}</td><td style="font-weight:700; color:var(--primary);">${item.horario}</td><td>${item.operador}</td><td><span class="badge-sim">CONCLUÍDA</span></td></tr>
+                <tr>
+                    <td style="font-weight:600;">#${logs.length - idx}</td>
+                    <td style="color:var(--primary); font-weight:600;">${item.horario}</td>
+                    <td>${item.operador}</td>
+                    <td><span class="status-dot-ok">Concluída</span></td>
+                </tr>
             `).join('');
         }
 
         document.getElementById('btn-top-coletar').onclick = () => reiniciarTimer(60);
         document.getElementById('btn-top-pausar').onclick = alternarPausa;
-        document.getElementById('btn-abrir-aba-ronda').onclick = () => document.getElementById('tab-btn-ronda').click();
         document.getElementById('btn-ronda-coletar').onclick = () => reiniciarTimer(60);
         document.getElementById('btn-ronda-pausar').onclick = alternarPausa;
         document.getElementById('btn-ronda-testar').onclick = dispararAlarme;
         document.getElementById('btn-ronda-15m').onclick = () => reiniciarTimer(15);
-        document.getElementById('btn-ronda-60m').onclick = () => reiniciarTimer(60);
         document.getElementById('btn-modal-confirmar-coleta').onclick = () => reiniciarTimer(60);
         document.getElementById('btn-modal-adiar').onclick = () => reiniciarTimer(10);
         document.getElementById('btn-limpar-rondas').onclick = () => { localStorage.removeItem('ga_historico_rondas'); renderizarRondas(); };
 
         // ==========================================================================
-        // GRÁFICOS CEP EM SVG NATIVO
+        // 5. GRÁFICOS CEP EM SVG NATIVO
         // ==========================================================================
         function desenharGraficoSVG(containerId, valores, corLinha, limiteMinimo = null) {
             const box = document.getElementById(containerId);
             const nums = valores.filter(v => v > 0);
             if (nums.length === 0) {
-                box.innerHTML = `<div style="padding:40px; text-align:center; color:var(--muted); font-size:13px;">Sem dados numéricos suficientes.</div>`;
+                box.innerHTML = `<div style="padding:40px; text-align:center; color:var(--ink-muted-48); font-size:13px;">Sem dados suficientes para o gráfico.</div>`;
                 return;
             }
             const W = 520, H = 200, pad = 32;
@@ -1390,28 +1435,28 @@
             let linhaMinHtml = '';
             if (limiteMinimo) {
                 const yMin = mapY(limiteMinimo).toFixed(1);
-                linhaMinHtml = `<line x1="${pad}" y1="${yMin}" x2="${W - pad}" y2="${yMin}" stroke="#e22718" stroke-width="1.5" stroke-dasharray="5,4"/>
-                                <text x="${W - pad - 4}" y="${yMin - 5}" fill="#e22718" font-size="10" font-weight="700" text-anchor="end">MÍN ABNT: ${limiteMinimo} MPa</text>`;
+                linhaMinHtml = `<line x1="${pad}" y1="${yMin}" x2="${W - pad}" y2="${yMin}" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,4"/>
+                                <text x="${W - pad - 4}" y="${yMin - 5}" fill="#dc2626" font-size="10" font-weight="600" text-anchor="end">Mín ABNT: ${limiteMinimo} MPa</text>`;
             }
-            const bolinhas = nums.map((v, i) => `
-                <rect x="${(mapX(i)-3.5).toFixed(1)}" y="${(mapY(v)-3.5).toFixed(1)}" width="7" height="7" fill="${corLinha}"/>
-                <text x="${mapX(i).toFixed(1)}" y="${mapY(v) - 8}" fill="var(--ink)" font-size="10" font-weight="700" text-anchor="middle">${v}</text>
+            const pontos = nums.map((v, i) => `
+                <circle cx="${mapX(i).toFixed(1)}" cy="${mapY(v).toFixed(1)}" r="4" fill="${corLinha}"/>
+                <text x="${mapX(i).toFixed(1)}" y="${mapY(v) - 8}" fill="var(--ink)" font-size="10" font-weight="600" text-anchor="middle">${v}</text>
             `).join('');
 
             box.innerHTML = `
                 <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:100%;">
-                    <line x1="${pad}" y1="${H - pad}" x2="${W - pad}" y2="${H - pad}" stroke="var(--hairline-strong)" stroke-width="1"/>
+                    <line x1="${pad}" y1="${H - pad}" x2="${W - pad}" y2="${H - pad}" stroke="var(--hairline)" stroke-width="1"/>
                     ${linhaMinHtml}
                     <polyline fill="none" stroke="${corLinha}" stroke-width="2.5" points="${pts}"/>
-                    ${bolinhas}
+                    ${pontos}
                 </svg>
             `;
         }
 
         function renderizarGraficosCEP() {
             const ultimos = historicoTestes.slice(-15);
-            desenharGraficoSVG('svg-chart-le', ultimos.map(t => Number(t.le || 0)), '#1c69d4', 600);
-            desenharGraficoSVG('svg-chart-lr', ultimos.map(t => Number(t.lr || 0)), '#1a2129', null);
+            desenharGraficoSVG('svg-chart-le', ultimos.map(t => Number(t.le || 0)), '#0066cc', 600);
+            desenharGraficoSVG('svg-chart-lr', ultimos.map(t => Number(t.lr || 0)), '#1d1d1f', null);
 
             const bitolas = ['3.4', '3.8', '4.2', '4.6', '5.0', '6.0'];
             let htmlResumo = `<div style="display:grid; grid-template-columns:repeat(6,1fr); gap:12px;">`;
@@ -1420,11 +1465,11 @@
                 const mediaLE = daBitola.length ? Math.round(daBitola.reduce((a, c) => a + Number(c.le), 0) / daBitola.length) : '-';
                 const mediaLR = daBitola.length ? Math.round(daBitola.reduce((a, c) => a + Number(c.lr), 0) / daBitola.length) : '-';
                 htmlResumo += `
-                    <div style="background:var(--canvas); border:1px solid var(--hairline-strong); border-top:3px solid var(--primary); padding:12px; text-align:center;">
+                    <div style="background:var(--canvas); border:1px solid var(--hairline); border-radius:14px; padding:14px; text-align:center;">
                         <strong style="color:var(--primary); font-size:15px;">Ø ${b.replace('.', ',')} mm</strong><br>
-                        <span style="font-size:11px; color:var(--muted);">AMOSTRAS: ${daBitola.length}</span><br>
-                        <span style="font-size:12px;">LE MÉDIO: <b>${mediaLE}</b></span><br>
-                        <span style="font-size:12px;">LR MÉDIO: <b>${mediaLR}</b></span>
+                        <span style="font-size:11px; color:var(--ink-muted-48);">Amostras: ${daBitola.length}</span><br>
+                        <span style="font-size:12px;">LE Médio: <b>${mediaLE}</b></span><br>
+                        <span style="font-size:12px;">LR Médio: <b>${mediaLR}</b></span>
                     </div>`;
             });
             htmlResumo += `</div>`;
@@ -1436,13 +1481,13 @@
             const aprov = historicoTestes.filter(t => t.status === 'aprovado' || t.aprovado === 'SIM').length;
             const taxa = total > 0 ? Math.round((aprov / total) * 100) : 0;
             const rondas = JSON.parse(localStorage.getItem('ga_historico_rondas') || '[]').length;
-            const txt = `📊 *RESUMO QUALIDADE CA-60 — GRANDE AÇO*\n📅 Data: ${new Date().toLocaleDateString('pt-BR')}\n✅ Ensaios Registrados: ${total} (${taxa}% Aprovados)\n⏱️ Rondas de Coleta Hoje: ${rondas}\n⚙️ Norma: ABNT NBR 7480`;
-            navigator.clipboard.writeText(txt).then(() => toast("📲 RESUMO COPIADO PARA O WHATSAPP!"));
+            const txt = `📊 *RESUMO QUALIDADE CA-60 — GRANDE AÇO*\n📅 Data: ${new Date().toLocaleDateString('pt-BR')}\n✅ Ensaios Registados: ${total} (${taxa}% Aprovados)\n⏱️ Rondas de Coleta: ${rondas}\n⚙️ Norma: ABNT NBR 7480`;
+            navigator.clipboard.writeText(txt).then(() => toast("Resumo copiado para a área de transferência."));
         };
 
         document.getElementById('btn-gerar-certificado').onclick = () => {
             const opSug = inputLote.value || "OP150";
-            const loteBusca = prompt("Digite o número do Lote / OP para emitir o Certificado:", opSug);
+            const loteBusca = prompt("Indique o número do Lote / OP para emitir o Certificado:", opSug);
             if (!loteBusca) return;
             const filtrados = historicoTestes.filter(t => String(t.lote || '').toUpperCase().includes(loteBusca.trim().toUpperCase()));
             if (filtrados.length === 0) return alert(`Nenhum ensaio encontrado para "${loteBusca}".`);
@@ -1452,42 +1497,48 @@
             const mdAl = (filtrados.reduce((a, b) => a + Number(b.alongamento || 0), 0) / filtrados.length).toFixed(1);
             const linhasHtml = filtrados.map((f, i) => `
                 <tr>
-                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;">#${i + 1} (${f.tipoProva || 'PROVA'})</td>
-                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;">${f.bitolaReal || f.bitola} mm</td>
-                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;">${f.massaLinear || '-'} g/mm</td>
-                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;"><b>${f.lr} MPa</b></td>
-                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;"><b>${f.le} MPa</b></td>
-                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;">${f.alongamento}%</td>
-                    <td style="padding:8px; border:1px solid #cccccc; text-align:center;">${Number(f.relacao || (f.lr/f.le)).toFixed(2)}</td>
+                    <td style="padding:8px; border:1px solid #e0e0e0; text-align:center;">#${i + 1} (${f.tipoProva || 'PROVA'})</td>
+                    <td style="padding:8px; border:1px solid #e0e0e0; text-align:center;">${f.bitolaReal || f.bitola} mm</td>
+                    <td style="padding:8px; border:1px solid #e0e0e0; text-align:center;">${f.massaLinear || '-'} g/mm</td>
+                    <td style="padding:8px; border:1px solid #e0e0e0; text-align:center;"><b>${f.lr} MPa</b></td>
+                    <td style="padding:8px; border:1px solid #e0e0e0; text-align:center;"><b>${f.le} MPa</b></td>
+                    <td style="padding:8px; border:1px solid #e0e0e0; text-align:center;">${f.alongamento}%</td>
+                    <td style="padding:8px; border:1px solid #e0e0e0; text-align:center;">${Number(f.relacao || (f.lr/f.le)).toFixed(2)}</td>
                 </tr>
             `).join('');
 
             document.getElementById('cert-conteudo').innerHTML = `
-                <div style="border:2px solid #1a2129; padding:28px;">
-                    <div style="display:flex; justify-content:space-between; border-bottom:4px solid #1c69d4; padding-bottom:14px; margin-bottom:20px;">
+                <div style="border:1px solid #1d1d1f; border-radius:14px; padding:28px;">
+                    <div style="display:flex; justify-content:space-between; border-bottom:2px solid #0066cc; padding-bottom:14px; margin-bottom:20px;">
                         <div>
-                            <h2 style="font-size:24px; font-weight:700; color:#1a2129;">GRANDE AÇO — INDÚSTRIA DE AÇO</h2>
-                            <p style="font-size:13px; color:#6b6b6b;">Certificado Oficial de Ensaio de Tração — ABNT NBR 7480 (CA-60)</p>
+                            <h2 style="font-size:22px; font-weight:600; color:#1d1d1f;">GRANDE AÇO — INDÚSTRIA DE AÇO</h2>
+                            <p style="font-size:13px; color:#7a7a7a;">Certificado de Ensaio de Tração — ABNT NBR 7480 (CA-60)</p>
                         </div>
                         <div style="text-align:right; font-size:13px;">
-                            <strong>LOTE / OP: ${loteBusca.toUpperCase()}</strong><br>
+                            <strong>Lote / OP: ${loteBusca.toUpperCase()}</strong><br>
                             Data: ${new Date().toLocaleDateString('pt-BR')}
                         </div>
                     </div>
                     <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:20px;">
                         <thead>
-                            <tr style="background:#1a2129; color:#fff;">
-                                <th style="padding:10px;">AMOSTRA</th><th>BITOLA REAL</th><th>MASSA LIN.</th><th>LR (MPa)</th><th>LE (MPa)</th><th>ALONG.</th><th>LR/LE</th>
+                            <tr style="background:#f5f5f7; color:#1d1d1f;">
+                                <th style="padding:10px; border:1px solid #e0e0e0;">Amostra</th>
+                                <th style="padding:10px; border:1px solid #e0e0e0;">Bitola Real</th>
+                                <th style="padding:10px; border:1px solid #e0e0e0;">Massa Lin.</th>
+                                <th style="padding:10px; border:1px solid #e0e0e0;">LR (MPa)</th>
+                                <th style="padding:10px; border:1px solid #e0e0e0;">LE (MPa)</th>
+                                <th style="padding:10px; border:1px solid #e0e0e0;">Along.</th>
+                                <th style="padding:10px; border:1px solid #e0e0e0;">LR/LE</th>
                             </tr>
                         </thead>
                         <tbody>${linhasHtml}</tbody>
                     </table>
-                    <div style="background:#f7f7f7; border-left:4px solid #1c69d4; padding:14px; font-size:13px; margin-bottom:36px;">
-                        <strong>MÉDIAS DO LOTE:</strong> LR Médio: <b>${mdLR} MPa</b> | LE Médio: <b>${mdLE} MPa</b> (Mín: 600 MPa) | Alongamento Médio: <b>${mdAl}%</b> (Mín: 5%) — <strong>STATUS: APROVADO</strong>
+                    <div style="background:#f5f5f7; border-radius:10px; padding:14px; font-size:13px; margin-bottom:36px;">
+                        <strong>Médias do Lote:</strong> LR Médio: <b>${mdLR} MPa</b> · LE Médio: <b>${mdLE} MPa</b> (Mín: 600 MPa) · Alongamento Médio: <b>${mdAl}%</b> (Mín: 5%) — <strong>Estado: Aprovado</strong>
                     </div>
                     <div style="display:flex; justify-content:space-around; text-align:center; margin-top:48px; font-size:12px;">
-                        <div style="border-top:1px solid #262626; width:240px; padding-top:8px;">Responsável Técnico (${document.getElementById('operador').value})</div>
-                        <div style="border-top:1px solid #262626; width:240px; padding-top:8px;">Controle de Qualidade — Grande Aço</div>
+                        <div style="border-top:1px solid #1d1d1f; width:240px; padding-top:8px;">Responsável Técnico (${document.getElementById('operador').value})</div>
+                        <div style="border-top:1px solid #1d1d1f; width:240px; padding-top:8px;">Gestão da Qualidade — Grande Aço</div>
                     </div>
                 </div>
             `;
@@ -1495,48 +1546,71 @@
         };
         document.getElementById('btn-fechar-cert').onclick = () => document.getElementById('cert-modal').style.display = 'none';
 
-        // NAVEGAÇÃO ENTRE ABAS
-        document.querySelectorAll('.category-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                const sel = tab.getAttribute('data-aba');
-                const vAbnt = document.getElementById('container-tabela-abnt');
-                const vGraf = document.getElementById('container-graficos-view');
-                const vRonda = document.getElementById('container-ronda-view');
-
-                vAbnt.style.display = 'none'; vGraf.style.display = 'none'; vRonda.style.display = 'none';
-
-                if (sel === 'RONDA') {
-                    vRonda.style.display = 'grid'; renderizarRondas();
-                } else if (sel === 'GRAFICOS') {
-                    vGraf.style.display = 'flex'; renderizarGraficosCEP();
-                } else {
-                    vAbnt.style.display = 'flex'; abaAtiva = sel; atualizarTabela();
-                }
+        // ==========================================================================
+        // 6. NAVEGAÇÃO ENTRE ABAS (CORRIGIDO ID SEM ESPAÇO)
+        // ==========================================================================
+        function ativarAba(sel) {
+            document.querySelectorAll('.tab-pill').forEach(t => {
+                t.classList.toggle('active', t.getAttribute('data-aba') === sel);
             });
+
+            const vAbnt = document.getElementById('container-tabela-abnt');
+            const vGraf = document.getElementById('container-graficos-view');
+            const vRonda = document.getElementById('container-ronda-view');
+            const tituloPainel = document.getElementById('panel-main-title');
+
+            vAbnt.style.display = 'none';
+            vGraf.style.display = 'none';
+            vRonda.style.display = 'none';
+
+            if (sel === 'RONDA') {
+                vRonda.style.display = 'grid';
+                tituloPainel.textContent = "Ronda de Coleta de Amostras (1h)";
+                renderizarRondas();
+            } else if (sel === 'GRAFICOS') {
+                vGraf.style.display = 'flex';
+                tituloPainel.textContent = "Controlo Estatístico de Processo (CEP)";
+                renderizarGraficosCEP();
+            } else {
+                vAbnt.style.display = 'flex';
+                abaAtiva = sel;
+                tituloPainel.textContent = sel === 'TODAS'
+                    ? "Registos de Ensaios — Todas as Bitolas"
+                    : `Registos de Ensaios — Bitola ${sel.replace('.', ',')} mm`;
+                atualizarTabela();
+            }
+        }
+
+        document.querySelectorAll('.tab-pill').forEach(tab => {
+            tab.addEventListener('click', () => ativarAba(tab.getAttribute('data-aba')));
         });
 
         function toast(msg) {
             const box = document.getElementById('toast-box');
-            const el = document.createElement('div'); el.className = 'toast-item'; el.textContent = msg;
-            box.appendChild(el); setTimeout(() => el.remove(), 3500);
+            const el = document.createElement('div');
+            el.className = 'toast-pill';
+            el.textContent = msg;
+            box.appendChild(el);
+            setTimeout(() => el.remove(), 3500);
         }
 
         function carregarDadosDaPlanilha() {
+            document.getElementById('contador-subtitulo').textContent = "A sincronizar...";
             fetch(LINK_PLANILHA)
                 .then(r => r.json())
                 .then(dados => {
                     historicoTestes = Array.isArray(dados) ? dados : [];
+                    document.getElementById('contador-subtitulo').textContent = `${historicoTestes.length} registos totais`;
                     atualizarTabela();
                 })
                 .catch(() => {
-                    document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="16" style="padding:36px;">⚠️ Erro de conexão com a planilha.</td></tr>';
+                    document.getElementById('contador-subtitulo').textContent = "Erro de ligação";
+                    document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="16" style="padding:36px;">Erro de comunicação com a folha de cálculo.</td></tr>';
                 });
         }
 
         // ==========================================================================
-        // ATUALIZAR TABELA — GARANTE QUE 3,80 / 3,8 APAREÇA EM "TODAS" E EM "3,8"
+        // 7. ATUALIZAR TABELA (EXIBE 3,80 / 3,8 EM "TODAS" E NA RESPECTIVA BITOLA)
         // ==========================================================================
         function atualizarTabela() {
             const tbody = document.getElementById('tabela-corpo');
@@ -1568,7 +1642,7 @@
             document.getElementById('kpi-taxa').textContent = (total > 0 ? Math.round((aprov / total) * 100) : 0) + '%';
 
             if (lista.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="16" style="padding:48px; color:var(--muted);">Nenhum ensaio encontrado para a seleção atual.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="16" style="padding:48px; color:var(--ink-muted-48);">Nenhum ensaio encontrado para a seleção atual.</td></tr>';
                 return;
             }
 
@@ -1577,45 +1651,49 @@
                 const arq = String(t.nomeArquivo || "Nenhum anexo");
                 const isCloud = arq.startsWith('http');
                 const btnPdf = (arq !== "Nenhum anexo" && arq !== "Nenhum")
-                    ? `<button type="button" class="btn-link-bmw" onclick="verPDFTabela('${arq.replace(/'/g, "\\'")}')">${isCloud ? 'ABRIR PDF ›' : 'LOCAL ›'}</button>`
+                    ? `<button type="button" class="text-link-action" onclick="verPDFTabela('${arq.replace(/'/g, "\\'")}')">${isCloud ? 'Abrir PDF ›' : 'Local ›'}</button>`
                     : `-`;
                 const abaExibicao = normalizarBitolaNominal(t.bitolaNominal || t.aba || t.bitola).replace('.', ',');
 
                 return `
                     <tr>
-                        <td><span class="badge-aba">Ø ${abaExibicao}</span></td>
-                        <td style="font-weight:700;">#${t.amostra || (lista.length - idx)}</td>
+                        <td><span class="badge-bitola-soft">Ø ${abaExibicao}</span></td>
+                        <td style="font-weight:600;">#${t.amostra || (lista.length - idx)}</td>
                         <td>${t.tipoProva || 'PROVA'}</td>
-                        <td style="font-weight:700; color:var(--primary);">${t.lote || '-'}</td>
+                        <td style="font-weight:600; color:var(--primary);">${t.lote || '-'}</td>
                         <td>${t.dataFormatada}</td>
-                        <td style="font-weight:700;">${t.bitolaReal || t.bitola} mm</td>
+                        <td style="font-weight:600;">${t.bitolaReal || t.bitola} mm</td>
                         <td>${t.massaLinear || '-'}</td>
-                        <td style="font-weight:700;">${t.lr || '-'}</td>
-                        <td style="font-weight:700;">${t.le || '-'}</td>
+                        <td style="font-weight:600;">${t.lr || '-'}</td>
+                        <td style="font-weight:600;">${t.le || '-'}</td>
                         <td>${t.alongamento ? t.alongamento + '%' : '-'}</td>
                         <td>${t.relacao ? Number(t.relacao).toFixed(2) : '-'}</td>
                         <td>${t.dobramento || 'OK'}</td>
-                        <td><span class="${isOk ? 'badge-sim' : 'badge-nao'}">${isOk ? 'SIM' : 'NÃO'}</span></td>
+                        <td><span class="${isOk ? 'status-dot-ok' : 'status-dot-fail'}">${isOk ? 'Sim' : 'Não'}</span></td>
                         <td>${t.operador}</td>
                         <td>${btnPdf}</td>
-                        <td><button type="button" class="btn-bmw-secondary" style="height:28px; padding:0 8px;" onclick="deletarTeste(${t.linha}, '${t.aba || ''}')">✕</button></td>
+                        <td><button type="button" class="text-link-action" style="color:var(--error);" onclick="deletarTeste(${t.linha}, '${t.aba || ''}')">Excluir</button></td>
                     </tr>`;
             }).join('');
         }
 
         document.getElementById('filtro-data').onchange = atualizarTabela;
         document.getElementById('filtro-lote').oninput = atualizarTabela;
-        document.getElementById('btn-limpar-filtro').onclick = () => { document.getElementById('filtro-data').value = ''; document.getElementById('filtro-lote').value = ''; atualizarTabela(); };
+        document.getElementById('btn-limpar-filtro').onclick = () => {
+            document.getElementById('filtro-data').value = '';
+            document.getElementById('filtro-lote').value = '';
+            atualizarTabela();
+        };
         document.getElementById('btn-recarregar').onclick = carregarDadosDaPlanilha;
 
         // ==========================================================================
-        // SALVAR ENSAIO (NORMALIZA BITOLA "3.80" -> "3.8" PARA CAIR NA ABA "3,8")
+        // 8. SUBMISSÃO PARA A PLANILHA GOOGLE + DRIVE
         // ==========================================================================
         document.getElementById('form-teste').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-submit');
             btn.disabled = true;
-            btn.textContent = "⏳ GRAVANDO NA PLANILHA E GOOGLE DRIVE...";
+            btn.textContent = "A guardar na nuvem...";
             const op = document.getElementById('operador').value.trim().toUpperCase();
             localStorage.setItem('ga_operador', op);
 
@@ -1643,11 +1721,15 @@
                 mimeType: pdfAtualMime || "application/pdf"
             };
 
-            fetch(LINK_PLANILHA, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
-            .then(() => {
-                toast(`✔ AMOSTRA Ø ${bitolaNomNormalizada.replace('.', ',')} SALVA COM SUCESSO!`);
+            fetch(LINK_PLANILHA, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                toast(`Ensaio Ø ${bitolaNomNormalizada.replace('.', ',')} mm registado com sucesso.`);
                 btn.disabled = false;
-                btn.textContent = "REGISTRAR ENSAIO NA PLANILHA ABNT ›";
+                btn.textContent = "Lançar na Planilha e Salvar PDF";
                 document.getElementById('anexo').value = "";
                 pdfAtualBase64 = null;
                 pdfAtualNome = null;
@@ -1655,58 +1737,93 @@
                 setTimeout(carregarDadosDaPlanilha, 1400);
             }).catch(() => {
                 btn.disabled = false;
-                btn.textContent = "REGISTRAR ENSAIO NA PLANILHA ABNT ›";
+                btn.textContent = "Lançar na Planilha e Salvar PDF";
             });
         });
 
         function deletarTeste(linha, aba) {
-            if (!confirm("Deseja realmente excluir esta amostra da planilha?")) return;
-            fetch(LINK_PLANILHA, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ acao: "deletar", linha: linha, aba: aba }) })
-            .then(() => { toast("✔ AMOSTRA EXCLUÍDA!"); setTimeout(carregarDadosDaPlanilha, 600); });
+            if (!confirm("Confirma a exclusão desta amostra da folha de cálculo?")) return;
+            fetch(LINK_PLANILHA, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ acao: "deletar", linha: linha, aba: aba })
+            }).then(() => {
+                toast("Amostra excluída.");
+                setTimeout(carregarDadosDaPlanilha, 600);
+            });
         }
 
         document.getElementById('btn-exportar').onclick = () => {
             let csv = "data:text/csv;charset=utf-8,\uFEFFABA;AMOSTRAS;prova;LOTE;Data;Bitola Real;Massa;LR;LE;Along;Relacao;Dobramento;Aprovado;Responsavel\n";
-            historicoTestes.forEach((t, i) => { csv += `${t.aba || t.bitolaNominal};${t.amostra || (i+1)};${t.tipoProva};${t.lote};${t.dataFormatada};${t.bitolaReal};${t.massaLinear};${t.lr};${t.le};${t.alongamento};${t.relacao};${t.dobramento};${t.status === 'aprovado' ? 'SIM' : 'NÃO'};${t.operador}\n`; });
-            const a = document.createElement('a'); a.href = encodeURI(csv); a.download = `Grande_Aco_ABNT.csv`; a.click();
+            historicoTestes.forEach((t, i) => {
+                csv += `${t.aba || t.bitolaNominal};${t.amostra || (i+1)};${t.tipoProva};${t.lote};${t.dataFormatada};${t.bitolaReal};${t.massaLinear};${t.lr};${t.le};${t.alongamento};${t.relacao};${t.dobramento};${t.status === 'aprovado' ? 'SIM' : 'NÃO'};${t.operador}\n`;
+            });
+            const a = document.createElement('a');
+            a.href = encodeURI(csv);
+            a.download = `Grande_Aco_ABNT_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
         };
 
+        // ==========================================================================
+        // 9. VISUALIZADOR DE PDF COM LIMPEZA DE MEMÓRIA BLOB
+        // ==========================================================================
         function abrirModalPDF(titulo, urlEmbed, urlExterna) {
-            document.getElementById('modal-titulo').textContent = `📄 ${titulo}`;
+            document.getElementById('modal-titulo').textContent = titulo;
             document.getElementById('btn-abrir-drive-externo').href = urlExterna || urlEmbed;
             document.getElementById('modal-conteudo').innerHTML = `<iframe src="${urlEmbed}"></iframe>`;
             document.getElementById('pdf-modal').style.display = 'flex';
         }
+
         document.getElementById('btn-preview-form').onclick = () => {
             if (pdfAtualBase64) {
+                if (ultimoBlobUrlCriado) URL.revokeObjectURL(ultimoBlobUrlCriado);
                 const partes = pdfAtualBase64.split(',');
-                const bstr = atob(partes[1]); const u8 = new Uint8Array(bstr.length);
+                const bstr = atob(partes[1]);
+                const u8 = new Uint8Array(bstr.length);
                 for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
-                const blobUrl = URL.createObjectURL(new Blob([u8], { type: pdfAtualMime }));
-                abrirModalPDF(pdfAtualNome, blobUrl, blobUrl);
+                ultimoBlobUrlCriado = URL.createObjectURL(new Blob([u8], { type: pdfAtualMime }));
+                abrirModalPDF(pdfAtualNome, ultimoBlobUrlCriado, ultimoBlobUrlCriado);
             }
         };
-        document.getElementById('btn-fechar-modal').onclick = () => { document.getElementById('pdf-modal').style.display = 'none'; document.getElementById('modal-conteudo').innerHTML = ''; };
+
+        document.getElementById('btn-fechar-modal').onclick = () => {
+            document.getElementById('pdf-modal').style.display = 'none';
+            document.getElementById('modal-conteudo').innerHTML = '';
+            if (ultimoBlobUrlCriado) {
+                URL.revokeObjectURL(ultimoBlobUrlCriado);
+                ultimoBlobUrlCriado = null;
+            }
+        };
+
         function verPDFTabela(url) {
             if (url.startsWith('http')) {
-                let u = url; const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                let u = url;
+                const m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
                 if (m && m[1]) u = `https://drive.google.com/file/d/${m[1]}/preview`;
                 abrirModalPDF("Laudo Técnico (Google Drive)", u, url);
             } else {
-                alert("Este registro antigo não possui link na nuvem.");
+                alert("Este registo anterior não possui ligação na nuvem.");
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             inputData.value = new Date().toISOString().split('T')[0];
             document.getElementById('operador').value = localStorage.getItem('ga_operador') || 'FLÁVIO';
-            const temaSalvo = localStorage.getItem('ga_tema_bmw') || 'light'; // BMW padrão é Light Canvas
-            document.documentElement.setAttribute('data-theme', temaSalvo);
+            const temaSalvo = localStorage.getItem('ga_tema_apple') || 'light';
+            if (temaSalvo === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+
             document.getElementById('btn-theme').onclick = () => {
-                const n = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-                document.documentElement.setAttribute('data-theme', n);
-                localStorage.setItem('ga_tema_bmw', n);
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                if (isDark) {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('ga_tema_apple', 'light');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('ga_tema_apple', 'dark');
+                }
             };
+
             atualizarRelogio();
             renderizarRondas();
             carregarDadosDaPlanilha();
