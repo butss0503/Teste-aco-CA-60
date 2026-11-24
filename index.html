@@ -1628,7 +1628,8 @@
         async function deletarTeste(linha, aba, chave) {
             if (!confirm("Excluir esta amostra da planilha? Essa ação não pode ser desfeita.")) return;
             const antes = historicoTestes.filter(t => chaveAmostra(t) === chave).length;
-            const res = await postarPlanilha({ acao: "deletar", linha: Number(linha), aba: aba });
+            const [lote, le, lr] = String(chave).split('|');
+            const res = await postarPlanilha({ acao: "deletar", linha: Number(linha), aba: aba, lote: lote, le: le, lr: lr });
             let ok = res.estado === 'ok';
             if (res.estado !== 'erro') {
                 await new Promise(r => setTimeout(r, 800));
