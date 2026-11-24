@@ -672,11 +672,11 @@
                         <div class="campo">
                             <label class="campo-rot" for="maquina">Máquina</label>
                             <select id="maquina">
-                                <option value="MAQ-01">Máquina 01</option>
-                                <option value="MAQ-02">Máquina 02</option>
-                                <option value="MAQ-03">Máquina 03</option>
-                                <option value="MAQ-04">Máquina 04</option>
-                                <option value="MAQ-05">Máquina 05</option>
+                                <option value="MAQ-01">Máq. 01</option>
+                                <option value="MAQ-02">Máq. 02</option>
+                                <option value="MAQ-03">Máq. 03</option>
+                                <option value="MAQ-04">Máq. 04</option>
+                                <option value="MAQ-05">Máq. 05</option>
                             </select>
                         </div>
                         <div class="campo">
@@ -1441,7 +1441,8 @@
                 const r = await fetch(LINK_PLANILHA, { cache: 'no-store' });
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 const dados = await r.json();
-                historicoTestes = Array.isArray(dados) ? dados : [];
+                // Ignora linhas sem LE/LR numérico (ex.: linha de unidades "MPa", "(g/mm)" do cabeçalho)
+                historicoTestes = (Array.isArray(dados) ? dados : []).filter(t => numero(t.le) !== null || numero(t.lr) !== null);
                 dadosCarregados = true;
                 atualizarTabela();
                 if (!$('painel-graficos').hidden) renderizarGraficosCEP();
